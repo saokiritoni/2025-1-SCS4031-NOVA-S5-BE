@@ -24,14 +24,16 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
 
     // 토큰 없이 접근 가능한 URL
-    private static final String[] whiteList = {"/",
-            "token/**",
+    private static final String[] whiteList = {
+            "/",
+            "/token/**",
 
             /* swagger */
-            "swagger/**",
-            "swagger-ui/**",
-            "v3/api-docs/**",
+            "/swagger/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
     };
+
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
