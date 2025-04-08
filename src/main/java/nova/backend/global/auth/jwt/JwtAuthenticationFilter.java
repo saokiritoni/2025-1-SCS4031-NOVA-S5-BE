@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import nova.backend.global.auth.UserAuthentication;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.UnauthorizedException;
-import nova.backend.user.entity.Role;
+import nova.backend.domain.user.entity.Role;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;

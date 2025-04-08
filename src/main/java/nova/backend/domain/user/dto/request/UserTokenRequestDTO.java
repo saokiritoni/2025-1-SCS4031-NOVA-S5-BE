@@ -1,4 +1,4 @@
-package nova.backend.user.dto.request;
+package nova.backend.domain.user.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 

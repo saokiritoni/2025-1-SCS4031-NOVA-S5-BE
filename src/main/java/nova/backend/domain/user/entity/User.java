@@ -1,4 +1,4 @@
-package nova.backend.user.entity;
+package nova.backend.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

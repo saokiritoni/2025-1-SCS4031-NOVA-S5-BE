@@ -1,14 +1,14 @@
-package nova.backend.user.controller;
+package nova.backend.domain.user.controller;
 
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nova.backend.global.common.SuccessResponse;
-import nova.backend.user.dto.request.UserLoginRequestDTO;
-import nova.backend.user.dto.request.UserTokenRequestDTO;
-import nova.backend.user.dto.response.UserTokenResponseDTO;
-import nova.backend.user.service.OauthService;
-import nova.backend.user.service.TokenService;
+import nova.backend.domain.user.dto.request.UserLoginRequestDTO;
+import nova.backend.domain.user.dto.request.UserTokenRequestDTO;
+import nova.backend.domain.user.dto.response.UserTokenResponseDTO;
+import nova.backend.domain.user.service.OauthService;
+import nova.backend.domain.user.service.TokenService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
