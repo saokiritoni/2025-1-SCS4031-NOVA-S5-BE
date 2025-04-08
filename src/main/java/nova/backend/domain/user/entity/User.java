@@ -1,26 +1,27 @@
-package nova.backend.user.entity;
+package nova.backend.domain.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import nova.backend.domain.stampBook.entity.StampBook;
+import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.global.common.BaseTimeEntity;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Where;
 
+import java.util.List;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Getter
-@NoArgsConstructor
-@Table(name = "user")
-@Entity
-@Where(clause = "is_deleted = false")
 public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+
+    @Column(nullable = false)
+    private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -32,15 +33,20 @@ public class User extends BaseTimeEntity {
     @Column
     private String socialId;
 
-    @Column(nullable = false, length = 10)
-    private String name;
-
-    @Column(length = 500)
+    @Column
     private String profileImageUrl;
+
+    @Column(nullable = true)
+    private String phone;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String qrCodeValue;
 
     @ColumnDefault("false")
     private boolean isDeleted;
-
 
     public void delete() {this.isDeleted = true;}
 
@@ -48,4 +54,10 @@ public class User extends BaseTimeEntity {
         if (user.getProfileImageUrl() != null) this.profileImageUrl = user.getProfileImageUrl();
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cafe_id")
+    private Cafe cafe;
+
+    @OneToMany(mappedBy = "user")
+    private List<StampBook> stampBooks;
 }

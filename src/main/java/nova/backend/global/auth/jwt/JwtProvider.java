@@ -7,7 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.UnauthorizedException;
-import nova.backend.user.entity.Role;
+import nova.backend.domain.user.entity.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

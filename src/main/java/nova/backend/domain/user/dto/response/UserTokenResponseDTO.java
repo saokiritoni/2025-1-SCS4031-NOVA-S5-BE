@@ -1,4 +1,4 @@
-package nova.backend.user.dto.response;
+package nova.backend.domain.user.dto.response;
 
 public record UserTokenResponseDTO(
         String accessToken,

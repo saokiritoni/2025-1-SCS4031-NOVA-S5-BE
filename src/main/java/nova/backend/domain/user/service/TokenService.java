@@ -1,13 +1,13 @@
-package nova.backend.user.service;
+package nova.backend.domain.user.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import nova.backend.global.auth.jwt.JwtProvider;
 import nova.backend.global.error.exception.*;
-import nova.backend.user.dto.request.UserTokenRequestDTO;
-import nova.backend.user.dto.response.UserTokenResponseDTO;
-import nova.backend.user.entity.Role;
-import nova.backend.user.repository.UserRepository;
+import nova.backend.domain.user.dto.request.UserTokenRequestDTO;
+import nova.backend.domain.user.dto.response.UserTokenResponseDTO;
+import nova.backend.domain.user.entity.Role;
+import nova.backend.domain.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

@@ -1,11 +1,11 @@
-package nova.backend.user.service;
+package nova.backend.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
-import nova.backend.user.dto.request.UserLoginRequestDTO;
-import nova.backend.user.entity.Role;
-import nova.backend.user.entity.SocialType;
-import nova.backend.user.entity.User;
-import nova.backend.user.repository.UserRepository;
+import nova.backend.domain.user.dto.request.UserLoginRequestDTO;
+import nova.backend.domain.user.entity.Role;
+import nova.backend.domain.user.entity.SocialType;
+import nova.backend.domain.user.entity.User;
+import nova.backend.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

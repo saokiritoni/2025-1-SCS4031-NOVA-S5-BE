@@ -1,11 +1,11 @@
-package nova.backend.user.service;
+package nova.backend.domain.user.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nova.backend.global.error.exception.BusinessException;
-import nova.backend.user.entity.SocialType;
+import nova.backend.domain.user.entity.SocialType;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
