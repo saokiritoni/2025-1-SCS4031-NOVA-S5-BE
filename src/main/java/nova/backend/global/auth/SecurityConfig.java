@@ -26,22 +26,16 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
 
     // 토큰 없이 접근 가능한 URL
-    private static final String[] whiteList = {"/",
-            /* swagger */
-            "swagger/**",
-            "swagger-ui/**",
-            "v3/api-docs/**",
-
-            /* api */
-            "api/auth/token/**",
-            "api/auth/login/**",
-            "api/auth/reissue/**",
-            "api/user/verify/**",
+    private static final String[] whiteList = {
+            "/", "/swagger/**", "/swagger-ui/**", "/v3/api-docs/**",
+            "/api/auth/**", "/auth/callback/**"
     };
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers(whiteList);
+        return web -> web.ignoring().requestMatchers(
+                "/swagger/**", "/swagger-ui/**", "/v3/api-docs/**"
+        );
     }
 
     @Bean
@@ -50,15 +44,11 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sessionManagementConfigurer ->
-                        sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(exceptionHandlingConfigurer ->
-                        exceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-                        authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                                .requestMatchers(whiteList).permitAll()
-                                .anyRequest().authenticated()
+                .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(config -> config.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(whiteList).permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilter(corsConfig.corsFilter())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
