@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface StampBookRepository extends JpaRepository<StampBook, Long> {
     List<StampBook> findByUser_UserId(Long userId);
+    boolean existsByUser_UserIdAndCafe_CafeId(Long userId, Long cafeId);
 }
 
