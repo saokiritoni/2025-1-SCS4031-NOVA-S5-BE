@@ -54,6 +54,10 @@ public class User extends BaseTimeEntity {
         if (user.getProfileImageUrl() != null) this.profileImageUrl = user.getProfileImageUrl();
     }
 
+    public void updateQrCode(String qrCodeValue) {
+        this.qrCodeValue = qrCodeValue;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cafe_id")
     private Cafe cafe;
