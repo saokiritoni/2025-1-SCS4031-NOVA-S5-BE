@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.repository.CafeRepository;
+import nova.backend.domain.stamp.dto.response.StampHistoryResponseDTO;
 import nova.backend.domain.stamp.entity.Stamp;
 import nova.backend.domain.stamp.repository.StampRepository;
 import nova.backend.domain.stampBook.entity.StampBook;
@@ -14,6 +15,9 @@ import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -97,4 +101,28 @@ public class StampService {
 
         log.info("[스탬프 적립 종료] userId={}, cafeId={}, originallyRequested={}", userId, cafeId, count);
     }
+
+    public List<StampHistoryResponseDTO> getStampHistory(Long userId) {
+        List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(userId);
+
+        return stampBooks.stream().map(stampBook -> {
+            List<LocalDateTime> stampDates = stampRepository.findByStampBook_StampBookId(stampBook.getStampBookId())
+                    .stream()
+                    .map(Stamp::getCreatedAt)
+                    .toList();
+
+            return StampHistoryResponseDTO.builder()
+                    .stampBookId(stampBook.getStampBookId())
+                    .cafeName(stampBook.getCafe().getCafeName())
+                    .stampDates(stampDates)
+                    .stampCount(stampDates.size())
+                    .maxStampCount(stampBook.getCafe().getMaxStampCount())
+                    .isCompleted(stampBook.isCompleted())
+                    .completedAt(stampBook.isCompleted() ? stampBook.getUpdatedAt() : null)
+                    .rewardClaimed(stampBook.isRewardClaimed())
+                    .rewardClaimedAt(stampBook.isRewardClaimed() ? stampBook.getUpdatedAt() : null)
+                    .build();
+        }).toList();
+    }
+
 }
