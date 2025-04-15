@@ -1,6 +1,7 @@
 package nova.backend.domain.stampBook.controller;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.stampBook.dto.request.StampBookCreateRequestDTO;
 import nova.backend.domain.stampBook.dto.response.StampBookResponseDTO;
 import nova.backend.domain.stampBook.service.StampBookService;
 import nova.backend.global.common.SuccessResponse;
@@ -23,4 +24,13 @@ public class StampBookController {
         List<StampBookResponseDTO> response = stampBookService.getStampBooksForUser(userId);
         return SuccessResponse.ok(response);
     }
+
+    // 스탬프북 다운로드 (생성하기)
+    @PostMapping
+    public ResponseEntity<SuccessResponse<?>> createStampBook(@AuthenticationPrincipal Long userId,
+                                                              @RequestBody StampBookCreateRequestDTO request) {
+        StampBookResponseDTO response = stampBookService.createStampBook(userId, request.cafeId());
+        return SuccessResponse.created(response);
+    }
+
 }
