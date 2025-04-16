@@ -1,11 +1,11 @@
 package nova.backend.global.auth.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.auth.CustomUserDetailsService;
 import nova.backend.global.error.ErrorCode;
@@ -17,15 +17,18 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
 
     private final JwtProvider jwtProvider;
     private final CustomUserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -46,9 +49,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (UnauthorizedException e) {
-            log.warn("❌ JWT 인증 실패: {}", e.getMessage());
+            setErrorResponse(response, e.getErrorCode());
+            return; // 예외 발생 시 더 이상 필터 체인을 진행하지 않음
         } catch (Exception e) {
-            log.error("🔥 JWT 필터 처리 중 예외 발생", e);
+            setErrorResponse(response, ErrorCode.AUTHENTICATION_FAILED);
+            return;
         }
 
         filterChain.doFilter(request, response);
@@ -60,6 +65,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return accessToken.substring(BEARER.length());
         }
         throw new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN);
+    }
+
+    private void setErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
+        response.setStatus(errorCode.getHttpStatus().value());
+        response.setContentType("application/json;charset=UTF-8");
+
+        Map<String, Object> errorBody = new HashMap<>();
+        errorBody.put("status", errorCode.getHttpStatus().value());
+        errorBody.put("message", errorCode.getMessage());
+
+        objectMapper.writeValue(response.getWriter(), errorBody);
     }
 
     @Override
