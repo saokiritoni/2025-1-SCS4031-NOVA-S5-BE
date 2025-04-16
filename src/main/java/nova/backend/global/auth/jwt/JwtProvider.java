@@ -103,6 +103,4 @@ public class JwtProvider {
         return Role.valueOf(role);
     }
 
-
-
 }

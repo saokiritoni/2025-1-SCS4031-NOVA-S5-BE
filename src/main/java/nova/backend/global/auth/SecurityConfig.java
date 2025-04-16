@@ -24,8 +24,8 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CorsConfig corsConfig;
     private final JwtProvider jwtProvider;
+    private final CustomUserDetailsService customUserDetailsService; // ✅ 추가
 
-    // 토큰 없이 접근 가능한 URL
     private static final String[] whiteList = {
             "/", "/swagger/**", "/swagger-ui/**", "/v3/api-docs/**",
             "/api/auth/**", "/auth/callback/**"
@@ -51,7 +51,10 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilter(corsConfig.corsFilter())
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(jwtProvider, customUserDetailsService), // ✅ 수정된 부분
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthenticationFilter.class)
                 .build();
     }
