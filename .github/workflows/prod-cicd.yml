@@ -63,17 +63,16 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/nova-prod:latest
     
           echo "📄 application.yml 생성"
-          sudo mkdir -p /home/ubuntu/app/config
-          echo "${{ secrets.APPLICATION }}" | sudo tee /home/ubuntu/app/config/application.yml > /dev/null
-          sudo chmod 644 /home/ubuntu/app/config/application.yml
+          sudo mkdir -p /home/ubuntu/app/src/main/resources
+          echo "${{ secrets.APPLICATION }}" | sudo tee /home/ubuntu/app/src/main/resources/application.yml > /dev/null
+          sudo chmod 644 /home/ubuntu/app/src/main/resources/application.yml
     
           echo "🚀 새 컨테이너 실행"
           docker run -d --name nova-prod \
             -p 8080:8080 \
             -e SPRING_PROFILES_ACTIVE=prod \
-            -v /home/ubuntu/app/config:/config \
+            -v /home/ubuntu/app/src/main/resources/application.yml:/app/src/main/resources/application.yml \
             ${{ secrets.DOCKER_USERNAME }}/nova-prod:latest
-
     
           echo "🧹 사용하지 않는 Docker 이미지 정리"
           docker image prune -f
