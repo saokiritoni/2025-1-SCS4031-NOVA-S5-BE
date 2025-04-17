@@ -8,6 +8,6 @@ import nova.backend.domain.user.entity.SocialType;
 public record UserLoginRequestDTO(
         @NotBlank String code,
         @NotNull SocialType socialType,
-        @NotNull Role role,
-        String name
+        @NotNull Role role
 ) {}
+
