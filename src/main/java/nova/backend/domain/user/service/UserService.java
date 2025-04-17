@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
@@ -29,7 +28,6 @@ public class UserService {
 
         if (existedUser == null) {
             String qrCode = QrCodeGenerator.generate();
-            System.out.println("🔍 Generated QR Code = " + qrCode); // TODO: 삭제하기
 
             User newUser = User.builder()
                     .socialId(socialId)
@@ -40,10 +38,7 @@ public class UserService {
                     .qrCodeValue(qrCode)
                     .build();
 
-            User savedUser = userRepository.save(newUser);
-            System.out.println("✅ User saved: " + savedUser.getUserId()); // TODO: 삭제하기
-
-            return savedUser;
+            return userRepository.save(newUser);
 
         }
 
