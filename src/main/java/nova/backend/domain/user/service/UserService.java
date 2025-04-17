@@ -28,7 +28,6 @@ public class UserService {
 
         if (existedUser == null) {
             String qrCode = QrCodeGenerator.generate();
-            System.out.println("🔍 Generated QR Code = " + qrCode); // TODO: 삭제하기
 
             User newUser = User.builder()
                     .socialId(socialId)
@@ -39,10 +38,7 @@ public class UserService {
                     .qrCodeValue(qrCode)
                     .build();
 
-            User savedUser = userRepository.save(newUser);
-            System.out.println("✅ User saved: " + savedUser.getUserId()); // TODO: 삭제하기
-
-            return savedUser;
+            return userRepository.save(newUser);
 
         }
 
