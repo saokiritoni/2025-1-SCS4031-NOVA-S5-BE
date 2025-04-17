@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cafes")
-public class CafeController {
+public class CafeController implements CafeApi {
 
     private final CafeService cafeService;
 
