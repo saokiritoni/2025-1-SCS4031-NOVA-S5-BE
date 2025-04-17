@@ -28,15 +28,23 @@ public class UserService {
         User existedUser = getExistedUser(socialId, userLoginRequest.socialType());
 
         if (existedUser == null) {
+            String qrCode = QrCodeGenerator.generate();
+            System.out.println("🔍 Generated QR Code = " + qrCode); // TODO: 삭제하기
+
             User newUser = User.builder()
                     .socialId(socialId)
                     .socialType(userLoginRequest.socialType())
                     .profileImageUrl(imageUrl)
-                    .role(Role.USER) // 기본 role
+                    .role(Role.USER)
                     .name(kakaoName)
-                    .qrCodeValue(QrCodeGenerator.generate())
+                    .qrCodeValue(qrCode)
                     .build();
-            return userRepository.save(newUser);
+
+            User savedUser = userRepository.save(newUser);
+            System.out.println("✅ User saved: " + savedUser.getUserId()); // TODO: 삭제하기
+
+            return savedUser;
+
         }
 
         if (existedUser.getQrCodeValue() == null) {
