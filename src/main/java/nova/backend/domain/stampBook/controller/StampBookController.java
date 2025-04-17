@@ -4,9 +4,6 @@ import lombok.RequiredArgsConstructor;
 import nova.backend.domain.stampBook.dto.request.StampBookCreateRequestDTO;
 import nova.backend.domain.stampBook.dto.response.StampBookResponseDTO;
 import nova.backend.domain.stampBook.service.StampBookService;
-import nova.backend.domain.user.dto.response.QrCodeResponseDTO;
-import nova.backend.domain.user.service.UserService;
-import nova.backend.global.auth.UserAuthentication;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/stampbooks")
-public class StampBookController {
+public class StampBookController implements StampBookApi {
 
     private final StampBookService stampBookService;
 

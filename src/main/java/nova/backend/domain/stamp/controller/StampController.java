@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/stamps")
-public class StampController {
+public class StampController implements StampApi {
 
     private final StampService stampService;
 
