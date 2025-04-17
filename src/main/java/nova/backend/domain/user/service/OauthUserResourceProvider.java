@@ -49,13 +49,30 @@ public class OauthUserResourceProvider {
     }
 
     public Map<String, String> extractUserInfo(JsonNode userResource, SocialType socialType) {
-        String socialId = socialType.equals(SocialType.GOOGLE)
-                ? userResource.path("sub").asText()
-                : userResource.path("id").asText();
+        String socialId;
+        String imageUrl;
+        String name;
 
-        String imageUrl = socialType.equals(SocialType.GOOGLE)
-                ? userResource.path("picture").asText()
-                : userResource.path("kakao_account").path("profile").path("profile_image_url").asText();
-        return Map.of("socialId", socialId, "imageUrl", imageUrl);
+        if (socialType.equals(SocialType.GOOGLE)) {
+            socialId = userResource.path("sub").asText();
+            imageUrl = userResource.path("picture").asText();
+            name = userResource.path("name").asText();
+        } else {
+            JsonNode account = userResource.path("kakao_account");
+            JsonNode profile = account.path("profile");
+
+            socialId = userResource.path("id").asText();
+            imageUrl = profile.path("profile_image_url").asText();
+            name = profile.path("nickname").asText();
+        }
+
+        log.info("[OAuth 사용자 정보] socialId={}, nickname={}, imageUrl={}", socialId, name, imageUrl);
+
+        return Map.of(
+                "socialId", socialId,
+                "imageUrl", imageUrl,
+                "name", name
+        );
     }
+
 }
