@@ -36,6 +36,7 @@ public class UserService {
                     .role(Role.USER)
                     .name(kakaoName)
                     .qrCodeValue(qrCode)
+                    .email(null)
                     .build();
 
             return userRepository.save(newUser);
