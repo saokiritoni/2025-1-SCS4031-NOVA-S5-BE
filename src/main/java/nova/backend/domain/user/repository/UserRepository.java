@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Long>{
     Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
     Page<User> findAll(Pageable pageable);
+    Optional<User> findByQrCodeValue(String qrCodeValue);
 }
