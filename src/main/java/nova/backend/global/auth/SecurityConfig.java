@@ -24,7 +24,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CorsConfig corsConfig;
     private final JwtProvider jwtProvider;
-    private final CustomUserDetailsService customUserDetailsService; // ✅ 추가
+    private final CustomUserDetailsService customUserDetailsService;
 
     private static final String[] whiteList = {
             "/", "/swagger/**", "/swagger-ui/**", "/v3/api-docs/**",
@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(config -> config.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/cafe/stamps/**").hasAnyAuthority("OWNER", "STAFF")
+                        .requestMatchers("/api/cafe/stamps/**").hasAnyAuthority("ROLE_OWNER", "ROLE_STAFF")
                         .requestMatchers(whiteList).permitAll()
                         .anyRequest().authenticated()
                 )
