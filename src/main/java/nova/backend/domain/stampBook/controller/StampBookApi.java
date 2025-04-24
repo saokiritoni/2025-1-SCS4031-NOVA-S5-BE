@@ -35,7 +35,7 @@ public interface StampBookApi {
     );
 
     @Operation(summary = "스탬프북 다운로드(생성)",
-            description = "카페 목록에서 스탬프북 다운로드를 하면 이 API를 사용해야 합니다. 찍힌 스탬프 개수가 0인 새로운 스탬프북이 생성됩니다. 스탬프북이 이미 있는데 또 다운로드 받는 경우의 예외처리가 필요합니다. (구현 예정)",
+            description = "카페 목록에서 스탬프북 다운로드를 하면 이 API를 사용해야 합니다. 찍힌 스탬프 개수가 0인 새로운 스탬프북이 생성됩니다. 채우지 않은 스탬프북이 이미 있는데 또 다운로드 받는 경우 에러를 던집니다.",
             security = @SecurityRequirement(name = "token"))
     @ApiResponse(responseCode = "201", description = "스탬프북 생성 성공",
             content = @Content(

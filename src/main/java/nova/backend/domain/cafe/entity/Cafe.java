@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import nova.backend.domain.stampBook.entity.StampBook;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,4 +38,10 @@ public class Cafe {
 
     @OneToMany(mappedBy = "cafe")
     private List<StampBook> stampBooks;
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CafeOpenHour> openHours = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CafeSpecialDay> specialDays = new ArrayList<>();
 }
