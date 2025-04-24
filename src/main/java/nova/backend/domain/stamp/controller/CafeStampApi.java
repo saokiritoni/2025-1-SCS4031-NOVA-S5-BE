@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@Tag(name = "카페(OWNER/STAFF) 스탬프 API", description = "사장/직원용 스탬프 적립 및 조회 API")
+@Tag(name = "카페(OWNER/STAFF)용 스탬프 API", description = "사장/직원용 스탬프 적립 및 조회 API")
 public interface CafeStampApi {
 
     @Operation(

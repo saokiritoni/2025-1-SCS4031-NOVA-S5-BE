@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import nova.backend.domain.stampBook.dto.request.StampBookCreateRequestDTO;
 import nova.backend.domain.stampBook.schema.StampBookListSuccessResponse;
 import nova.backend.domain.stampBook.schema.StampBookSuccessResponse;
+import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "스탬프북 API", description = "스탬프북 관련 API")
+@Tag(name = "스탬프북 API", description = "스탬프북 관련 API, 스탬프는 단일 스탬프지만 스탬프북은 한 장을 관리합니다.")
 public interface StampBookApi {
 
     @Operation(summary = "나의 스탬프북 목록 조회",
@@ -31,7 +32,7 @@ public interface StampBookApi {
     )
     @GetMapping("/my")
     ResponseEntity<SuccessResponse<?>> getMyStampBooks(
-            @Parameter(hidden = true) @AuthenticationPrincipal Long userId
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
     );
 
     @Operation(summary = "스탬프북 다운로드(생성)",
@@ -45,7 +46,7 @@ public interface StampBookApi {
     )
     @PostMapping
     ResponseEntity<SuccessResponse<?>> createStampBook(
-            @Parameter(hidden = true) @AuthenticationPrincipal Long userId,
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody StampBookCreateRequestDTO request
     );
 }

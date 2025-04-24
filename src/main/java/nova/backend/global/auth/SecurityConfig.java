@@ -47,13 +47,13 @@ public class SecurityConfig {
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(config -> config.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        //.requestMatchers("/api/cafe/**").hasAnyAuthority("OWNER", "STAFF")
+                        .requestMatchers("/api/cafe/stamps/**").hasAnyAuthority("OWNER", "STAFF")
                         .requestMatchers(whiteList).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilter(corsConfig.corsFilter())
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtProvider, customUserDetailsService), // ✅ 수정된 부분
+                        new JwtAuthenticationFilter(jwtProvider, customUserDetailsService),
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthenticationFilter.class)
