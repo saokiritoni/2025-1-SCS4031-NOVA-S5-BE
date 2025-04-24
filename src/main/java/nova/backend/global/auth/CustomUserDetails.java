@@ -4,6 +4,7 @@ import lombok.Getter;
 import nova.backend.domain.user.entity.Role;
 import nova.backend.domain.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -15,16 +16,19 @@ public class CustomUserDetails implements UserDetails {
     private final Long userId;
     private final String email;
     private final Role role;
+    private final User user;
 
     public CustomUserDetails(User user) {
+        this.user = user;
         this.userId = user.getUserId();
         this.email = user.getEmail();
         this.role = user.getRole();
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(role);
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
