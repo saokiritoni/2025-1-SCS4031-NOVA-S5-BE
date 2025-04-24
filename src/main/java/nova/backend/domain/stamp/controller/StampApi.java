@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface StampApi {
 
     @Operation(summary = "스탬프 적립",
-            description = "카페 사장/직원이 QR 코드를 기반으로 스탬프를 적립합니다. 현재는 토큰을 사용하도록 되어있는데, qr-code-value를 사용해 적립하도록 수정할 예정입니다. (구현 예정)",
+            description = "카페 사장/직원이 고객의 Profile QR 코드를 기반으로 스탬프를 적립합니다.",
             security = @SecurityRequirement(name = "token"))
     @ApiResponse(responseCode = "200", description = "스탬프 적립 성공")
     @PostMapping
@@ -30,7 +30,7 @@ public interface StampApi {
             StampAccumulateRequestDTO request
     );
 
-    @Operation(summary = "스탬프 적립/사용 내역 조회", description = "내 스탬프 적립 및 사용 히스토리를 조회합니다.", security = @SecurityRequirement(name = "token"))
+    @Operation(summary = "스탬프 적립/사용 내역 조회", description = "내 스탬프 적립 및 사용 히스토리를 조회합니다. 피그마 보고 수정이 필요합니다.", security = @SecurityRequirement(name = "token"))
     @ApiResponse(responseCode = "200", description = "스탬프 내역 조회 성공",
             content = @Content(
                     mediaType = "application/json",
