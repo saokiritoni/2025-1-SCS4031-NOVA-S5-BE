@@ -3,6 +3,7 @@ package nova.backend.domain.stampBook.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import nova.backend.domain.cafe.entity.Cafe;
+import nova.backend.domain.cafe.entity.CharacterType;
 import nova.backend.domain.user.entity.User;
 import nova.backend.global.common.BaseTimeEntity;
 
@@ -45,4 +46,12 @@ public class StampBook extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cafe_id", nullable = false)
     private Cafe cafe;
+
+    @Transient
+    /*
+    카페의 캐릭터 설정에 따라 스탬프북 캐릭터를 가져오기 위한 메서드
+     */
+    public CharacterType getCharacter() {
+        return cafe.getCharacterType();
+    }
 }
