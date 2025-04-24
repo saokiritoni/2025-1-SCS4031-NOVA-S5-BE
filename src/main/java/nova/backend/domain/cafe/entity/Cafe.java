@@ -32,6 +32,10 @@ public class Cafe {
     @Column(nullable = false)
     private Integer maxStampCount;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CharacterType characterType;
+
     @OneToMany(mappedBy = "cafe")
     private List<StampBook> stampBooks;
 

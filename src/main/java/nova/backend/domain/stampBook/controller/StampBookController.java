@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nova.backend.domain.stampBook.dto.request.StampBookCreateRequestDTO;
 import nova.backend.domain.stampBook.dto.response.StampBookResponseDTO;
 import nova.backend.domain.stampBook.service.StampBookService;
+import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,21 +15,27 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/stampbooks")
-public class StampBookController implements StampBookApi {
+public class StampBookController {
 
     private final StampBookService stampBookService;
 
     // 유저의 모든 스탬프북 조회
     @GetMapping("/my")
-    public ResponseEntity<SuccessResponse<?>> getMyStampBooks(@AuthenticationPrincipal Long userId) {
+    public ResponseEntity<SuccessResponse<?>> getMyStampBooks(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Long userId = userDetails.getUserId();
         List<StampBookResponseDTO> response = stampBookService.getStampBooksForUser(userId);
         return SuccessResponse.ok(response);
     }
 
     // 스탬프북 다운로드 (생성하기)
     @PostMapping
-    public ResponseEntity<SuccessResponse<?>> createStampBook(@AuthenticationPrincipal Long userId,
-                                                              @RequestBody StampBookCreateRequestDTO request) {
+    public ResponseEntity<SuccessResponse<?>> createStampBook(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody StampBookCreateRequestDTO request
+    ) {
+        Long userId = userDetails.getUserId();
         StampBookResponseDTO response = stampBookService.createStampBook(userId, request.cafeId());
         return SuccessResponse.created(response);
     }

@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(config -> config.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
+                        //.requestMatchers("/api/cafe/**").hasAnyAuthority("OWNER", "STAFF")
                         .requestMatchers(whiteList).permitAll()
                         .anyRequest().authenticated()
                 )
