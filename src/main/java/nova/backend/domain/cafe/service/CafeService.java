@@ -25,7 +25,8 @@ public class CafeService {
                         c.getLatitude(),
                         c.getLongitude(),
                         c.getCafePhone(),
-                        c.getMaxStampCount()
+                        c.getMaxStampCount(),
+                        c.getCharacterType()
                 ))
                 .toList();
     }
