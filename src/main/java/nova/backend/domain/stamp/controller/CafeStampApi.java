@@ -15,12 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@Tag(name = "스탬프 API", description = "스탬프 적립 및 조회 API")
+@Tag(name = "카페(OWNER/STAFF) 스탬프 API", description = "사장/직원용 스탬프 적립 및 조회 API")
 public interface CafeStampApi {
 
     @Operation(
             summary = "스탬프 적립",
-            description = "카페 사장/직원이 QR 코드를 기반으로 유저에게 스탬프를 적립합니다.",
+            description = "카페 사장/직원이 Profile QR 코드를 기반(UUID) 으로 유저에게 스탬프를 적립합니다.",
             security = @SecurityRequirement(name = "token")
     )
     @RequestBody(
