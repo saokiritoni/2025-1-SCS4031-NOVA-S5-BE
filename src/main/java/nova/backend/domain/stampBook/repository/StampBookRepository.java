@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface StampBookRepository extends JpaRepository<StampBook, Long> {
 
     List<StampBook> findByUser_UserId(Long userId);
-    boolean existsByUser_UserIdAndCafe_CafeId(Long userId, Long cafeId);
     Optional<StampBook> findFirstByUser_UserIdAndCafe_CafeIdAndIsCompletedFalse(Long userId, Long cafeId);
     List<StampBook> findByUser_UserIdAndCafe_CafeId(Long userId, Long cafeId);
 

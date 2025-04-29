@@ -61,19 +61,10 @@ public class StampService {
             int space = max - currentCount;
 
             int toAddNow = Math.min(space, stampsToAdd);
-            if (toAddNow <= 0) {
-                // 스탬프북이 꽉 찬 상태에서 추가 요청할 경우
-                throw new BusinessException(ErrorCode.BAD_REQUEST);
-            }
-
-            for (int i = 0; i < toAddNow; i++) {
-                stampRepository.save(Stamp.builder().stampBook(currentBook).build());
-            }
-
-            if (currentCount + toAddNow == max) {
-                currentBook.markAsCompleted();
-            }
-
+            // 스탬프북이 꽉 찬 상태에서 추가 요청할 경우 처리
+            if (toAddNow <= 0) { throw new BusinessException(ErrorCode.BAD_REQUEST); }
+            for (int i = 0; i < toAddNow; i++) { stampRepository.save(Stamp.builder().stampBook(currentBook).build()); }
+            if (currentCount + toAddNow == max) { currentBook.markAsCompleted(); }
             stampsToAdd -= toAddNow;
         }
 

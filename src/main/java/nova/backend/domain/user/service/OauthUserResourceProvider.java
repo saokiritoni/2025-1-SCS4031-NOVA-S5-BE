@@ -18,8 +18,6 @@ import java.util.Map;
 
 import static nova.backend.global.error.ErrorCode.OAUTH_USER_RESOURCE_FAILED;
 
-
-// OAuth 토큰으로 사용자 정보 요청 클래스
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor

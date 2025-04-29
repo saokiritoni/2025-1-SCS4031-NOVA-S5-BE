@@ -19,4 +19,5 @@ public class Stamp extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stamp_book_id")
     private StampBook stampBook;
+
 }

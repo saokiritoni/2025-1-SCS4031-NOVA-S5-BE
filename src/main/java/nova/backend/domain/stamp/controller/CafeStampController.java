@@ -28,6 +28,4 @@ public class CafeStampController implements CafeStampApi {
         stampService.accumulateStamp(userDetails.getUser(), request.targetQrCode(), request.cafeId(), request.count());
         return SuccessResponse.ok(null);
     }
-
-
 }
