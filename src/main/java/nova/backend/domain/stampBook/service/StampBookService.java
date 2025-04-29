@@ -19,7 +19,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class StampBookService { //TODO: 이미 존재하는 경우에 500말고 다른 예외로 수정하기
+public class StampBookService {
+    //TODO: 이미 존재하는 경우에 500말고 다른 예외로 수정하기
 
     private final StampBookRepository stampBookRepository;
     private final StampRepository stampRepository;
@@ -82,7 +83,5 @@ public class StampBookService { //TODO: 이미 존재하는 경우에 500말고 
                                 .build()
                 ));
     }
-
-
 }
 
