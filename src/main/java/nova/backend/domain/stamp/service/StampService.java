@@ -9,6 +9,7 @@ import nova.backend.domain.stamp.entity.Stamp;
 import nova.backend.domain.stamp.repository.StampRepository;
 import nova.backend.domain.stampBook.entity.StampBook;
 import nova.backend.domain.stampBook.repository.StampBookRepository;
+import nova.backend.domain.stampBook.service.StampBookService;
 import nova.backend.domain.user.entity.Role;
 import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
@@ -30,6 +31,7 @@ public class StampService {
     private final StampRepository stampRepository;
     private final UserRepository userRepository;
     private final CafeRepository cafeRepository;
+    private final StampBookService stampBookService;
 
     // TODO: 로그 메시지 삭제
 
@@ -42,52 +44,43 @@ public class StampService {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
 
-        // 2. QR 코드로 사용자 조회
+        // 2. 대상 사용자 & 카페 조회
         User targetUser = userRepository.findByQrCodeValue(targetQrCode)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        // 3. 기존 로직은 targetUser의 userId 기준으로 동작
         Cafe cafe = cafeRepository.findById(cafeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
+        // 3. 스탬프 적립
         int stampsToAdd = count;
-
         while (stampsToAdd > 0) {
-            StampBook currentBook = stampBookRepository
-                    .findFirstByUser_UserIdAndCafe_CafeIdAndIsCompletedFalse(targetUser.getUserId(), cafeId)
-                    .orElseGet(() -> stampBookRepository.save(
-                            StampBook.builder()
-                                    .user(targetUser)
-                                    .cafe(cafe)
-                                    .isCompleted(false)
-                                    .rewardClaimed(false)
-                                    .inHome(false)
-                                    .build()
-                    ));
+            StampBook currentBook = stampBookService.getOrCreateValidStampBook(targetUser, cafe);
 
             int currentCount = stampRepository.countByStampBook_StampBookId(currentBook.getStampBookId());
             int max = cafe.getMaxStampCount();
-            int availableSpace = max - currentCount;
+            int space = max - currentCount;
 
-            int toSaveNow = Math.min(availableSpace, stampsToAdd);
-
-            if (toSaveNow <= 0) {
+            int toAddNow = Math.min(space, stampsToAdd);
+            if (toAddNow <= 0) {
+                // 스탬프북이 꽉 찬 상태에서 추가 요청할 경우
                 throw new BusinessException(ErrorCode.BAD_REQUEST);
             }
 
-            for (int i = 0; i < toSaveNow; i++) {
+            for (int i = 0; i < toAddNow; i++) {
                 stampRepository.save(Stamp.builder().stampBook(currentBook).build());
             }
 
-            if (currentCount + toSaveNow == max) {
+            if (currentCount + toAddNow == max) {
                 currentBook.markAsCompleted();
             }
 
-            stampsToAdd -= toSaveNow;
+            stampsToAdd -= toAddNow;
         }
 
-        log.info("[스탬프 적립 종료] staff={}, targetUser={}, cafeId={}, count={}", staff.getEmail(), targetUser.getEmail(), cafeId, count);
+        log.info("[스탬프 적립 종료] staff={}, targetUser={}, cafeId={}, count={}",
+                staff.getEmail(), targetUser.getEmail(), cafeId, count);
     }
+
 
 
     public List<StampHistoryResponseDTO> getStampHistory(Long userId) {

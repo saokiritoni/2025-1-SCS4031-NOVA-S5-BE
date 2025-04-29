@@ -21,8 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "스탬프북 API", description = "스탬프북 관련 API, 스탬프는 단일 스탬프지만 스탬프북은 한 장을 관리합니다.")
 public interface StampBookApi {
 
-    @Operation(summary = "나의 스탬프북 목록 조회",
-            description = "나의 스탬프북 목록을 모두 조회합니다. 현재는 리워드 전환 여부 관계없이 모두 표시하고 있습니다. 이후에는 리워드 전환된 스탬프북은 표시하지 않을 예정입니다. (구현 예정)",
+    @Operation(summary = "나의 스탬프북 목록 조회 (for 메인페이지 / 스탬프북 페이지)",
+            description = "나의 스탬프북 목록을 모두 조회합니다. 현재는 리워드 전환 여부 관계없이 모두 표시하고 있습니다. 이후에는 리워드 전환된 스탬프북은 표시하지 않을 예정입니다. (구현 예정)" +
+                    "\n inHome=true이면 메인페이지에서 표시해야 합니다.",
             security = @SecurityRequirement(name = "token"))
     @ApiResponse(responseCode = "200", description = "스탬프북 목록 조회 성공",
             content = @Content(

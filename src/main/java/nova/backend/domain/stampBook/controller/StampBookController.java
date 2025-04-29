@@ -20,6 +20,7 @@ public class StampBookController implements StampBookApi{
     private final StampBookService stampBookService;
 
     // 유저의 모든 스탬프북 조회
+    // TODO: 리워드 전환한 스탬프북 미조회 -> 리워드로만 넘기기
     @GetMapping("/my")
     public ResponseEntity<SuccessResponse<?>> getMyStampBooks(
             @AuthenticationPrincipal CustomUserDetails userDetails

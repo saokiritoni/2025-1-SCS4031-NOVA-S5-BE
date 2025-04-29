@@ -3,6 +3,7 @@ package nova.backend.domain.stampBook.service;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.repository.CafeRepository;
+import nova.backend.domain.stamp.repository.StampRepository;
 import nova.backend.domain.stampBook.dto.response.StampBookResponseDTO;
 import nova.backend.domain.stampBook.entity.StampBook;
 import nova.backend.domain.stampBook.repository.StampBookRepository;
@@ -17,19 +18,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class StampBookService {
+@Transactional
+public class StampBookService { //TODO: 이미 존재하는 경우에 500말고 다른 예외로 수정하기
 
     private final StampBookRepository stampBookRepository;
+    private final StampRepository stampRepository;
     private final UserRepository userRepository;
     private final CafeRepository cafeRepository;
 
     public List<StampBookResponseDTO> getStampBooksForUser(Long userId) {
         List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(userId);
         return stampBooks.stream()
-                .map(StampBookResponseDTO::fromEntity)
+                .map(stampBook -> {
+                    int current = stampRepository.countByStampBook_StampBookId(stampBook.getStampBookId()); // ✅ 수정
+                    return StampBookResponseDTO.fromEntity(stampBook, current);
+                })
                 .toList();
     }
+
 
     @Transactional
     public StampBookResponseDTO createStampBook(Long userId, Long cafeId) {
@@ -39,11 +45,17 @@ public class StampBookService {
         Cafe cafe = cafeRepository.findById(cafeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
-        boolean exists = stampBookRepository.existsByUser_UserIdAndCafe_CafeId(userId, cafeId);
-        if (exists) {
-            throw new BusinessException(ErrorCode.STAMPBOOK_ALREADY_EXISTS);
+        // 1. 기존 스탬프북 조회
+        List<StampBook> existing = stampBookRepository.findByUser_UserIdAndCafe_CafeId(userId, cafeId);
+
+        for (StampBook sb : existing) {
+            if (!sb.isCompleted()) {
+                // 2. 미완료된 스탬프북이 하나라도 있다면 예외
+                throw new BusinessException(ErrorCode.STAMPBOOK_ALREADY_EXISTS);
+            }
         }
 
+        // 3. 없거나 모두 완료된 경우 새로 생성
         StampBook newStampBook = StampBook.builder()
                 .user(user)
                 .cafe(cafe)
@@ -53,8 +65,24 @@ public class StampBookService {
                 .build();
 
         stampBookRepository.save(newStampBook);
-        return StampBookResponseDTO.fromEntity(newStampBook);
+        return StampBookResponseDTO.fromEntity(newStampBook, 0);
     }
+
+    @Transactional
+    public StampBook getOrCreateValidStampBook(User user, Cafe cafe) {
+        return stampBookRepository
+                .findFirstByUser_UserIdAndCafe_CafeIdAndIsCompletedFalse(user.getUserId(), cafe.getCafeId())
+                .orElseGet(() -> stampBookRepository.save(
+                        StampBook.builder()
+                                .user(user)
+                                .cafe(cafe)
+                                .isCompleted(false)
+                                .rewardClaimed(false)
+                                .inHome(false)
+                                .build()
+                ));
+    }
+
 
 }
 
