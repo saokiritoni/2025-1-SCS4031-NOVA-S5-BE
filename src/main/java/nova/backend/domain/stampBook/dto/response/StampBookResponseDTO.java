@@ -15,10 +15,15 @@ public record StampBookResponseDTO(
         boolean isCompleted,
         boolean rewardClaimed,
         boolean inHome,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        int currentStampCount,
+        int maxStampCount,
+        int remainingStampCount
 ) {
-    public static StampBookResponseDTO fromEntity(StampBook stampBook) {
+    public static StampBookResponseDTO fromEntity(StampBook stampBook, int currentStampCount) {
         Cafe cafe = stampBook.getCafe();
+        int max = cafe.getMaxStampCount();
+        int remaining = max - currentStampCount;
         return new StampBookResponseDTO(
                 stampBook.getStampBookId(),
                 cafe.getCafeId(),
@@ -27,7 +32,10 @@ public record StampBookResponseDTO(
                 stampBook.isCompleted(),
                 stampBook.isRewardClaimed(),
                 stampBook.isInHome(),
-                stampBook.getCreatedAt()
+                stampBook.getCreatedAt(),
+                currentStampCount,
+                max,
+                remaining
         );
     }
 }
