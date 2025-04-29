@@ -30,7 +30,7 @@ public class StampBookService { //TODO: 이미 존재하는 경우에 500말고 
         List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(userId);
         return stampBooks.stream()
                 .map(stampBook -> {
-                    int current = stampRepository.countByStampBook_StampBookId(stampBook.getStampBookId()); // ✅ 수정
+                    int current = stampRepository.countByStampBook_StampBookId(stampBook.getStampBookId());
                     return StampBookResponseDTO.fromEntity(stampBook, current);
                 })
                 .toList();
