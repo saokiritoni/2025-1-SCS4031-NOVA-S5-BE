@@ -12,6 +12,8 @@ public enum ErrorCode {
      * 400 Bad Request
      */
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "ENUM 입력값이 올바르지 않습니다."),
+
     /**
      * 401 Unauthorized
      */
@@ -47,9 +49,16 @@ public enum ErrorCode {
     CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 리소스입니다."),
 
     /**
+     * 413 Payload Too Large
+     */
+    FILE_SIZE_EXCEEDED(HttpStatus.PAYLOAD_TOO_LARGE, "이미지 최대 크기를 초과하였습니다."),
+
+
+    /**
      * 500 Internal Server Error
      */
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다."),
+    FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다."),
 
     /**
      * User Error
@@ -71,6 +80,10 @@ public enum ErrorCode {
     STAMPBOOK_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 해당 카페에 대한 스탬프북이 존재합니다."),
     STAMPBOOK_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "스탬프북이 아직 완료되지 않았습니다."),
     REWARD_ALREADY_CLAIMED(HttpStatus.CONFLICT, "이미 리워드를 전환했습니다."),
+    REWARD_NOT_CLAIMED(HttpStatus.BAD_REQUEST, "리워드가 아직 전환되지 않았습니다."),
+    REWARD_ALREADY_USED(HttpStatus.CONFLICT, "이미 리워드를 사용했습니다."),
+    NOT_ENOUGH_REWARDS(HttpStatus.BAD_REQUEST, "사용 가능한 리워드가 부족합니다.");
+
 
 
     ;

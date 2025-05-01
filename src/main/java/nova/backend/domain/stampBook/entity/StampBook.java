@@ -27,6 +27,10 @@ public class StampBook extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean inHome = false;
 
+    @Column(nullable = false)
+    private boolean used = false;
+
+
     public void markAsCompleted() {
         this.isCompleted = true;
     }
@@ -39,6 +43,25 @@ public class StampBook extends BaseTimeEntity {
         this.inHome = value;
     }
 
+    /**
+    카페의 캐릭터 설정에 따라 스탬프북 캐릭터를 가져오기 위한 메서드
+     */
+    @Transient
+    public CharacterType getCharacter() {
+        return cafe.getCharacterType();
+    }
+
+    /**
+    스탬프북을 리워드로 전환하는 메서드
+     */
+    public void convertToReward() { this.rewardClaimed = true; }
+
+    /**
+    리워드 사용 완료 상태로 전환하는 메서드
+     */
+    public void useReward() { this.used = true; }
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -47,25 +70,6 @@ public class StampBook extends BaseTimeEntity {
     @JoinColumn(name = "cafe_id", nullable = false)
     private Cafe cafe;
 
-    @Transient
-    /**
-    카페의 캐릭터 설정에 따라 스탬프북 캐릭터를 가져오기 위한 메서드
-     */
-    public CharacterType getCharacter() {
-        return cafe.getCharacterType();
-    }
 
-    /**
-    리워드로 전환하는 메서드
-     */
-    public void convertToReward() {
-        if (!isCompleted) {
-            throw new IllegalStateException("스탬프북이 아직 완료되지 않았습니다.");
-        }
-        if (rewardClaimed) {
-            throw new IllegalStateException("이미 리워드를 전환했습니다.");
-        }
-        this.rewardClaimed = true;
-    }
 
 }

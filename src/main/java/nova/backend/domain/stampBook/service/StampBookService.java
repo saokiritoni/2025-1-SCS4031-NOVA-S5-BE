@@ -20,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class StampBookService {
-    //TODO: 이미 존재하는 경우에 500말고 다른 예외로 수정하기
 
     private final StampBookRepository stampBookRepository;
     private final StampRepository stampRepository;
@@ -36,7 +35,6 @@ public class StampBookService {
                 })
                 .toList();
     }
-
 
     @Transactional
     public StampBookResponseDTO createStampBook(Long userId, Long cafeId) {
@@ -105,12 +103,45 @@ public class StampBookService {
 
         String reward = stampBook.getCafe().getRewardDescription();
         if (reward == null || reward.isBlank()) {
-            reward = "설정된 리워드가 없습니다.";
+            reward = "카페에서 기본으로 설정된 리워드가 없습니다.";
         }
 
         return reward;
     }
 
+    @Transactional
+    public int useRewardsByQrCode(String qrCodeValue, int count) {
+        User user = userRepository.findByQrCodeValue(qrCodeValue)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        List<StampBook> usableStampBooks = stampBookRepository
+                .findByUser_UserIdAndIsCompletedTrueAndRewardClaimedTrueAndUsedFalse(user.getUserId());
+
+        if (usableStampBooks.size() < count) {
+            throw new BusinessException(ErrorCode.NOT_ENOUGH_REWARDS);
+        }
+
+        // 모두 성공해야만 count 리턴
+        for (int i = 0; i < count; i++) {
+            StampBook stampBook = usableStampBooks.get(i);
+
+            if (!stampBook.isCompleted()) {
+                throw new BusinessException(ErrorCode.STAMPBOOK_NOT_COMPLETED);
+            }
+            if (!stampBook.isRewardClaimed()) {
+                throw new BusinessException(ErrorCode.REWARD_NOT_CLAIMED);
+            }
+            if (stampBook.isUsed()) {
+                throw new BusinessException(ErrorCode.REWARD_ALREADY_USED);
+            }
+
+            stampBook.useReward();
+        }
+
+        return count;
+    }
+
 
 }
+
 
