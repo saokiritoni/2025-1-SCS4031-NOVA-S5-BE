@@ -27,6 +27,8 @@ public enum ErrorCode {
      * 403 Forbidden
      */
     FORBIDDEN(HttpStatus.FORBIDDEN, "리소스 접근 권한이 없습니다."),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근이 거부되었습니다."),
+
 
     /**
      * 404 Not Found
@@ -67,6 +69,9 @@ public enum ErrorCode {
      * StampBook Error
      */
     STAMPBOOK_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 해당 카페에 대한 스탬프북이 존재합니다."),
+    STAMPBOOK_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "스탬프북이 아직 완료되지 않았습니다."),
+    REWARD_ALREADY_CLAIMED(HttpStatus.CONFLICT, "이미 리워드를 전환했습니다."),
+
 
     ;
     private final HttpStatus httpStatus;
