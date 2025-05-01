@@ -83,5 +83,34 @@ public class StampBookService {
                                 .build()
                 ));
     }
+
+    @Transactional
+    public String convertStampBookToReward(Long userId, Long stampBookId) {
+        StampBook stampBook = stampBookRepository.findById(stampBookId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        if (!stampBook.getUser().getUserId().equals(userId)) {
+            throw new BusinessException(ErrorCode.ACCESS_DENIED);
+        }
+
+        if (!stampBook.isCompleted()) {
+            throw new BusinessException(ErrorCode.STAMPBOOK_NOT_COMPLETED);
+        }
+
+        if (stampBook.isRewardClaimed()) {
+            throw new BusinessException(ErrorCode.REWARD_ALREADY_CLAIMED);
+        }
+
+        stampBook.convertToReward();
+
+        String reward = stampBook.getCafe().getRewardDescription();
+        if (reward == null || reward.isBlank()) {
+            reward = "설정된 리워드가 없습니다.";
+        }
+
+        return reward;
+    }
+
+
 }
 

@@ -41,4 +41,14 @@ public class StampBookController implements StampBookApi{
         return SuccessResponse.created(response);
     }
 
+    // 스탬프북 리워드로 전환
+    @PostMapping("/{stampBookId}/reward")
+    public ResponseEntity<SuccessResponse<?>> convertToReward(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long stampBookId
+    ) {
+        String reward = stampBookService.convertStampBookToReward(userDetails.getUserId(), stampBookId);
+        return SuccessResponse.ok("리워드 전환 완료: " + reward);
+    }
+
 }

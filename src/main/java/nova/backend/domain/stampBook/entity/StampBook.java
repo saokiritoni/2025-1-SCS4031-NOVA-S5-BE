@@ -48,10 +48,24 @@ public class StampBook extends BaseTimeEntity {
     private Cafe cafe;
 
     @Transient
-    /*
+    /**
     카페의 캐릭터 설정에 따라 스탬프북 캐릭터를 가져오기 위한 메서드
      */
     public CharacterType getCharacter() {
         return cafe.getCharacterType();
     }
+
+    /**
+    리워드로 전환하는 메서드
+     */
+    public void convertToReward() {
+        if (!isCompleted) {
+            throw new IllegalStateException("스탬프북이 아직 완료되지 않았습니다.");
+        }
+        if (rewardClaimed) {
+            throw new IllegalStateException("이미 리워드를 전환했습니다.");
+        }
+        this.rewardClaimed = true;
+    }
+
 }
