@@ -36,6 +36,9 @@ public class Cafe {
     @Column(nullable = false)
     private CharacterType characterType;
 
+    @Column(nullable = false)
+    private String rewardDescription;  // e.g. 아메리카노 한 잔
+
     @OneToMany(mappedBy = "cafe")
     private List<StampBook> stampBooks;
 
