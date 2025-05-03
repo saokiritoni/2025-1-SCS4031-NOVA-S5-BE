@@ -1,10 +1,14 @@
 package nova.backend.domain.cafe.controller;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
+import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.service.CafeService;
+import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,4 +25,14 @@ public class CafeController implements CafeApi {
         List<CafeListResponseDTO> response = cafeService.getAllCafes();
         return SuccessResponse.ok(response);
     }
+
+    @GetMapping("/approved")
+    public ResponseEntity<SuccessResponse<?>> getApprovedCafeList() {
+        List<CafeListResponseDTO> response = cafeService.getApprovedCafes();
+        return SuccessResponse.ok(response);
+    }
+
+
 }
+
+
