@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cafe/stampbooks")
-public class StaffStampBookController {
+public class StaffStampBookController implements StaffStampBookApi {
 
     private final StampBookService stampBookService;
 
