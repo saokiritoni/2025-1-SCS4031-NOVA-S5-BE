@@ -11,6 +11,13 @@ public interface StampBookRepository extends JpaRepository<StampBook, Long> {
     List<StampBook> findByUser_UserId(Long userId);
     Optional<StampBook> findFirstByUser_UserIdAndCafe_CafeIdAndIsCompletedFalse(Long userId, Long cafeId);
     List<StampBook> findByUser_UserIdAndCafe_CafeId(Long userId, Long cafeId);
+    /*
+    rewardClaimed = true인 스탬프북 중, 가장 오래된 것부터 가져오기
+     */
+    List<StampBook> findByUser_UserIdAndCafe_CafeIdAndRewardClaimedTrueAndUsedFalseOrderByCreatedAtAsc(
+            Long userId, Long cafeId
+    );
+
 
 
 }

@@ -1,6 +1,7 @@
 package nova.backend.domain.stampBook.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.stamp.repository.StampRepository;
@@ -16,11 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class StampBookService {
-    //TODO: 이미 존재하는 경우에 500말고 다른 예외로 수정하기
 
     private final StampBookRepository stampBookRepository;
     private final StampRepository stampRepository;
@@ -36,7 +37,6 @@ public class StampBookService {
                 })
                 .toList();
     }
-
 
     @Transactional
     public StampBookResponseDTO createStampBook(Long userId, Long cafeId) {
@@ -105,12 +105,44 @@ public class StampBookService {
 
         String reward = stampBook.getCafe().getRewardDescription();
         if (reward == null || reward.isBlank()) {
-            reward = "설정된 리워드가 없습니다.";
+            reward = "카페에서 기본으로 설정된 리워드가 없습니다.";
         }
 
         return reward;
     }
 
+    @Transactional
+    public int useRewardsByQrCodeForCafe(Long currentUserId, String qrCodeValue, int count) {
+        User staffUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        Cafe cafe = staffUser.getCafe();
+        if (cafe == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND);
+        }
+
+        User targetUser = userRepository.findByQrCodeValue(qrCodeValue)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        List<StampBook> targetStampBooks = stampBookRepository
+                .findByUser_UserIdAndCafe_CafeIdAndRewardClaimedTrueAndUsedFalseOrderByCreatedAtAsc(
+                        targetUser.getUserId(), cafe.getCafeId()
+                );
+
+        if (targetStampBooks.size() < count) {
+            throw new BusinessException(ErrorCode.NOT_ENOUGH_REWARDS);
+        }
+
+        // 리워드 사용 요청한 스탬프북 개수(count)만 사용 처리
+        for (int i = 0; i < count; i++) {
+            targetStampBooks.get(i).useReward();
+        }
+        stampBookRepository.saveAll(targetStampBooks.subList(0, count));
+
+        return count;
+    }
+
 
 }
+
 
