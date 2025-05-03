@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cafe/stamps")
-public class CafeStampController implements CafeStampApi {
+public class StaffStampController implements StaffStampApi {
 
     private final StampService stampService;
 
