@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cafe/stamps")
-public class CafeStampController implements CafeStampApi {
+public class StaffStampController implements StaffStampApi {
 
     private final StampService stampService;
 
@@ -25,7 +25,7 @@ public class CafeStampController implements CafeStampApi {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody StampAccumulateRequestDTO request) {
 
-        stampService.accumulateStamp(userDetails.getUser(), request.targetQrCode(), request.cafeId(), request.count());
+        stampService.accumulateStamp(userDetails.getUser(), request.qrCodeValue(), request.cafeId(), request.count());
         return SuccessResponse.ok(null);
     }
 }

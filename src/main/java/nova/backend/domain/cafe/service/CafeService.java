@@ -1,11 +1,17 @@
 package nova.backend.domain.cafe.service;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.CafeOpenHour;
+import nova.backend.domain.cafe.entity.CafeRegistrationStatus;
 import nova.backend.domain.cafe.entity.CafeSpecialDay;
 import nova.backend.domain.cafe.repository.CafeRepository;
+import nova.backend.domain.user.entity.User;
+import nova.backend.domain.user.repository.UserRepository;
+import nova.backend.global.error.ErrorCode;
+import nova.backend.global.error.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,62 +25,40 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CafeService {
     private final CafeRepository cafeRepository;
+    private final UserRepository userRepository;
 
     public List<CafeListResponseDTO> getAllCafes() {
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now();
-        DayOfWeek dow = today.getDayOfWeek();
+        return cafeRepository.findAll().stream()
+                .map(CafeListResponseDTO::fromEntity)
+                .toList();
+    }
 
-        return cafeRepository.findAll().stream().map(cafe -> {
-            // --- 평일 스케줄 DTO 리스트 (Open Hour DTOs) ---
-            List<CafeListResponseDTO.CafeOpenHourDTO> ohDtos = cafe.getOpenHours().stream()
-                    .map(h -> new CafeListResponseDTO.CafeOpenHourDTO(
-                            h.getDayOfWeek(),
-                            h.isOpen(),
-                            h.getOpenTime(),
-                            h.getCloseTime(),
-                            h.getLastOrder()
-                    ))
-                    .collect(Collectors.toList());
+    public List<CafeListResponseDTO> getApprovedCafes() {
+        return cafeRepository.findByRegistrationStatus(CafeRegistrationStatus.APPROVED).stream()
+                .map(CafeListResponseDTO::fromEntity)
+                .toList();
+    }
 
-            // --- 특수일 스케줄 DTO 리스트 (Special Day DTOs) ---
-            List<CafeListResponseDTO.CafeSpecialDayDTO> sdDtos = cafe.getSpecialDays().stream()
-                    .map(d -> new CafeListResponseDTO.CafeSpecialDayDTO(
-                            d.getSpecialDate(),
-                            d.isOpen(),
-                            d.getOpenTime(),
-                            d.getCloseTime(),
-                            d.getLastOrder(),
-                            d.getNote()
-                    ))
-                    .collect(Collectors.toList());
+    @Transactional
+    public Cafe registerCafe(Long ownerId, CafeRegistrationRequestDTO request) {
+        User owner = userRepository.findById(ownerId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-            // --- 오늘 영업중 여부 계산 ---
-            Optional<CafeSpecialDay> spOpt = cafe.getSpecialDays().stream()
-                    .filter(d -> d.getSpecialDate().equals(today))
-                    .findFirst();
+        Cafe cafe = Cafe.builder()
+                .cafeName(request.cafeName())
+                .branchName(request.branchName())
+                .ownerName(request.ownerName())
+                .ownerPhone(request.ownerPhone())
+                .businessNumber(request.businessNumber())
+                .latitude(request.latitude())
+                .longitude(request.longitude())
+                .maxStampCount(request.maxStampCount())
+                .characterType(request.characterType())
+                .rewardDescription(request.rewardDescription())
+                .registrationStatus(CafeRegistrationStatus.REQUESTED)
+                .owner(owner)
+                .build();
 
-            boolean isOpenNow = spOpt.map(sp ->
-                    sp.isOpen()
-                            && !now.isBefore(sp.getOpenTime())
-                            && !now.isAfter(sp.getCloseTime())
-            ).orElseGet(() ->
-                    cafe.getOpenHours().stream()
-                            .filter(h -> h.getDayOfWeek() == dow && h.isOpen())
-                            .anyMatch(h -> !now.isBefore(h.getOpenTime()) && !now.isAfter(h.getCloseTime()))
-            );
-
-            return new CafeListResponseDTO(
-                    cafe.getCafeId(),
-                    cafe.getCafeName(),
-                    cafe.getLatitude(),
-                    cafe.getLongitude(),
-                    cafe.getCafePhone(),
-                    cafe.getMaxStampCount(),
-                    isOpenNow,
-                    ohDtos,
-                    sdDtos
-            );
-        }).toList();
+        return cafeRepository.save(cafe);
     }
 }

@@ -58,10 +58,6 @@ public class User extends BaseTimeEntity {
         this.qrCodeValue = qrCodeValue;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cafe_id")
-    private Cafe cafe;
-
     @OneToMany(mappedBy = "user")
     private List<StampBook> stampBooks;
 }

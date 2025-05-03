@@ -3,6 +3,7 @@ package nova.backend.domain.cafe.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import nova.backend.domain.stampBook.entity.StampBook;
+import nova.backend.domain.user.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,23 @@ public class Cafe {
     @Column(nullable = false)
     private String rewardDescription;  // e.g. 아메리카노 한 잔
 
+    @Column(nullable = false)
+    private String branchName;
+
+    @Column(nullable = false)
+    private String ownerName;
+
+    @Column(nullable = false)
+    private String ownerPhone;
+
+    @Column(nullable = false)
+    private String businessNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CafeRegistrationStatus registrationStatus;
+
+
     @OneToMany(mappedBy = "cafe")
     private List<StampBook> stampBooks;
 
@@ -47,4 +65,9 @@ public class Cafe {
 
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CafeSpecialDay> specialDays = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
 }

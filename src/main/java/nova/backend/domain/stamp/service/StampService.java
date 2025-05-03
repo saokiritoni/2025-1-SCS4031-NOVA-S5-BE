@@ -36,7 +36,7 @@ public class StampService {
     // TODO: 로그 메시지 삭제
 
     public void accumulateStamp(User staff, String targetQrCode, Long cafeId, int count) {
-        log.info("[스탬프 적립 시작] staff={}, targetQrCode={}, cafeId={}, count={}",
+        log.info("[스탬프 적립 시작] staff={}, qrCodeValue={}, cafeId={}, count={}",
                 staff.getEmail(), targetQrCode, cafeId, count);
 
         // 1. 권한 체크
