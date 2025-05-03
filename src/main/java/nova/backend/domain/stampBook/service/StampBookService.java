@@ -1,6 +1,7 @@
 package nova.backend.domain.stampBook.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.stamp.repository.StampRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -110,33 +112,32 @@ public class StampBookService {
     }
 
     @Transactional
-    public int useRewardsByQrCode(String qrCodeValue, int count) {
-        User user = userRepository.findByQrCodeValue(qrCodeValue)
+    public int useRewardsByQrCodeForCafe(Long currentUserId, String qrCodeValue, int count) {
+        User staffUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        List<StampBook> usableStampBooks = stampBookRepository
-                .findByUser_UserIdAndIsCompletedTrueAndRewardClaimedTrueAndUsedFalse(user.getUserId());
+        Cafe cafe = staffUser.getCafe();
+        if (cafe == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND);
+        }
 
-        if (usableStampBooks.size() < count) {
+        User targetUser = userRepository.findByQrCodeValue(qrCodeValue)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        List<StampBook> targetStampBooks = stampBookRepository
+                .findByUser_UserIdAndCafe_CafeIdAndRewardClaimedTrueAndUsedFalseOrderByCreatedAtAsc(
+                        targetUser.getUserId(), cafe.getCafeId()
+                );
+
+        if (targetStampBooks.size() < count) {
             throw new BusinessException(ErrorCode.NOT_ENOUGH_REWARDS);
         }
 
-        // 모두 성공해야만 count 리턴
+        // 리워드 사용 요청한 스탬프북 개수(count)만 사용 처리
         for (int i = 0; i < count; i++) {
-            StampBook stampBook = usableStampBooks.get(i);
-
-            if (!stampBook.isCompleted()) {
-                throw new BusinessException(ErrorCode.STAMPBOOK_NOT_COMPLETED);
-            }
-            if (!stampBook.isRewardClaimed()) {
-                throw new BusinessException(ErrorCode.REWARD_NOT_CLAIMED);
-            }
-            if (stampBook.isUsed()) {
-                throw new BusinessException(ErrorCode.REWARD_ALREADY_USED);
-            }
-
-            stampBook.useReward();
+            targetStampBooks.get(i).useReward();
         }
+        stampBookRepository.saveAll(targetStampBooks.subList(0, count));
 
         return count;
     }

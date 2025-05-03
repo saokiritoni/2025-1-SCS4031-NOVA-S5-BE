@@ -18,14 +18,15 @@ public class CafeStampBookController {
 
     private final StampBookService stampBookService;
 
-    @PostMapping("/rewards/use")
-    public ResponseEntity<SuccessResponse<?>> useMultipleRewards(
-            @AuthenticationPrincipal CustomUserDetails staffDetails,
+    @PatchMapping("/rewards/use-by-qr")
+    public ResponseEntity<SuccessResponse<?>> useRewardsByQrCodeForCafe(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody UseRewardsRequestDTO request
     ) {
-        int usedCount = stampBookService.useRewardsByQrCode(request.qrCodeValue(), request.count());
-        return SuccessResponse.ok(usedCount + "개의 리워드를 사용 완료 처리했습니다.");
+        int updatedCount = stampBookService.useRewardsByQrCodeForCafe(
+                userDetails.getUserId(), request.qrCodeValue(), request.count()
+        );
+        return SuccessResponse.ok("사용 처리된 리워드 수: " + updatedCount);
     }
-
 
 }
