@@ -25,7 +25,7 @@ public class StaffStampController implements StaffStampApi {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody StampAccumulateRequestDTO request) {
 
-        stampService.accumulateStamp(userDetails.getUser(), request.targetQrCode(), request.cafeId(), request.count());
+        stampService.accumulateStamp(userDetails.getUser(), request.qrCodeValue(), request.cafeId(), request.count());
         return SuccessResponse.ok(null);
     }
 }
