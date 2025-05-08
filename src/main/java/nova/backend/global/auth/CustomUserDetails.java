@@ -17,13 +17,17 @@ public class CustomUserDetails implements UserDetails {
     private final String email;
     private final Role role;
     private final User user;
+    private final Long selectedCafeId;
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetails(User user, Long selectedCafeId) {
         this.user = user;
         this.userId = user.getUserId();
         this.email = user.getEmail();
         this.role = user.getRole();
+        this.selectedCafeId = selectedCafeId;
     }
+
+
 
 
     @Override
@@ -40,6 +44,8 @@ public class CustomUserDetails implements UserDetails {
     public String getUsername() {
         return email;
     }
+
+    public Long getSelectedCafeId() { return selectedCafeId; }
 
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
