@@ -82,9 +82,8 @@ public enum ErrorCode {
     REWARD_ALREADY_CLAIMED(HttpStatus.CONFLICT, "이미 리워드를 전환했습니다."),
     REWARD_NOT_CLAIMED(HttpStatus.BAD_REQUEST, "리워드가 아직 전환되지 않았습니다."),
     REWARD_ALREADY_USED(HttpStatus.CONFLICT, "이미 리워드를 사용했습니다."),
-    NOT_ENOUGH_REWARDS(HttpStatus.BAD_REQUEST, "사용 가능한 리워드가 부족합니다.");
-
-
+    NOT_ENOUGH_REWARDS(HttpStatus.BAD_REQUEST, "사용 가능한 리워드가 부족합니다."),
+    ALREADY_USED_STAMPBOOK(HttpStatus.BAD_REQUEST, "이미 사용된 스탬프북은 마이페이지에 추가할 수 없습니다.")
 
     ;
     private final HttpStatus httpStatus;

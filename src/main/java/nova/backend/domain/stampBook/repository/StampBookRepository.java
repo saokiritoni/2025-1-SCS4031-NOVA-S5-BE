@@ -17,7 +17,7 @@ public interface StampBookRepository extends JpaRepository<StampBook, Long> {
     List<StampBook> findByUser_UserIdAndCafe_CafeIdAndRewardClaimedTrueAndUsedFalseOrderByCreatedAtAsc(
             Long userId, Long cafeId
     );
-
-
+    List<StampBook> findByUser_UserIdAndInHomeTrueAndUsedFalse(Long userId);
+    List<StampBook> findByUser_UserIdAndUsedFalse(Long userId);
 
 }

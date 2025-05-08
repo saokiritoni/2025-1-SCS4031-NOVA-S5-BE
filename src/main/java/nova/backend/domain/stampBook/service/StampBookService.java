@@ -29,7 +29,7 @@ public class StampBookService {
     private final CafeRepository cafeRepository;
 
     public List<StampBookResponseDTO> getStampBooksForUser(Long userId) {
-        List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(userId);
+        List<StampBook> stampBooks = stampBookRepository.findByUser_UserIdAndUsedFalse(userId);
         return stampBooks.stream()
                 .map(stampBook -> {
                     int current = stampRepository.countByStampBook_StampBookId(stampBook.getStampBookId());
@@ -144,6 +144,47 @@ public class StampBookService {
         return count;
     }
 
+
+    @Transactional
+    public void addStampBookToHome(Long userId, Long stampBookId) {
+        StampBook stampBook = stampBookRepository.findById(stampBookId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        if (!stampBook.getUser().getUserId().equals(userId)) {
+            throw new BusinessException(ErrorCode.ACCESS_DENIED);
+        }
+
+        if (stampBook.isUsed()) {
+            throw new BusinessException(ErrorCode.ALREADY_USED_STAMPBOOK);
+        }
+
+        stampBook.toggleInHome(true);
+    }
+
+
+    @Transactional
+    public void removeStampBookFromHome(Long userId, Long stampBookId) {
+        StampBook stampBook = stampBookRepository.findById(stampBookId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        if (!stampBook.getUser().getUserId().equals(userId)) {
+            throw new BusinessException(ErrorCode.ACCESS_DENIED);
+        }
+
+        stampBook.toggleInHome(false);
+    }
+
+    // 메인페이지용 스탬프북 조회 (inhome)
+    @Transactional(readOnly = true)
+    public List<StampBookResponseDTO> getHomeStampBooksForUser(Long userId) {
+        List<StampBook> stampBooks = stampBookRepository.findByUser_UserIdAndInHomeTrueAndUsedFalse(userId);
+        return stampBooks.stream()
+                .map(stampBook -> {
+                    int current = stampRepository.countByStampBook_StampBookId(stampBook.getStampBookId());
+                    return StampBookResponseDTO.fromEntity(stampBook, current);
+                })
+                .toList();
+    }
 
 }
 

@@ -51,4 +51,33 @@ public class StampBookController implements StampBookApi{
         return SuccessResponse.ok("리워드 전환 완료: " + reward);
     }
 
+    // 마이페이지에 스탬프북 추가
+    @PostMapping("/{stampBookId}/home")
+    public ResponseEntity<SuccessResponse<?>> addStampBookToHome(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long stampBookId
+    ) {
+        stampBookService.addStampBookToHome(userDetails.getUserId(), stampBookId);
+        return SuccessResponse.ok("마이페이지에 추가되었습니다.");
+    }
+
+    // 마이페이지에서 스탬프북 제거
+    @DeleteMapping("/{stampBookId}/home")
+    public ResponseEntity<SuccessResponse<?>> removeStampBookFromHome(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long stampBookId
+    ) {
+        stampBookService.removeStampBookFromHome(userDetails.getUserId(), stampBookId);
+        return SuccessResponse.ok("마이페이지에서 제거되었습니다.");
+    }
+
+    // 메인페이지용 스탬프북 조회 (inhome)
+    @GetMapping("/my/home")
+    public ResponseEntity<SuccessResponse<?>> getMyHomeStampBooks(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        List<StampBookResponseDTO> response = stampBookService.getHomeStampBooksForUser(userDetails.getUserId());
+        return SuccessResponse.ok(response);
+    }
+
 }

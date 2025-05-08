@@ -20,6 +20,7 @@ public class StaffStampController implements StaffStampApi {
     private final StampService stampService;
 
     // QR 코드로 유저의 스탬프 적립
+    // TODO: 본인의 카페만 적립이 가능할지 여부 결정 필요
     @PostMapping
     public ResponseEntity<SuccessResponse<?>> accumulateStamp(
             @AuthenticationPrincipal CustomUserDetails userDetails,
