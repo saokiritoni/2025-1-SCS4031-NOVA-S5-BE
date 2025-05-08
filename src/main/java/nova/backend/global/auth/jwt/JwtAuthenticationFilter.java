@@ -7,10 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nova.backend.domain.user.entity.User;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.auth.CustomUserDetailsService;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.UnauthorizedException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -25,13 +27,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    // TODO: 로그 삭제하기
-
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
 
     private final JwtProvider jwtProvider;
     private final CustomUserDetailsService userDetailsService;
+    private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -50,14 +51,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final Long userId = jwtProvider.getSubject(accessToken);
             log.info("[JwtAuthFilter] 토큰에서 추출한 userId: {}", userId);
 
-            CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(userId.toString());
-            log.info("[JwtAuthFilter] 로드된 사용자 email={}, role={}, authorities={}",
-                    userDetails.getEmail(), userDetails.getRole(), userDetails.getAuthorities());
+            // User 엔티티 직접 조회
+            User user = userDetailsService.loadUserEntityById(userId);
+            log.info("[JwtAuthFilter] 로드된 사용자 email={}, role={}", user.getEmail(), user.getRole());
+
+            // Redis에서 selectedCafeId 조회
+            String redisKey = "selectedCafe:" + userId;
+            String cafeIdStr = redisTemplate.opsForValue().get(redisKey);
+            Long selectedCafeId = cafeIdStr != null ? Long.valueOf(cafeIdStr) : null;
+            log.info("[JwtAuthFilter] Redis에서 가져온 selectedCafeId: {}", selectedCafeId);
+
+            // CustomUserDetails에 selectedCafeId 포함
+            CustomUserDetails userDetails = new CustomUserDetails(user, selectedCafeId);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities()
             );
-
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -106,3 +115,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 path.startsWith("/v3/api-docs");
     }
 }
+
