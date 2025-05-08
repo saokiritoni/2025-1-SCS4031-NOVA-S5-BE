@@ -3,11 +3,10 @@ package nova.backend.domain.cafe.service;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
-import nova.backend.domain.cafe.entity.Cafe;
-import nova.backend.domain.cafe.entity.CafeOpenHour;
-import nova.backend.domain.cafe.entity.CafeRegistrationStatus;
-import nova.backend.domain.cafe.entity.CafeSpecialDay;
+import nova.backend.domain.cafe.entity.*;
 import nova.backend.domain.cafe.repository.CafeRepository;
+import nova.backend.domain.cafe.repository.CafeStaffRepository;
+import nova.backend.domain.user.entity.Role;
 import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
 import nova.backend.global.error.ErrorCode;
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
 public class CafeService {
     private final CafeRepository cafeRepository;
     private final UserRepository userRepository;
+    private final CafeStaffRepository cafeStaffRepository;
 
     public List<CafeListResponseDTO> getAllCafes() {
         return cafeRepository.findAll().stream()
@@ -59,6 +59,16 @@ public class CafeService {
                 .owner(owner)
                 .build();
 
-        return cafeRepository.save(cafe);
+        Cafe savedCafe = cafeRepository.save(cafe);
+        CafeStaff cafeStaff = CafeStaff.builder()
+                .cafe(savedCafe)
+                .user(owner)
+                .role(Role.OWNER)
+                .build();
+
+        cafeStaffRepository.save(cafeStaff);
+
+        return savedCafe;
     }
+
 }
