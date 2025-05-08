@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.repository.CafeRepository;
+import nova.backend.domain.stamp.dto.response.RecentStampResponseDTO;
+import nova.backend.domain.stamp.dto.response.StaffStampViewResponseDTO;
 import nova.backend.domain.stamp.dto.response.StampHistoryResponseDTO;
 import nova.backend.domain.stamp.entity.Stamp;
 import nova.backend.domain.stamp.repository.StampRepository;
@@ -77,24 +79,45 @@ public class StampService {
     public List<StampHistoryResponseDTO> getStampHistory(Long userId) {
         List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(userId);
 
-        return stampBooks.stream().map(stampBook -> {
-            List<LocalDateTime> stampDates = stampRepository.findByStampBook_StampBookId(stampBook.getStampBookId())
-                    .stream()
-                    .map(Stamp::getCreatedAt)
-                    .toList();
-
-            return StampHistoryResponseDTO.builder()
-                    .stampBookId(stampBook.getStampBookId())
-                    .cafeName(stampBook.getCafe().getCafeName())
-                    .stampDates(stampDates)
-                    .stampCount(stampDates.size())
-                    .maxStampCount(stampBook.getCafe().getMaxStampCount())
-                    .isCompleted(stampBook.isCompleted())
-                    .completedAt(stampBook.isCompleted() ? stampBook.getUpdatedAt() : null)
-                    .rewardClaimed(stampBook.isRewardClaimed())
-                    .rewardClaimedAt(stampBook.isRewardClaimed() ? stampBook.getUpdatedAt() : null)
-                    .build();
-        }).toList();
+        return stampBooks.stream()
+                .map(stampBook -> {
+                    List<Stamp> stamps = stampRepository.findByStampBook_StampBookId(stampBook.getStampBookId());
+                    return StampHistoryResponseDTO.fromEntity(stampBook, stamps);
+                })
+                .toList();
     }
+
+
+//    @Transactional(readOnly = true)
+//    public StaffStampViewResponseDTO getStampHistoryForStaffView(Long targetUserId, Long staffUserId) {
+//        User staffUser = userRepository.findById(staffUserId)
+//                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+//
+//        if (!(staffUser.getRole() == Role.OWNER || staffUser.getRole() == Role.STAFF)) {
+//            throw new BusinessException(ErrorCode.FORBIDDEN);
+//        }
+//
+//        Cafe staffCafe = staffUser.getCafe();
+//        if (staffCafe == null) {
+//            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND);
+//        }
+//
+//        // 1️⃣ 고객 이력
+//        List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(targetUserId);
+//        List<StampHistoryResponseDTO> history = stampBooks.stream()
+//                .map(stampBook -> {
+//                    List<Stamp> stamps = stampRepository.findByStampBook_StampBookId(stampBook.getStampBookId());
+//                    return StampHistoryResponseDTO.fromEntity(stampBook, stamps);
+//                })
+//                .toList();
+//
+//        // 2️⃣ 최근 적립 3개
+//        List<Stamp> recentStamps = stampRepository.findTop3ByStampBook_Cafe_CafeIdOrderByCreatedAtDesc(staffCafe.getCafeId());
+//        List<RecentStampResponseDTO> recentStampDtos = recentStamps.stream()
+//                .map(RecentStampResponseDTO::fromEntity)
+//                .toList();
+//
+//        return new StaffStampViewResponseDTO(history, recentStampDtos);
+//    }
 
 }

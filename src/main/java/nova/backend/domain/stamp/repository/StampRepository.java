@@ -9,5 +9,6 @@ public interface StampRepository extends JpaRepository<Stamp, Long> {
 
     int countByStampBook_StampBookId(Long stampBookId);
     List<Stamp> findByStampBook_StampBookId(Long stampBookId);
+    List<Stamp> findTop3ByStampBook_Cafe_CafeIdOrderByCreatedAtDesc(Long cafeId);
 
 }
