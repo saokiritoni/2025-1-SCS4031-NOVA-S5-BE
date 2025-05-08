@@ -2,11 +2,13 @@ package nova.backend.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import nova.backend.domain.cafe.entity.CafeStaff;
 import nova.backend.domain.stampBook.entity.StampBook;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.global.common.BaseTimeEntity;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -60,4 +62,8 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user")
     private List<StampBook> stampBooks;
+
+    @OneToMany(mappedBy = "user")
+    private List<CafeStaff> cafeRoles = new ArrayList<>();
+
 }

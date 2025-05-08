@@ -70,4 +70,8 @@ public class Cafe {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    @OneToMany(mappedBy = "cafe")
+    private List<CafeStaff> staffList = new ArrayList<>();
+
+
 }

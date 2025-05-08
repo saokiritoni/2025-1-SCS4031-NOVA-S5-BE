@@ -1,8 +1,8 @@
 package nova.backend.domain.stamp.dto.request;
 
 public record StampAccumulateRequestDTO(
-        Long cafeId,
-        int count,
-        String qrCodeValue
+        String qrCodeValue,
+        int count
 ) {}
+
 

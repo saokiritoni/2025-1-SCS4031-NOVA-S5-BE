@@ -7,6 +7,7 @@ import nova.backend.global.auth.jwt.JwtProvider;
 import nova.backend.global.config.CorsConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -25,6 +26,7 @@ public class SecurityConfig {
     private final CorsConfig corsConfig;
     private final JwtProvider jwtProvider;
     private final CustomUserDetailsService customUserDetailsService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     private static final String[] whiteList = {
             "/", "/swagger/**", "/swagger-ui/**", "/v3/api-docs/**",
@@ -53,7 +55,7 @@ public class SecurityConfig {
                 )
                 .addFilter(corsConfig.corsFilter())
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtProvider, customUserDetailsService),
+                        new JwtAuthenticationFilter(jwtProvider, customUserDetailsService, redisTemplate),
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthenticationFilter.class)

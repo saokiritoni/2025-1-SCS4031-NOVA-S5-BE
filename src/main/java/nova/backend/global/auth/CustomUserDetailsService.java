@@ -16,10 +16,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    /**
-     * Spring Security에서 사용자를 로드하는 메소드
-     * JWT의 subject를 userId로 간주하고, 이를 기반으로 유저 정보를 조회
-     */
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         Long id;
@@ -32,6 +28,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UnauthorizedException(ErrorCode.USER_NOT_FOUND));
 
-        return new CustomUserDetails(user);
+        // ✅ 여기서는 selectedCafeId 없이 반환 (filter에서 Redis로 주입할 예정)
+        return new CustomUserDetails(user, null);
+    }
+
+    /**
+     * JwtAuthenticationFilter에서 user 엔티티를 직접 가져올 때 사용
+     */
+    public User loadUserEntityById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UnauthorizedException(ErrorCode.USER_NOT_FOUND));
     }
 }
+
