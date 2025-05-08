@@ -15,6 +15,7 @@ import nova.backend.domain.stampBook.service.StampBookService;
 import nova.backend.domain.user.entity.Role;
 import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
+import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
 import org.springframework.stereotype.Service;
@@ -35,25 +36,29 @@ public class StampService {
     private final CafeRepository cafeRepository;
     private final StampBookService stampBookService;
 
-    // TODO: 로그 메시지 삭제
+    public void accumulateStamp(CustomUserDetails userDetails, String targetQrCode, int count) {
+        log.info("[스탬프 적립 시작] staff={}, qrCodeValue={}, selectedCafeId={}, count={}",
+                userDetails.getEmail(), targetQrCode, userDetails.getSelectedCafeId(), count);
 
-    public void accumulateStamp(User staff, String targetQrCode, Long cafeId, int count) {
-        log.info("[스탬프 적립 시작] staff={}, qrCodeValue={}, cafeId={}, count={}",
-                staff.getEmail(), targetQrCode, cafeId, count);
-
-        // 1. 권한 체크
-        if (!(staff.getRole() == Role.OWNER || staff.getRole() == Role.STAFF)) {
+        // 권한 체크
+        if (!(userDetails.getRole() == Role.OWNER || userDetails.getRole() == Role.STAFF)) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
 
-        // 2. 대상 사용자 & 카페 조회
+        // 선택된 카페 확인
+        Long selectedCafeId = userDetails.getSelectedCafeId();
+        if (selectedCafeId == null) {
+            throw new BusinessException(ErrorCode.CAFE_NOT_SELECTED);
+        }
+
+        Cafe cafe = cafeRepository.findById(selectedCafeId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        // 대상 사용자 조회
         User targetUser = userRepository.findByQrCodeValue(targetQrCode)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        Cafe cafe = cafeRepository.findById(cafeId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
-
-        // 3. 스탬프 적립
+        // 스탬프 적립
         int stampsToAdd = count;
         while (stampsToAdd > 0) {
             StampBook currentBook = stampBookService.getOrCreateValidStampBook(targetUser, cafe);
@@ -63,16 +68,22 @@ public class StampService {
             int space = max - currentCount;
 
             int toAddNow = Math.min(space, stampsToAdd);
-            // 스탬프북이 꽉 찬 상태에서 추가 요청할 경우 처리
-            if (toAddNow <= 0) { throw new BusinessException(ErrorCode.BAD_REQUEST); }
-            for (int i = 0; i < toAddNow; i++) { stampRepository.save(Stamp.builder().stampBook(currentBook).build()); }
-            if (currentCount + toAddNow == max) { currentBook.markAsCompleted(); }
+            if (toAddNow <= 0) {
+                throw new BusinessException(ErrorCode.BAD_REQUEST);
+            }
+            for (int i = 0; i < toAddNow; i++) {
+                stampRepository.save(Stamp.builder().stampBook(currentBook).build());
+            }
+            if (currentCount + toAddNow == max) {
+                currentBook.markAsCompleted();
+            }
             stampsToAdd -= toAddNow;
         }
 
         log.info("[스탬프 적립 종료] staff={}, targetUser={}, cafeId={}, count={}",
-                staff.getEmail(), targetUser.getEmail(), cafeId, count);
+                userDetails.getEmail(), targetUser.getEmail(), selectedCafeId, count);
     }
+
 
 
 
@@ -88,36 +99,42 @@ public class StampService {
     }
 
 
-//    @Transactional(readOnly = true)
-//    public StaffStampViewResponseDTO getStampHistoryForStaffView(Long targetUserId, Long staffUserId) {
-//        User staffUser = userRepository.findById(staffUserId)
-//                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-//
-//        if (!(staffUser.getRole() == Role.OWNER || staffUser.getRole() == Role.STAFF)) {
-//            throw new BusinessException(ErrorCode.FORBIDDEN);
-//        }
-//
-//        Cafe staffCafe = staffUser.getCafe();
-//        if (staffCafe == null) {
-//            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND);
-//        }
-//
-//        // 1️⃣ 고객 이력
-//        List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(targetUserId);
-//        List<StampHistoryResponseDTO> history = stampBooks.stream()
-//                .map(stampBook -> {
-//                    List<Stamp> stamps = stampRepository.findByStampBook_StampBookId(stampBook.getStampBookId());
-//                    return StampHistoryResponseDTO.fromEntity(stampBook, stamps);
-//                })
-//                .toList();
-//
-//        // 2️⃣ 최근 적립 3개
-//        List<Stamp> recentStamps = stampRepository.findTop3ByStampBook_Cafe_CafeIdOrderByCreatedAtDesc(staffCafe.getCafeId());
-//        List<RecentStampResponseDTO> recentStampDtos = recentStamps.stream()
-//                .map(RecentStampResponseDTO::fromEntity)
-//                .toList();
-//
-//        return new StaffStampViewResponseDTO(history, recentStampDtos);
-//    }
+    @Transactional(readOnly = true)
+    public StaffStampViewResponseDTO getStampHistoryForStaffView(String qrCodeValue, CustomUserDetails userDetails) {
+        // role 확인
+        if (!(userDetails.getRole() == Role.OWNER || userDetails.getRole() == Role.STAFF)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+
+        // 선택된 카페 ID 가져오기
+        Long selectedCafeId = userDetails.getSelectedCafeId();
+        if (selectedCafeId == null) {
+            throw new BusinessException(ErrorCode.CAFE_NOT_SELECTED);
+        }
+
+        Cafe staffCafe = cafeRepository.findById(selectedCafeId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        // targetUser 찾기
+        User targetUser = userRepository.findByQrCodeValue(qrCodeValue)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        // 고객 이력
+        List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(targetUser.getUserId());
+        List<StampHistoryResponseDTO> history = stampBooks.stream()
+                .map(stampBook -> {
+                    List<Stamp> stamps = stampRepository.findByStampBook_StampBookId(stampBook.getStampBookId());
+                    return StampHistoryResponseDTO.fromEntity(stampBook, stamps);
+                })
+                .toList();
+
+        // 최근 적립 3개 (선택된 카페 기준)
+        List<Stamp> recentStamps = stampRepository.findTop3ByStampBook_Cafe_CafeIdOrderByCreatedAtDesc(selectedCafeId);
+        List<RecentStampResponseDTO> recentStampDtos = recentStamps.stream()
+                .map(RecentStampResponseDTO::fromEntity)
+                .toList();
+
+        return new StaffStampViewResponseDTO(history, recentStampDtos);
+    }
 
 }
