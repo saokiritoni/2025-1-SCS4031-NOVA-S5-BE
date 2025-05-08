@@ -154,8 +154,13 @@ public class StampBookService {
             throw new BusinessException(ErrorCode.ACCESS_DENIED);
         }
 
+        if (stampBook.isUsed()) {
+            throw new BusinessException(ErrorCode.ALREADY_USED_STAMPBOOK);
+        }
+
         stampBook.toggleInHome(true);
     }
+
 
     @Transactional
     public void removeStampBookFromHome(Long userId, Long stampBookId) {
