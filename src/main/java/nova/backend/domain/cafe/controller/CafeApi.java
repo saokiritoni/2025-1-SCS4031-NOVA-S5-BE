@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import nova.backend.domain.cafe.schema.CafeListSuccessResponse;
 import nova.backend.global.common.SuccessResponse;
@@ -18,14 +19,14 @@ public interface CafeApi {
             "\n 2. 요일별 isOpen: 카페에서 설정한 요일별 오픈 여부입니다." +
             "\n * Special Days: 카페에서 지정한 임시 휴일/공휴일입니다. specialDays의 isOpen값이 일반 운영시간보다 우선순위를 가집니다." +
             "\n * Special Days를 월별로만 가져오는 추가 처리가 필요할 것 같습니다. 현재는 전체 specialDay를 가져옵니다.")
-    @ApiResponse(
-            responseCode = "200",
-            description = "카페 목록 조회 성공",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = CafeListSuccessResponse.class)
-            )
-    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "카페 목록 조회 성공",
+                    content = @Content(schema = @Schema(implementation = CafeListSuccessResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = nova.backend.global.error.dto.ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 에러",
+                    content = @Content(schema = @Schema(implementation = nova.backend.global.error.dto.ErrorResponse.class)))
+    })
     @GetMapping
     ResponseEntity<SuccessResponse<?>> getCafeList();
 }

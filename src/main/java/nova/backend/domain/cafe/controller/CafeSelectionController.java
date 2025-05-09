@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cafes")
-public class CafeSelectionController {
+public class CafeSelectionController implements CafeSelectionApi{
     private final CafeSelectionService cafeSelectionService;
 
     @PostMapping("/{cafeId}/select")

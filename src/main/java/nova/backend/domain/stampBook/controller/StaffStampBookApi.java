@@ -6,11 +6,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import nova.backend.domain.stampBook.dto.request.UseRewardsRequestDTO;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
+import nova.backend.global.error.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,26 +22,25 @@ public interface StaffStampBookApi {
 
     @Operation(
             summary = "QR 코드로 리워드 사용 처리",
-            description = "카페 사장/직원이 대상 유저의 Profile QR 코드(UUID)를 사용하여, 사용 가능한 리워드를 지정된 개수를 count에 담아 사용 처리합니다.\n" +
-                    "사용 가능한 리워드 개수를 초과했을 경우 예외를 던집니다.\n"+
-                    "주의할 점은 카페 아이디가 필요합니다. 사장이 여러 개의 카페를 가질 수 있어서, 처음에는 jwt에서 카페 정보를 가져왔지만 그렇게 할 수 없어졌습니다! 참고바랍니다.\n" +
-                    "이 부분에 대한 처리를 어떻게 할 지 약간의 논의와 고민이 필요합니다.",
+            description = "카페 사장/직원이 대상 유저의 QR 코드(UUID)를 사용하여 리워드를 사용 처리합니다.\n" +
+                    "요청 수량보다 보유 리워드가 적으면 400 예외 발생.",
             security = @SecurityRequirement(name = "token")
     )
-    @RequestBody(
-            description = "QR 코드 값, 카페 ID, 사용 요청 리워드 개수를 포함한 요청 DTO",
-            required = true,
-            content = @Content(schema = @Schema(implementation = UseRewardsRequestDTO.class))
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "리워드 사용 처리 성공",
-            content = @Content(schema = @Schema(implementation = SuccessResponse.class))
-    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "리워드 사용 처리 성공",
+                    content = @Content(schema = @Schema(implementation = SuccessResponse.class))),
+            @ApiResponse(responseCode = "400", description = "사용 가능한 리워드 부족 (NOT_ENOUGH_REWARDS)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "권한 부족",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "대상 사용자 또는 카페를 찾을 수 없음, cafeSelection을 했는지 먼저 확인해주세요.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @PatchMapping("/rewards/use-by-qr")
     ResponseEntity<SuccessResponse<?>> useRewardsByQrCodeForCafe(
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
-            @org.springframework.web.bind.annotation.RequestBody UseRewardsRequestDTO request
+            @RequestBody UseRewardsRequestDTO request
     );
-
 }
