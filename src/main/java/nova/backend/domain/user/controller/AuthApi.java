@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "인증 API", description = "인증 관련 API")
+@Tag(name = "1. 인증", description = "인증 관련 API")
 public interface AuthApi {
 
     @Operation(summary = "임시 토큰 발급",

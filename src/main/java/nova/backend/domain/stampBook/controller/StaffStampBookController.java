@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/cafe/stampbooks")
+@RequestMapping("/api/staff/stampbooks")
 public class StaffStampBookController implements StaffStampBookApi {
 
     private final StampBookService stampBookService;
 
-    @PatchMapping("/rewards/use-by-qr")
+    @PatchMapping("/rewards")
     public ResponseEntity<SuccessResponse<?>> useRewardsByQrCodeForCafe(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody UseRewardsRequestDTO request

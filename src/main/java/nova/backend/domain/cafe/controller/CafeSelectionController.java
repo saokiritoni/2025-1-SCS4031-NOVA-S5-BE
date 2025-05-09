@@ -6,24 +6,21 @@ import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/cafes")
+@RequestMapping("/api/staff/cafes")
 public class CafeSelectionController implements CafeSelectionApi{
     private final CafeSelectionService cafeSelectionService;
 
-    @PostMapping("/{cafeId}/select")
+    @PutMapping("/{cafeId}/selected")
     public ResponseEntity<SuccessResponse<?>> selectCafe(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long cafeId
     ) {
         cafeSelectionService.selectCafe(userDetails.getUserId(), cafeId);
-        return SuccessResponse.ok("매장 선택 완료");
+        return SuccessResponse.ok("선택된 카페 설정 완료");
     }
 
 }

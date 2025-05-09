@@ -16,11 +16,9 @@ import nova.backend.global.common.SuccessResponse;
 import nova.backend.global.error.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "스탬프북 API", description = "스탬프북 관련 API, 스탬프는 단일 스탬프지만 스탬프북은 한 장을 관리합니다.")
+@Tag(name = "2. 유저(USER) 스탬프북", description = "스탬프북 관련 API, 스탬프는 단일 스탬프지만 스탬프북은 한 장을 관리합니다.")
 public interface StampBookApi {
 
     @Operation(
@@ -61,5 +59,81 @@ public interface StampBookApi {
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody StampBookCreateRequestDTO request
     );
-}
 
+    @Operation(
+            summary = "스탬프북 리워드 전환",
+            description = "스탬프북을 리워드로 전환합니다.\n전환 조건이 충족되지 않으면 예외 발생.",
+            security = @SecurityRequirement(name = "token")
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "리워드 전환 성공",
+                    content = @Content(schema = @Schema(implementation = SuccessResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 (예: 미완료 스탬프북)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "스탬프북을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/{stampBookId}/reward")
+    ResponseEntity<SuccessResponse<?>> convertToReward(
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long stampBookId
+    );
+
+    @Operation(
+            summary = "스탬프북을 메인페이지에 추가",
+            description = "선택한 스탬프북을 메인페이지에 표시되도록 추가합니다.",
+            security = @SecurityRequirement(name = "token")
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "메인페이지 추가 성공",
+                    content = @Content(schema = @Schema(implementation = SuccessResponse.class))),
+            @ApiResponse(responseCode = "404", description = "스탬프북을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/{stampBookId}/home")
+    ResponseEntity<SuccessResponse<?>> addStampBookToHome(
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long stampBookId
+    );
+
+    @Operation(
+            summary = "스탬프북을 메인페이지에서 제거",
+            description = "선택한 스탬프북을 메인페이지에서 제거합니다.",
+            security = @SecurityRequirement(name = "token")
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "메인페이지 제거 성공",
+                    content = @Content(schema = @Schema(implementation = SuccessResponse.class))),
+            @ApiResponse(responseCode = "404", description = "스탬프북을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @DeleteMapping("/{stampBookId}/home")
+    ResponseEntity<SuccessResponse<?>> removeStampBookFromHome(
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long stampBookId
+    );
+
+    @Operation(
+            summary = "메인페이지용 스탬프북 목록 조회 (inHome=true)",
+            description = "메인페이지에 표시되는 스탬프북 목록만 조회합니다.",
+            security = @SecurityRequirement(name = "token")
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "메인페이지 스탬프북 조회 성공",
+                    content = @Content(schema = @Schema(implementation = StampBookListSuccessResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "권한 부족",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/my/home")
+    ResponseEntity<SuccessResponse<?>> getMyHomeStampBooks(
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
+    );
+}

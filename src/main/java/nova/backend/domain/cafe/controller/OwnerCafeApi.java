@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@Tag(name = "카페(OWNER) API", description = "카페 등록 API")
+@Tag(name = "4. 사장(OWNER) API", description = "카페 등록/관리 API")
 public interface OwnerCafeApi {
 
     @Operation(
