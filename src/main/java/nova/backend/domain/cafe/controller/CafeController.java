@@ -21,17 +21,17 @@ public class CafeController implements CafeApi {
     private final CafeService cafeService;
 
     @GetMapping
-    public ResponseEntity<SuccessResponse<?>> getCafeList() {
-        List<CafeListResponseDTO> response = cafeService.getAllCafes();
+    public ResponseEntity<SuccessResponse<?>> getCafeList(
+            @RequestParam(required = false) Boolean approved
+    ) {
+        List<CafeListResponseDTO> response;
+        if (approved != null && approved) {
+            response = cafeService.getApprovedCafes();
+        } else {
+            response = cafeService.getAllCafes();
+        }
         return SuccessResponse.ok(response);
     }
-
-    @GetMapping("/approved")
-    public ResponseEntity<SuccessResponse<?>> getApprovedCafeList() {
-        List<CafeListResponseDTO> response = cafeService.getApprovedCafes();
-        return SuccessResponse.ok(response);
-    }
-
 
 }
 

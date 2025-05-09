@@ -51,7 +51,7 @@ public class StampBookController implements StampBookApi{
         return SuccessResponse.ok("리워드 전환 완료: " + reward);
     }
 
-    // 마이페이지에 스탬프북 추가
+    // 메인페이지에 스탬프북 추가
     @PostMapping("/{stampBookId}/home")
     public ResponseEntity<SuccessResponse<?>> addStampBookToHome(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -61,7 +61,7 @@ public class StampBookController implements StampBookApi{
         return SuccessResponse.ok("마이페이지에 추가되었습니다.");
     }
 
-    // 마이페이지에서 스탬프북 제거
+    // 메인페이지에서 스탬프북 제거
     @DeleteMapping("/{stampBookId}/home")
     public ResponseEntity<SuccessResponse<?>> removeStampBookFromHome(
             @AuthenticationPrincipal CustomUserDetails userDetails,

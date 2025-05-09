@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Tag(name = "일반 회원 API", description = "일반 회원 관련 API")
+@Tag(name = "1. 유저", description = "일반 회원 관련 API")
 public interface UserApi {
 
     @Operation(

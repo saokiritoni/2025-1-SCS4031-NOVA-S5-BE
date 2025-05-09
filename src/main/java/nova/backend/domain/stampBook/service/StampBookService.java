@@ -112,20 +112,21 @@ public class StampBookService {
     }
 
     @Transactional
-    public int useRewardsByQrCodeForCafe(Long currentUserId, Long cafeId, String qrCodeValue, int count) {
-        // 현재 로그인한 사용자 조회 (owner 또는 staff)
+    public int useRewardsByQrCodeForCafe(Long currentUserId, Long selectedCafeId, String qrCodeValue, int count) {
+
+        if (selectedCafeId == null) {
+            throw new BusinessException(ErrorCode.CAFE_NOT_SELECTED);
+        }
+
         User staffUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        // cafeId로 카페 조회
-        Cafe cafe = cafeRepository.findById(cafeId)
+        Cafe cafe = cafeRepository.findById(selectedCafeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
-        // QR 코드로 대상 사용자 조회 (스탬프 적립 주인)
         User targetUser = userRepository.findByQrCodeValue(qrCodeValue)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        // 대상 사용자의 사용 가능한 리워드 스탬프북 리스트
         List<StampBook> targetStampBooks = stampBookRepository
                 .findByUser_UserIdAndCafe_CafeIdAndRewardClaimedTrueAndUsedFalseOrderByCreatedAtAsc(
                         targetUser.getUserId(), cafe.getCafeId()
@@ -135,7 +136,6 @@ public class StampBookService {
             throw new BusinessException(ErrorCode.NOT_ENOUGH_REWARDS);
         }
 
-        // count만큼 사용 처리
         for (int i = 0; i < count; i++) {
             targetStampBooks.get(i).useReward();
         }

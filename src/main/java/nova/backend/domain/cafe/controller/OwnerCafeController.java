@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/cafe")
+@RequestMapping("/api/owner/cafes")
 public class OwnerCafeController implements OwnerCafeApi{
 
     private final CafeService cafeService;
