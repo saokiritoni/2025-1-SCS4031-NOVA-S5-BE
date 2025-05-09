@@ -5,6 +5,8 @@ import nova.backend.domain.stampBook.dto.request.UseRewardsRequestDTO;
 import nova.backend.domain.stampBook.service.StampBookService;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
+import nova.backend.global.error.ErrorCode;
+import nova.backend.global.error.exception.BusinessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ public class StaffStampBookController implements StaffStampBookApi {
             @RequestBody UseRewardsRequestDTO request
     ) {
         int updatedCount = stampBookService.useRewardsByQrCodeForCafe(
-                userDetails.getUserId(), request.cafeId(), request.qrCodeValue(), request.count()
+                userDetails.getUserId(), userDetails.getSelectedCafeId(), request.qrCodeValue(), request.count()
         );
         return SuccessResponse.ok("사용 처리된 리워드 수: " + updatedCount);
     }
