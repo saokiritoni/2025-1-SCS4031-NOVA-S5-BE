@@ -1,13 +1,17 @@
 package nova.backend.domain.cafe.service;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
 import nova.backend.domain.cafe.entity.Cafe;
+import nova.backend.domain.cafe.entity.CafeStaff;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.cafe.repository.CafeStaffRepository;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,15 @@ public class CafeSelectionService {
 
         redisTemplate.opsForValue().set("selectedCafe:" + userId, cafeId.toString());
     }
+
+    public List<CafeListResponseDTO> getMyCafes(Long userId) {
+        return cafeStaffRepository.findByUser_UserId(userId).stream()
+                .map(CafeStaff::getCafe)
+                .map(CafeListResponseDTO::fromEntity)
+                .toList();
+    }
+
+
 
 }
 
