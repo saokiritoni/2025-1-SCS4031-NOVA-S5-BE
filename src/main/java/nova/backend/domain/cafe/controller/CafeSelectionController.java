@@ -2,6 +2,7 @@ package nova.backend.domain.cafe.controller;
 
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
+import nova.backend.domain.cafe.dto.response.CafeSelectedResponseDTO;
 import nova.backend.domain.cafe.service.CafeSelectionService;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
@@ -39,9 +40,10 @@ public class CafeSelectionController implements CafeSelectionApi{
     public ResponseEntity<SuccessResponse<?>> getSelectedCafe(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        CafeListResponseDTO response = cafeSelectionService.getSelectedCafe(userDetails.getSelectedCafeId());
+        CafeSelectedResponseDTO response = cafeSelectionService.getSelectedCafe(userDetails.getSelectedCafeId());
         return SuccessResponse.ok(response);
     }
+
 
 }
 

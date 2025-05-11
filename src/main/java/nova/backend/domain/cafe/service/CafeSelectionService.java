@@ -2,6 +2,7 @@ package nova.backend.domain.cafe.service;
 
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
+import nova.backend.domain.cafe.dto.response.CafeSelectedResponseDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.CafeStaff;
 import nova.backend.domain.cafe.repository.CafeRepository;
@@ -43,11 +44,12 @@ public class CafeSelectionService {
                 .toList();
     }
 
-    public CafeListResponseDTO getSelectedCafe(Long selectedCafeId) {
+    public CafeSelectedResponseDTO getSelectedCafe(Long selectedCafeId) {
         Cafe cafe = cafeRepository.findById(selectedCafeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
-        return CafeListResponseDTO.fromEntity(cafe);
+        return CafeSelectedResponseDTO.fromEntity(cafe);
     }
+
 
 
 }
