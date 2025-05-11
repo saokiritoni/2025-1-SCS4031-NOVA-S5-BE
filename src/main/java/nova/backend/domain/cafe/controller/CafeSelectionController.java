@@ -34,5 +34,14 @@ public class CafeSelectionController implements CafeSelectionApi{
         return SuccessResponse.ok(response);
     }
 
+
+    @GetMapping("/selected")
+    public ResponseEntity<SuccessResponse<?>> getSelectedCafe(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        CafeListResponseDTO response = cafeSelectionService.getSelectedCafe(userDetails.getSelectedCafeId());
+        return SuccessResponse.ok(response);
+    }
+
 }
 

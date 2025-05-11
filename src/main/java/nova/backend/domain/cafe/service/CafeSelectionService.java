@@ -43,6 +43,11 @@ public class CafeSelectionService {
                 .toList();
     }
 
+    public CafeListResponseDTO getSelectedCafe(Long selectedCafeId) {
+        Cafe cafe = cafeRepository.findById(selectedCafeId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+        return CafeListResponseDTO.fromEntity(cafe);
+    }
 
 
 }
