@@ -13,6 +13,7 @@ import nova.backend.global.common.SuccessResponse;
 import nova.backend.global.error.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -43,6 +44,30 @@ public interface CafeSelectionApi {
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
             @Parameter(description = "선택할 카페 ID", example = "1") @PathVariable Long cafeId
     );
+
+    @Operation(
+            summary = "내가 소속된 카페 목록 조회",
+            description = "현재 로그인한 사용자가 staff/owner로 소속된 카페 목록을 조회합니다." +
+                    "cafeId를 가지고 카페 selection 요청을 해야하니, 필요한 부분만 골라서 쓰시면 됩니다.",
+            security = @SecurityRequirement(name = "token")
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "카페 목록 조회 성공",
+                    content = @Content(schema = @Schema(implementation = nova.backend.domain.cafe.schema.MyCafeListSuccessResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @GetMapping("/my")
+    ResponseEntity<SuccessResponse<?>> getMyCafes(
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
+    );
+
 }
 
 

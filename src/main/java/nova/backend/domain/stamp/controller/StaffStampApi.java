@@ -24,7 +24,6 @@ public interface StaffStampApi {
             summary = "스탬프 적립",
             description = """
                     카페 사장/직원이 Profile QR 코드(UUID)를 사용하여 해당 유저에게 스탬프를 적립합니다.
-                    
                     ✅ cafeId는 SecurityContextHolder에 저장된 selectedCafeId로 처리됩니다.
                     ✅ staff/owner 권한이 없거나 카페 선택 안했으면 403 또는 404 예외 발생
                     """,
@@ -75,7 +74,7 @@ public interface StaffStampApi {
     @ApiResponse(
             responseCode = "200",
             description = "스탬프 현황 조회 성공",
-            content = @Content(schema = @Schema(implementation = nova.backend.global.common.SuccessResponse.class))
+            content = @Content(schema = @Schema(implementation = nova.backend.domain.stamp.schema.StampHistoryListSuccessResponse.class))
     )
     @ApiResponse(
             responseCode = "403",
