@@ -13,4 +13,5 @@ public interface StampRepository extends JpaRepository<Stamp, Long> {
     @EntityGraph(attributePaths = {"stampBook", "stampBook.cafe"})
     List<Stamp> findTop3ByStampBook_Cafe_CafeIdOrderByCreatedAtDesc(Long cafeId);
 
+
 }

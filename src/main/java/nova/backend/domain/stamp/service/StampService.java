@@ -101,12 +101,11 @@ public class StampService {
 
     @Transactional(readOnly = true)
     public StaffStampViewResponseDTO getStampHistoryForStaffView(String qrCodeValue, CustomUserDetails userDetails) {
-        // role 확인
+        // 권한 체크
         if (!(userDetails.getRole() == Role.OWNER || userDetails.getRole() == Role.STAFF)) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
 
-        // 선택된 카페 ID 가져오기
         Long selectedCafeId = userDetails.getSelectedCafeId();
         if (selectedCafeId == null) {
             throw new BusinessException(ErrorCode.CAFE_NOT_SELECTED);
@@ -115,26 +114,29 @@ public class StampService {
         Cafe staffCafe = cafeRepository.findById(selectedCafeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
-        // targetUser 찾기
         User targetUser = userRepository.findByQrCodeValue(qrCodeValue)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        // 고객 이력
         List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(targetUser.getUserId());
         List<StampHistoryResponseDTO> history = stampBooks.stream()
-                .map(stampBook -> {
-                    List<Stamp> stamps = stampRepository.findByStampBook_StampBookId(stampBook.getStampBookId());
-                    return StampHistoryResponseDTO.fromEntity(stampBook, stamps);
+                .map(sb -> {
+                    List<Stamp> stamps = stampRepository.findByStampBook_StampBookId(sb.getStampBookId());
+                    return StampHistoryResponseDTO.fromEntity(sb, stamps);
                 })
                 .toList();
 
-        // 최근 적립 3개 (선택된 카페 기준)
         List<Stamp> recentStamps = stampRepository.findTop3ByStampBook_Cafe_CafeIdOrderByCreatedAtDesc(selectedCafeId);
         List<RecentStampResponseDTO> recentStampDtos = recentStamps.stream()
                 .map(RecentStampResponseDTO::fromEntity)
                 .toList();
 
-        return new StaffStampViewResponseDTO(history, recentStampDtos);
+        int rewardCount = stampBookRepository
+                .countByUser_UserIdAndCafe_CafeIdAndRewardClaimedTrueAndUsedFalse(
+                        targetUser.getUserId(), selectedCafeId);
+
+
+        return StaffStampViewResponseDTO.from(targetUser, staffCafe, rewardCount, history, recentStampDtos);
     }
+
 
 }
