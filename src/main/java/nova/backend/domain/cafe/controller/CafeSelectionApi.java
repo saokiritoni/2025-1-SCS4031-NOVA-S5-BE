@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import nova.backend.domain.cafe.schema.CafeSelectedSuccessResponse;
 import nova.backend.domain.cafe.schema.MyCafeListSuccessResponse;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
@@ -72,6 +73,39 @@ public interface CafeSelectionApi {
     ResponseEntity<SuccessResponse<?>> getMyCafes(
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
     );
+
+    @Operation(
+            summary = "현재 선택된 카페 상세 정보 조회",
+            description = """
+                현재 JWT 또는 인증 객체에 설정된 `selectedCafeId`를 기반으로
+                해당 카페의 상세 정보를 반환합니다.
+
+                ✅ 등록 상태, 영업 시간, 특별 운영일 등을 함께 포함합니다.
+                """,
+            security = @SecurityRequirement(name = "token")
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "선택된 카페 정보 조회 성공",
+                    content = @Content(schema = @Schema(implementation = CafeSelectedSuccessResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "선택된 카페 ID에 해당하는 카페가 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @GetMapping("/selected")
+    ResponseEntity<SuccessResponse<?>> getSelectedCafe(
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
+    );
+
 
 
 }
