@@ -48,57 +48,25 @@
 # 🗝️Environment
 
 **Client**
-https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
-    
+![Image](https://github.com/user-attachments/assets/b0b504ea-a78c-418e-a2be-44a5d23cc196)
+![Image](https://github.com/user-attachments/assets/9fa9a60e-04fc-4e83-959f-4fc2257bd6c4)    
 
 **Server**
-
-- Spring Boot
-    
-    https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white
-    
-- Java
-    
-    https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white
+![Image](https://github.com/user-attachments/assets/e8504387-ec61-4fa1-8de1-6bc2b8083d65)    
+![Image](https://github.com/user-attachments/assets/7416567d-f3a4-4b83-ac3e-5c04561a1c20)
     
 
 **DevOps & Cloud**
-
-- AWS EC2
+![Image](https://github.com/user-attachments/assets/fe8f6fe1-c7d1-403d-839f-e5afd50cbdb7)
+![Image](https://github.com/user-attachments/assets/2c505082-ddf8-4dbd-ad28-a8ddb8d662f5)
+![Image](https://github.com/user-attachments/assets/55579f06-406f-45bd-bcca-ed74861e27c7)
+![Image](https://github.com/user-attachments/assets/effada4f-ff90-4def-9b11-a2531a7fb86e)
+![Image](https://github.com/user-attachments/assets/a50c3a53-35ac-4d41-be4f-f4accfdbb6e2)
     
-    https://img.shields.io/badge/Amazon_AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white
-    
-- RDS(MySQL)
-    
-    https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white
-    
-- Github actions
-    
-    https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white
-    
-- Docker
-    
-    https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
-    
-- Vercel
-    
-    https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white
-    
-
-ETC
-
-- Discord
-    
-    https://camo.githubusercontent.com/466cd9b81abcedb1db7d8f6fcd75148b6728e1eb8e443ab320928e924b93a4e0/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f446973636f72642d3732383944413f7374796c653d666f722d7468652d6261646765266c6f676f3d646973636f7264266c6f676f436f6c6f723d7768697465
-    
-- Figma
-    
-    https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white
-    
-- Notion
-    
-    https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white
+**Tools**
+![Image](https://github.com/user-attachments/assets/6a934e6f-2455-4fef-9762-4adef1b3fae7)
+![Image](https://github.com/user-attachments/assets/dc8dbd95-a30e-4838-ae84-57bc946aadb9)
+![Image](https://github.com/user-attachments/assets/55f5d93d-ce7c-4fb3-bd67-b441974e06cf)
     
 
 # ⚙️Structure
