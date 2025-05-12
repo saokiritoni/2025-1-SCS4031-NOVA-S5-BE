@@ -1,4 +1,4 @@
-name: 🌱Ecok CI/CD pipeline on develop environment🌱
+name: Ecok CI/CD pipeline on develop environment
 
 on:
   push:
@@ -45,15 +45,6 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/nova-dev:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/nova-dev:latest
         docker logout
-
-    - name: 🔒 Check if key is loaded
-      run: |
-          if [ -z "${{ secrets.DEV_EC2_PRIVATE_KEY }}" ]; then
-            echo "❌ SSH key is NOT loaded properly"
-            exit 1
-          else
-            echo "✅ SSH key looks loaded (non-empty)"
-          fi
 
 
     - name: Deploy to EC2
