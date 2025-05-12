@@ -26,6 +26,9 @@ public class CorsConfig implements WebMvcConfigurer {
     @Value("${deployment.backend.production}")
     private String backendProduction;
 
+    @Value("${deployment.backend.test}")
+    private String backendTest;
+
 
     @Bean
     public CorsFilter corsFilter() {
@@ -39,7 +42,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 frontendProduction,
                 frontendWwwProduction,
                 frontendLocal,
-                backendProduction
+                backendProduction,
+                backendTest
         );
         config.setAllowedOrigins(allowedOrigins);
 
