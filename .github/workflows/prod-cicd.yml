@@ -1,4 +1,4 @@
-name: 🌱Ecok CI/CD pipeline on production environment🌱
+name: Ecok CI/CD pipeline on production environment
 
 on:
   push:
