@@ -1,6 +1,5 @@
 # ☕카페 스탬프 모바일 적립 솔루션, Ecok에콕
-
-![image.png](attachment:4a3720a3-8a20-4bb9-8c47-462a6ec841a1:image.png)
+![Image](https://github.com/user-attachments/assets/47d69f06-6742-4f72-98f9-d2ee4286bbbf)
 
 # 👩‍👩‍👧‍👧Introduce Team
 
@@ -28,35 +27,29 @@
 
 - 따라서 **모바일 스탬프 적립 솔루션 서비스 Ecok**을 통해 다음과 같이 문제를 해결합니다.
 
-![image.png](attachment:7a95e7a4-9eac-432d-8319-2bb09f806a41:image.png)
+![Image](https://github.com/user-attachments/assets/4d292c7e-012a-41d2-a21f-7790cf304242)
 
 # 🐑Product
 
 ## 1. 모바일 스탬프 적립 기능
 
-![image.png](attachment:d8f44fa4-999b-4cd2-9184-83fbabea32e1:image.png)
+![Image](https://github.com/user-attachments/assets/79d8f765-38fa-4be3-afd8-1a1c5306089e)
 
-![image.png](attachment:684b1fb3-aeb4-437a-a948-b516c73f1069:image.png)
+![Image](https://github.com/user-attachments/assets/de0a0dc5-9203-45d3-bfa5-0a5f51a14ddd)
 
 ## 2. 스탬프북 커스텀 디자인 기능
 
-![image.png](attachment:0f251141-02ae-4701-ba7f-cadb32285af9:image.png)
+![Image](https://github.com/user-attachments/assets/77c9aa16-accc-4072-a44d-2564953ac1eb)
 
 ## 3. 친환경 챌린지 기능
 
-![image.png](attachment:d081d1a3-d928-4a8a-8007-2b14f22d33da:image.png)
+![Image](https://github.com/user-attachments/assets/3ffdbf62-f875-44e9-b1d0-10cbe386fc73)
 
 # 🗝️Environment
 
 **Client**
-
-- React Native
-    
-    https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-    
-- Tailwind
-    
-    https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
+https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
     
 
 **Server**
