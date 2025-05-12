@@ -46,7 +46,13 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/nova-dev:latest
         docker logout
 
+    - name: 🔍 Print debug info
+      run: |
+          echo "KEY length: ${# secrets.DEV_EC2_PRIVATE_KEY }"
+            echo "HOST: ${{ secrets.DEV_EC2_HOST }}"
+
     - name: Deploy to EC2
+  
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.DEV_EC2_HOST }}
