@@ -48,25 +48,19 @@
 # 🗝️Environment
 
 **Client**
-![Image](https://github.com/user-attachments/assets/b0b504ea-a78c-418e-a2be-44a5d23cc196)
-![Image](https://github.com/user-attachments/assets/9fa9a60e-04fc-4e83-959f-4fc2257bd6c4)    
+![Image](https://github.com/user-attachments/assets/b0b504ea-a78c-418e-a2be-44a5d23cc196)    ![Image](https://github.com/user-attachments/assets/9fa9a60e-04fc-4e83-959f-4fc2257bd6c4)    
 
 **Server**
-![Image](https://github.com/user-attachments/assets/e8504387-ec61-4fa1-8de1-6bc2b8083d65)    
-![Image](https://github.com/user-attachments/assets/7416567d-f3a4-4b83-ac3e-5c04561a1c20)
+![Image](https://github.com/user-attachments/assets/e8504387-ec61-4fa1-8de1-6bc2b8083d65)    ![Image](https://github.com/user-attachments/assets/7416567d-f3a4-4b83-ac3e-5c04561a1c20)
     
 
 **DevOps & Cloud**
-![Image](https://github.com/user-attachments/assets/fe8f6fe1-c7d1-403d-839f-e5afd50cbdb7)
-![Image](https://github.com/user-attachments/assets/2c505082-ddf8-4dbd-ad28-a8ddb8d662f5)
-![Image](https://github.com/user-attachments/assets/55579f06-406f-45bd-bcca-ed74861e27c7)
-![Image](https://github.com/user-attachments/assets/effada4f-ff90-4def-9b11-a2531a7fb86e)
+![Image](https://github.com/user-attachments/assets/fe8f6fe1-c7d1-403d-839f-e5afd50cbdb7)    ![Image](https://github.com/user-attachments/assets/2c505082-ddf8-4dbd-ad28-a8ddb8d662f5)
+![Image](https://github.com/user-attachments/assets/55579f06-406f-45bd-bcca-ed74861e27c7)    ![Image](https://github.com/user-attachments/assets/effada4f-ff90-4def-9b11-a2531a7fb86e)
 ![Image](https://github.com/user-attachments/assets/a50c3a53-35ac-4d41-be4f-f4accfdbb6e2)
     
 **Tools**
-![Image](https://github.com/user-attachments/assets/6a934e6f-2455-4fef-9762-4adef1b3fae7)
-![Image](https://github.com/user-attachments/assets/dc8dbd95-a30e-4838-ae84-57bc946aadb9)
-![Image](https://github.com/user-attachments/assets/55f5d93d-ce7c-4fb3-bd67-b441974e06cf)
+![Image](https://github.com/user-attachments/assets/6a934e6f-2455-4fef-9762-4adef1b3fae7)    ![Image](https://github.com/user-attachments/assets/dc8dbd95-a30e-4838-ae84-57bc946aadb9)    ![Image](https://github.com/user-attachments/assets/55f5d93d-ce7c-4fb3-bd67-b441974e06cf)
     
 
 # ⚙️Structure
