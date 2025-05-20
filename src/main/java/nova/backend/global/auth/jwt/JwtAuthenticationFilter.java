@@ -113,7 +113,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return skipPaths.stream().anyMatch(path::startsWith);
+
+        // 인증 생략 필요한 정확한 경로
+        return path.equals("/api/cafes/") || path.equals("/api/cafes/popular");
     }
+
 }
 

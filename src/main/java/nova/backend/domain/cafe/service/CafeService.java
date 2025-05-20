@@ -3,6 +3,7 @@ package nova.backend.domain.cafe.service;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
+import nova.backend.domain.cafe.dto.response.CafeWithDownloadCountDTO;
 import nova.backend.domain.cafe.entity.*;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.cafe.repository.CafeStaffRepository;
@@ -11,6 +12,7 @@ import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -125,15 +127,12 @@ public class CafeService {
     }
 
     public List<CafeListResponseDTO> getTop10CafesByStampBookDownload() {
-        List<Object[]> result = cafeRepository.findTop10CafesByStampBookCountNative();
+        List<CafeWithDownloadCountDTO> results = cafeRepository.findTop10CafesByStampBookCount(PageRequest.of(0, 10));
 
-        return result.stream()
-                .map(row -> {
-                    Cafe cafe = (Cafe) row[0];
-                    int downloadCount = ((Number) row[1]).intValue();
-                    return CafeListResponseDTO.fromEntityWithDownloadCount(cafe, downloadCount);
-                })
+        return results.stream()
+                .map(dto -> CafeListResponseDTO.fromEntityWithDownloadCount(dto.cafe(), dto.downloadCount().intValue()))
                 .toList();
     }
+
 
 }

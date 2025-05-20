@@ -33,14 +33,13 @@ public class UserService {
                     .socialId(socialId)
                     .socialType(userLoginRequest.socialType())
                     .profileImageUrl(imageUrl)
-                    .role(Role.USER)
+                    .role(userLoginRequest.role())
                     .name(kakaoName)
                     .qrCodeValue(qrCode)
                     .email(null)
                     .build();
 
             return userRepository.save(newUser);
-
         }
 
         if (existedUser.getQrCodeValue() == null) {
@@ -49,6 +48,7 @@ public class UserService {
 
         return existedUser;
     }
+
 
     // 내 profile QR 조회
     public QrCodeResponseDTO getMyQrCode(Long userId) {
