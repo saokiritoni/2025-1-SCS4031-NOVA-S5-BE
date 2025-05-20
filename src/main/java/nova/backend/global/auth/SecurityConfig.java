@@ -30,7 +30,7 @@ public class SecurityConfig {
 
     private static final String[] whiteList = {
             "/", "/swagger/**", "/swagger-ui/**", "/v3/api-docs/**",
-            "/api/auth/**", "/auth/callback/**"
+            "/api/auth/**", "/auth/callback/**", "/api/cafes/**"
     };
 
     @Bean
@@ -49,8 +49,8 @@ public class SecurityConfig {
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(config -> config.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/owner").hasAnyAuthority("ROLE_OWNER")
-                        .requestMatchers("/api/staff").hasAnyAuthority("ROLE_OWNER", "ROLE_STAFF")
+                        .requestMatchers("/api/owner/**").hasAnyAuthority("ROLE_OWNER")
+                        .requestMatchers("/api/staff/**").hasAnyAuthority("ROLE_OWNER", "ROLE_STAFF")
                         .requestMatchers(whiteList).permitAll()
                         .anyRequest().authenticated()
                 )

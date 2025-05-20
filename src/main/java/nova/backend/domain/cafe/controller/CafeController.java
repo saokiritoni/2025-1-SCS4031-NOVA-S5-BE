@@ -33,6 +33,12 @@ public class CafeController implements CafeApi {
         return SuccessResponse.ok(response);
     }
 
+    @GetMapping("/popular")
+    public ResponseEntity<SuccessResponse<?>> getPopularCafes() {
+        List<CafeListResponseDTO> response = cafeService.getTop10CafesByStampBookDownload();
+        return SuccessResponse.ok(response);
+    }
+
 }
 
 

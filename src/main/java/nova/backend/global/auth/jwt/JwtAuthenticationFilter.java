@@ -21,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -34,6 +35,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userDetailsService;
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final List<String> skipPaths = List.of(
+            "/", "/swagger-ui", "/v3/api-docs", "/api/auth", "/auth/callback", "/api/cafes"
+    );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -106,14 +111,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.equals("/api/auth/login") ||
-                path.equals("/api/auth/reissue") ||
-                path.startsWith("/api/auth/token") ||
-                path.startsWith("/swagger-ui") ||
-                path.startsWith("/v3/api-docs") ||
-                path.equals(("/"));
+
+        // 인증 생략 필요한 정확한 경로
+        return path.equals("/api/cafes/") || path.equals("/api/cafes/popular");
     }
+
 }
 
