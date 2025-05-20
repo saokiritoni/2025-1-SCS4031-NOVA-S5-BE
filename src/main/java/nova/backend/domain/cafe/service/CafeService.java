@@ -47,22 +47,8 @@ public class CafeService {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        Cafe cafe = Cafe.builder()
-                .cafeName(request.cafeName())
-                .branchName(request.branchName())
-                .ownerName(request.ownerName())
-                .ownerPhone(request.ownerPhone())
-                .businessNumber(request.businessNumber())
-                .latitude(request.latitude())
-                .longitude(request.longitude())
-                .maxStampCount(request.maxStampCount())
-                .characterType(request.characterType())
-                .rewardDescription(request.rewardDescription())
-                .registrationStatus(CafeRegistrationStatus.REQUESTED)
-                .owner(owner)
-                .build();
+        Cafe savedCafe = cafeRepository.save(request.toEntity(owner)); // 깔끔하게!
 
-        Cafe savedCafe = cafeRepository.save(cafe);
         CafeStaff cafeStaff = CafeStaff.builder()
                 .cafe(savedCafe)
                 .user(owner)
@@ -74,59 +60,6 @@ public class CafeService {
         return savedCafe;
     }
 
-    public static CafeListResponseDTO fromEntityWithDownloadCount(Cafe cafe, Integer downloadCount) {
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now();
-        DayOfWeek dow = today.getDayOfWeek();
-
-        Optional<Boolean> isOpenSpecial = cafe.getSpecialDays().stream()
-                .filter(d -> d.getSpecialDate().equals(today))
-                .map(sp -> sp.isOpen()
-                        && !now.isBefore(sp.getOpenTime())
-                        && !now.isAfter(sp.getCloseTime()))
-                .findFirst();
-
-        boolean isOpenNow = isOpenSpecial.orElseGet(() ->
-                cafe.getOpenHours().stream()
-                        .filter(h -> h.getDayOfWeek() == dow && h.isOpen())
-                        .anyMatch(h -> !now.isBefore(h.getOpenTime()) && !now.isAfter(h.getCloseTime()))
-        );
-
-        List<CafeListResponseDTO.CafeOpenHourDTO> ohDtos = cafe.getOpenHours().stream()
-                .map(h -> new CafeListResponseDTO.CafeOpenHourDTO(
-                        h.getDayOfWeek(),
-                        h.isOpen(),
-                        h.getOpenTime(),
-                        h.getCloseTime(),
-                        h.getLastOrder()
-                ))
-                .collect(Collectors.toList());
-
-        List<CafeListResponseDTO.CafeSpecialDayDTO> sdDtos = cafe.getSpecialDays().stream()
-                .map(d -> new CafeListResponseDTO.CafeSpecialDayDTO(
-                        d.getSpecialDate(),
-                        d.isOpen(),
-                        d.getOpenTime(),
-                        d.getCloseTime(),
-                        d.getLastOrder(),
-                        d.getNote()
-                ))
-                .collect(Collectors.toList());
-
-        return new CafeListResponseDTO(
-                cafe.getCafeId(),
-                cafe.getCafeName(),
-                cafe.getLatitude(),
-                cafe.getLongitude(),
-                cafe.getCafePhone(),
-                cafe.getMaxStampCount(),
-                isOpenNow,
-                ohDtos,
-                sdDtos,
-                downloadCount != null ? downloadCount : 0
-        );
-    }
-
     public List<PopularCafeResponseDTO> getTop10CafesByStampBookDownload() {
         List<CafeWithDownloadCountDTO> results = cafeRepository.findTop10CafesByStampBookCount(PageRequest.of(0, 10));
 
@@ -134,8 +67,5 @@ public class CafeService {
                 .map(PopularCafeResponseDTO::from)
                 .toList();
     }
-
-
-
 
 }
