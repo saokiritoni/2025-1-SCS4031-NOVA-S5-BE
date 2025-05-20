@@ -49,8 +49,8 @@ public class SecurityConfig {
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(config -> config.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/owner").hasAnyAuthority("ROLE_OWNER")
-                        .requestMatchers("/api/staff").hasAnyAuthority("ROLE_OWNER", "ROLE_STAFF")
+                        .requestMatchers("/api/owner/**").hasAnyAuthority("ROLE_OWNER")
+                        .requestMatchers("/api/staff/**").hasAnyAuthority("ROLE_OWNER", "ROLE_STAFF")
                         .requestMatchers(whiteList).permitAll()
                         .anyRequest().authenticated()
                 )
