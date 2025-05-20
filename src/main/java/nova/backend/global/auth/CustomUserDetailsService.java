@@ -28,7 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UnauthorizedException(ErrorCode.USER_NOT_FOUND));
 
-        // ✅ 여기서는 selectedCafeId 없이 반환 (filter에서 Redis로 주입할 예정)
         return new CustomUserDetails(user, null);
     }
 

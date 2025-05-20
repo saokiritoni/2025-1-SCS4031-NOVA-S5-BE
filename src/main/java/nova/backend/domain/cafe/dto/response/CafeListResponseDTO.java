@@ -22,15 +22,22 @@ public record CafeListResponseDTO(
         Integer maxStampCount,
         boolean isOpenNow,
         List<CafeOpenHourDTO> openHours,
-        List<CafeSpecialDayDTO> specialDays
+        List<CafeSpecialDayDTO> specialDays,
+        Integer downloadCount
 ) {
 
+    // 기존 사용: downloadCount 없이 기본값 0으로 설정
     public static CafeListResponseDTO fromEntity(Cafe cafe) {
+        return fromEntityWithDownloadCount(cafe, 0);
+    }
+
+    // 다운로드 수가 명시적으로 주어지는 경우 사용
+    public static CafeListResponseDTO fromEntityWithDownloadCount(Cafe cafe, Integer downloadCount) {
         LocalDate today = LocalDate.now();
         LocalTime now = LocalTime.now();
         DayOfWeek dow = today.getDayOfWeek();
 
-        // Special day check
+        // 특별 영업일 우선 확인
         Optional<Boolean> isOpenSpecial = cafe.getSpecialDays().stream()
                 .filter(d -> d.getSpecialDate().equals(today))
                 .map(sp -> sp.isOpen()
@@ -38,6 +45,7 @@ public record CafeListResponseDTO(
                         && !now.isAfter(sp.getCloseTime()))
                 .findFirst();
 
+        // 특별 영업일이 없을 경우 일반 요일 영업시간 체크
         boolean isOpenNow = isOpenSpecial.orElseGet(() ->
                 cafe.getOpenHours().stream()
                         .filter(h -> h.getDayOfWeek() == dow && h.isOpen())
@@ -74,10 +82,25 @@ public record CafeListResponseDTO(
                 cafe.getMaxStampCount(),
                 isOpenNow,
                 ohDtos,
-                sdDtos
+                sdDtos,
+                downloadCount != null ? downloadCount : 0
         );
     }
 
-    public record CafeOpenHourDTO(DayOfWeek dayOfWeek, boolean isOpen, LocalTime openTime, LocalTime closeTime, LocalTime lastOrder) {}
-    public record CafeSpecialDayDTO(LocalDate specialDate, boolean isOpen, LocalTime openTime, LocalTime closeTime, LocalTime lastOrder, String note) {}
+    public record CafeOpenHourDTO(
+            DayOfWeek dayOfWeek,
+            boolean isOpen,
+            LocalTime openTime,
+            LocalTime closeTime,
+            LocalTime lastOrder
+    ) {}
+
+    public record CafeSpecialDayDTO(
+            LocalDate specialDate,
+            boolean isOpen,
+            LocalTime openTime,
+            LocalTime closeTime,
+            LocalTime lastOrder,
+            String note
+    ) {}
 }
