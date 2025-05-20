@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -35,10 +36,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userDetailsService;
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    private static final List<String> skipPaths = List.of(
-            "/", "/swagger-ui", "/v3/api-docs", "/api/auth", "/auth/callback", "/api/cafes"
+    // 인증 생략 필요한 정확한 경로 지정
+    private static final List<String> exactSkipPaths = List.of(
+            "/",
+            "/swagger-ui",
+            "/v3/api-docs",
+            "/auth/callback",
+            "/api/auth/login"
     );
+
+    // 인증 생략 필요한 패턴 경로 지정
+    private static final List<String> patternSkipPaths = List.of(
+            "/api/cafes/**",
+            "/api/auth/token/**"
+    );
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -113,9 +128,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
+        log.info("[JwtAuthFilter] 현재 요청 URI = {}", path);
 
-        // 인증 생략 필요한 정확한 경로
-        return path.equals("/api/cafes/") || path.equals("/api/cafes/popular");
+        if (exactSkipPaths.contains(path)) {
+            return true;
+        }
+        
+        for (String pattern : patternSkipPaths) {
+            if (pathMatcher.match(pattern, path)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
