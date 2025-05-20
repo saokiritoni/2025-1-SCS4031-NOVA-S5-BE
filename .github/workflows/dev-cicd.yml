@@ -1,7 +1,8 @@
 name: Ecok CI/CD pipeline on develop environment
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches: [ "develop" ]
 
 jobs:
