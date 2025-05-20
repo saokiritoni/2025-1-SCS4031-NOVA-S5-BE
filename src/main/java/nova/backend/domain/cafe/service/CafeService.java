@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
 import nova.backend.domain.cafe.dto.response.CafeWithDownloadCountDTO;
+import nova.backend.domain.cafe.dto.response.PopularCafeResponseDTO;
 import nova.backend.domain.cafe.entity.*;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.cafe.repository.CafeStaffRepository;
@@ -126,13 +127,15 @@ public class CafeService {
         );
     }
 
-    public List<CafeListResponseDTO> getTop10CafesByStampBookDownload() {
+    public List<PopularCafeResponseDTO> getTop10CafesByStampBookDownload() {
         List<CafeWithDownloadCountDTO> results = cafeRepository.findTop10CafesByStampBookCount(PageRequest.of(0, 10));
 
         return results.stream()
-                .map(dto -> CafeListResponseDTO.fromEntityWithDownloadCount(dto.cafe(), dto.downloadCount().intValue()))
+                .map(PopularCafeResponseDTO::from)
                 .toList();
     }
+
+
 
 
 }
