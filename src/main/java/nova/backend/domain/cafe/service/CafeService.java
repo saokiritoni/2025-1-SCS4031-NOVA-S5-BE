@@ -71,4 +71,69 @@ public class CafeService {
         return savedCafe;
     }
 
+    public static CafeListResponseDTO fromEntityWithDownloadCount(Cafe cafe, Integer downloadCount) {
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+        DayOfWeek dow = today.getDayOfWeek();
+
+        Optional<Boolean> isOpenSpecial = cafe.getSpecialDays().stream()
+                .filter(d -> d.getSpecialDate().equals(today))
+                .map(sp -> sp.isOpen()
+                        && !now.isBefore(sp.getOpenTime())
+                        && !now.isAfter(sp.getCloseTime()))
+                .findFirst();
+
+        boolean isOpenNow = isOpenSpecial.orElseGet(() ->
+                cafe.getOpenHours().stream()
+                        .filter(h -> h.getDayOfWeek() == dow && h.isOpen())
+                        .anyMatch(h -> !now.isBefore(h.getOpenTime()) && !now.isAfter(h.getCloseTime()))
+        );
+
+        List<CafeListResponseDTO.CafeOpenHourDTO> ohDtos = cafe.getOpenHours().stream()
+                .map(h -> new CafeListResponseDTO.CafeOpenHourDTO(
+                        h.getDayOfWeek(),
+                        h.isOpen(),
+                        h.getOpenTime(),
+                        h.getCloseTime(),
+                        h.getLastOrder()
+                ))
+                .collect(Collectors.toList());
+
+        List<CafeListResponseDTO.CafeSpecialDayDTO> sdDtos = cafe.getSpecialDays().stream()
+                .map(d -> new CafeListResponseDTO.CafeSpecialDayDTO(
+                        d.getSpecialDate(),
+                        d.isOpen(),
+                        d.getOpenTime(),
+                        d.getCloseTime(),
+                        d.getLastOrder(),
+                        d.getNote()
+                ))
+                .collect(Collectors.toList());
+
+        return new CafeListResponseDTO(
+                cafe.getCafeId(),
+                cafe.getCafeName(),
+                cafe.getLatitude(),
+                cafe.getLongitude(),
+                cafe.getCafePhone(),
+                cafe.getMaxStampCount(),
+                isOpenNow,
+                ohDtos,
+                sdDtos,
+                downloadCount != null ? downloadCount : 0
+        );
+    }
+
+    public List<CafeListResponseDTO> getTop10CafesByStampBookDownload() {
+        List<Object[]> result = cafeRepository.findTop10CafesByStampBookCountNative();
+
+        return result.stream()
+                .map(row -> {
+                    Cafe cafe = (Cafe) row[0];
+                    int downloadCount = ((Number) row[1]).intValue();
+                    return CafeListResponseDTO.fromEntityWithDownloadCount(cafe, downloadCount);
+                })
+                .toList();
+    }
+
 }
