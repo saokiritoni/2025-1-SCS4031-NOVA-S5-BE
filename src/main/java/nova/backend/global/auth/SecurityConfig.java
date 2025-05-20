@@ -30,7 +30,7 @@ public class SecurityConfig {
 
     private static final String[] whiteList = {
             "/", "/swagger/**", "/swagger-ui/**", "/v3/api-docs/**",
-            "/api/auth/**", "/auth/callback/**"
+            "/api/auth/**", "/auth/callback/**", "/api/cafes/**"
     };
 
     @Bean
