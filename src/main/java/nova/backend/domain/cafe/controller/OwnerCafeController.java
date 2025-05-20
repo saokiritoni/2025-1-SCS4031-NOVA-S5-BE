@@ -8,25 +8,24 @@ import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/owner/cafes")
-public class OwnerCafeController implements OwnerCafeApi{
+public class OwnerCafeController implements OwnerCafeApi {
 
     private final CafeService cafeService;
 
     @PostMapping("/register")
     public ResponseEntity<SuccessResponse<?>> registerCafe(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody CafeRegistrationRequestDTO request
+            @ModelAttribute CafeRegistrationRequestDTO request,
+            @RequestPart MultipartFile businessRegistrationPdf
     ) {
         Long ownerId = userDetails.getUserId();
-        Cafe savedCafe = cafeService.registerCafe(ownerId, request);
+        Cafe savedCafe = cafeService.registerCafe(ownerId, request, businessRegistrationPdf);
         return SuccessResponse.ok(savedCafe.getCafeId());
     }
 
