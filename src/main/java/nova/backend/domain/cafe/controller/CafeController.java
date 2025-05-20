@@ -3,6 +3,7 @@ package nova.backend.domain.cafe.controller;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
+import nova.backend.domain.cafe.dto.response.PopularCafeResponseDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.service.CafeService;
 import nova.backend.global.auth.CustomUserDetails;
@@ -35,7 +36,7 @@ public class CafeController implements CafeApi {
 
     @GetMapping("/popular")
     public ResponseEntity<SuccessResponse<?>> getPopularCafes() {
-        List<CafeListResponseDTO> response = cafeService.getTop10CafesByStampBookDownload();
+        List<PopularCafeResponseDTO> response = cafeService.getTop10CafesByStampBookDownload();
         return SuccessResponse.ok(response);
     }
 
