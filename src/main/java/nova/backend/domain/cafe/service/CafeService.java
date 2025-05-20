@@ -13,9 +13,11 @@ import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
+import nova.backend.global.util.EmailService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.*;
 import java.util.List;
@@ -29,6 +31,7 @@ public class CafeService {
     private final CafeRepository cafeRepository;
     private final UserRepository userRepository;
     private final CafeStaffRepository cafeStaffRepository;
+    private final EmailService emailService;
 
     public List<CafeListResponseDTO> getAllCafes() {
         return cafeRepository.findAll().stream()
@@ -43,11 +46,11 @@ public class CafeService {
     }
 
     @Transactional
-    public Cafe registerCafe(Long ownerId, CafeRegistrationRequestDTO request) {
+    public Cafe registerCafe(Long ownerId, CafeRegistrationRequestDTO request, MultipartFile businessRegistrationPdf) {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        Cafe savedCafe = cafeRepository.save(request.toEntity(owner)); // 깔끔하게!
+        Cafe savedCafe = cafeRepository.save(request.toEntity(owner));
 
         CafeStaff cafeStaff = CafeStaff.builder()
                 .cafe(savedCafe)
@@ -56,9 +59,11 @@ public class CafeService {
                 .build();
 
         cafeStaffRepository.save(cafeStaff);
+        emailService.sendCafeRegistrationEmail(savedCafe, businessRegistrationPdf);
 
         return savedCafe;
     }
+
 
     public List<PopularCafeResponseDTO> getTop10CafesByStampBookDownload() {
         List<CafeWithDownloadCountDTO> results = cafeRepository.findTop10CafesByStampBookCount(PageRequest.of(0, 10));
