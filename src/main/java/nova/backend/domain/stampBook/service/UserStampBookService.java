@@ -1,7 +1,6 @@
 package nova.backend.domain.stampBook.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.stamp.repository.StampRepository;
@@ -17,11 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Slf4j
+import static nova.backend.global.error.ErrorCode.ACCESS_DENIED;
+import static nova.backend.global.error.ErrorCode.ENTITY_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class StampBookService {
+public class UserStampBookService {
 
     private final StampBookRepository stampBookRepository;
     private final StampRepository stampRepository;
@@ -112,40 +113,6 @@ public class StampBookService {
     }
 
     @Transactional
-    public int useRewardsByQrCodeForCafe(Long currentUserId, Long selectedCafeId, String qrCodeValue, int count) {
-
-        if (selectedCafeId == null) {
-            throw new BusinessException(ErrorCode.CAFE_NOT_SELECTED);
-        }
-
-        User staffUser = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
-        Cafe cafe = cafeRepository.findById(selectedCafeId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
-
-        User targetUser = userRepository.findByQrCodeValue(qrCodeValue)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
-        List<StampBook> targetStampBooks = stampBookRepository
-                .findByUser_UserIdAndCafe_CafeIdAndRewardClaimedTrueAndUsedFalseOrderByCreatedAtAsc(
-                        targetUser.getUserId(), cafe.getCafeId()
-                );
-
-        if (targetStampBooks.size() < count) {
-            throw new BusinessException(ErrorCode.NOT_ENOUGH_REWARDS);
-        }
-
-        for (int i = 0; i < count; i++) {
-            targetStampBooks.get(i).useReward();
-        }
-        stampBookRepository.saveAll(targetStampBooks.subList(0, count));
-
-        return count;
-    }
-
-
-    @Transactional
     public void addStampBookToHome(Long userId, Long stampBookId) {
         StampBook stampBook = stampBookRepository.findById(stampBookId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
@@ -186,6 +153,23 @@ public class StampBookService {
                 .toList();
     }
 
+    public List<StampBookResponseDTO> getMyStampBooks(Long userId) {
+        return stampBookRepository.findByUser_UserIdAndUsedFalse(userId).stream()
+                .map(stampBook -> {
+                    int current = stampRepository.countByStampBook_StampBookId(stampBook.getStampBookId());
+                    return StampBookResponseDTO.fromEntity(stampBook, current);
+                })
+                .toList();
+    }
+
+    public void saveStampBookToMyList(Long userId, Long stampBookId) {
+        StampBook stampBook = stampBookRepository.findById(stampBookId)
+                .orElseThrow(() -> new BusinessException(ENTITY_NOT_FOUND));
+
+        if (!stampBook.getUser().getUserId().equals(userId)) {
+            throw new BusinessException(ACCESS_DENIED);
+        }
+
+        stampBook.toggleInHome(true);
+    }
 }
-
-

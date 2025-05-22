@@ -3,7 +3,7 @@ package nova.backend.domain.stampBook.controller;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.stampBook.dto.request.StampBookCreateRequestDTO;
 import nova.backend.domain.stampBook.dto.response.StampBookResponseDTO;
-import nova.backend.domain.stampBook.service.StampBookService;
+import nova.backend.domain.stampBook.service.UserStampBookService;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/stampbooks")
 public class StampBookController implements StampBookApi{
 
-    private final StampBookService stampBookService;
+    private final UserStampBookService userStampBookService;
 
     // 유저의 모든 스탬프북 조회
     // TODO: 리워드 전환한 스탬프북 미조회 -> 리워드로만 넘기기
@@ -26,7 +26,7 @@ public class StampBookController implements StampBookApi{
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long userId = userDetails.getUserId();
-        List<StampBookResponseDTO> response = stampBookService.getStampBooksForUser(userId);
+        List<StampBookResponseDTO> response = userStampBookService.getStampBooksForUser(userId);
         return SuccessResponse.ok(response);
     }
 
@@ -37,7 +37,7 @@ public class StampBookController implements StampBookApi{
             @RequestBody StampBookCreateRequestDTO request
     ) {
         Long userId = userDetails.getUserId();
-        StampBookResponseDTO response = stampBookService.createStampBook(userId, request.cafeId());
+        StampBookResponseDTO response = userStampBookService.createStampBook(userId, request.cafeId());
         return SuccessResponse.created(response);
     }
 
@@ -47,7 +47,7 @@ public class StampBookController implements StampBookApi{
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long stampBookId
     ) {
-        String reward = stampBookService.convertStampBookToReward(userDetails.getUserId(), stampBookId);
+        String reward = userStampBookService.convertStampBookToReward(userDetails.getUserId(), stampBookId);
         return SuccessResponse.ok("리워드 전환 완료: " + reward);
     }
 
@@ -57,7 +57,7 @@ public class StampBookController implements StampBookApi{
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long stampBookId
     ) {
-        stampBookService.addStampBookToHome(userDetails.getUserId(), stampBookId);
+        userStampBookService.addStampBookToHome(userDetails.getUserId(), stampBookId);
         return SuccessResponse.ok("마이페이지에 추가되었습니다.");
     }
 
@@ -67,7 +67,7 @@ public class StampBookController implements StampBookApi{
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long stampBookId
     ) {
-        stampBookService.removeStampBookFromHome(userDetails.getUserId(), stampBookId);
+        userStampBookService.removeStampBookFromHome(userDetails.getUserId(), stampBookId);
         return SuccessResponse.ok("마이페이지에서 제거되었습니다.");
     }
 
@@ -76,7 +76,7 @@ public class StampBookController implements StampBookApi{
     public ResponseEntity<SuccessResponse<?>> getMyHomeStampBooks(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        List<StampBookResponseDTO> response = stampBookService.getHomeStampBooksForUser(userDetails.getUserId());
+        List<StampBookResponseDTO> response = userStampBookService.getHomeStampBooksForUser(userDetails.getUserId());
         return SuccessResponse.ok(response);
     }
 

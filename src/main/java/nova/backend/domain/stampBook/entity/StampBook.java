@@ -6,6 +6,9 @@ import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.CharacterType;
 import nova.backend.domain.user.entity.User;
 import nova.backend.global.common.BaseTimeEntity;
+import nova.backend.global.error.exception.BusinessException;
+
+import static nova.backend.global.error.ErrorCode.NOT_CUSTOMED;
 
 @Entity
 @Getter
@@ -29,7 +32,6 @@ public class StampBook extends BaseTimeEntity {
 
     @Column(nullable = false)
     private boolean used = false;
-
 
     public void markAsCompleted() {
         this.isCompleted = true;
@@ -69,7 +71,5 @@ public class StampBook extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cafe_id", nullable = false)
     private Cafe cafe;
-
-
 
 }
