@@ -25,6 +25,18 @@ public class StampBookDesign {
     @Column(nullable = false)
     private boolean exposed; // 현재 노출 중인지 여부
 
+    @Column(nullable = false)
+    private String stampBookName;
+
+    @Column(nullable = false)
+    private String cafeIntroduction;
+
+    @Column(nullable = false)
+    private String conceptIntroduction;
+
+    @Column(nullable = false)
+    private String rewardDescription;
+
     public void expose() { this.exposed = true; }
     public void unexpose() { this.exposed = false; }
     public boolean isExposed() { return this.exposed; }

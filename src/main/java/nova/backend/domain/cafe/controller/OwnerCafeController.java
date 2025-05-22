@@ -2,13 +2,14 @@ package nova.backend.domain.cafe.controller;
 
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
+import nova.backend.domain.cafe.dto.request.StampBookDesignCreateRequestDTO;
 import nova.backend.domain.cafe.dto.response.CafeDetailResponseDTO;
 import nova.backend.domain.cafe.dto.response.StampBookDesignResponseDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.StampBookDesign;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.cafe.service.OwnerCafeService;
-import nova.backend.domain.stampBook.dto.request.StampBookDesignUpdateRequestDTO;
+import nova.backend.domain.cafe.dto.request.StampBookDesignUpdateRequestDTO;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import nova.backend.global.error.exception.BusinessException;
@@ -45,10 +46,10 @@ public class OwnerCafeController implements OwnerCafeApi {
     @PostMapping("/stampbook-design")
     public ResponseEntity<SuccessResponse<?>> addStampBookDesign(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody StampBookDesignUpdateRequestDTO request
+            @RequestBody StampBookDesignCreateRequestDTO request
     ) {
         Long cafeId = userDetails.getSelectedCafeId();
-        ownerCafeService.addStampBookDesign(userDetails.getUserId(), cafeId, request.designJson());
+        ownerCafeService.addStampBookDesign(userDetails.getUserId(), cafeId, request);
         return SuccessResponse.ok("디자인이 추가되었습니다.");
     }
 

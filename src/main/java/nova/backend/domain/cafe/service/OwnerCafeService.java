@@ -2,6 +2,7 @@ package nova.backend.domain.cafe.service;
 
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
+import nova.backend.domain.cafe.dto.request.StampBookDesignCreateRequestDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.CafeStaff;
 import nova.backend.domain.cafe.entity.StampBookDesign;
@@ -54,15 +55,12 @@ public class OwnerCafeService {
     }
 
     @Transactional
-    public void addStampBookDesign(Long ownerId, Long cafeId, String designJson) {
+    public void addStampBookDesign(Long ownerId, Long cafeId, StampBookDesignCreateRequestDTO request) {
         Cafe cafe = getOwnedCafe(ownerId, cafeId);
-        StampBookDesign design = StampBookDesign.builder()
-                .cafe(cafe)
-                .designJson(designJson)
-                .exposed(false)
-                .build();
+        StampBookDesign design = request.toEntity(cafe);
         stampBookDesignRepository.save(design);
     }
+
 
     @Transactional
     public void setExposedStampBookDesign(Long ownerId, Long cafeId, Long designId) {

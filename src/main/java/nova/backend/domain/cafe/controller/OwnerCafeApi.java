@@ -10,10 +10,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
+import nova.backend.domain.cafe.dto.request.StampBookDesignCreateRequestDTO;
 import nova.backend.domain.cafe.dto.response.CafeDetailResponseDTO;
 import nova.backend.domain.cafe.dto.response.StampBookDesignResponseDTO;
 import nova.backend.domain.cafe.schema.CafeRegistrationMultipartSchema;
-import nova.backend.domain.stampBook.dto.request.StampBookDesignUpdateRequestDTO;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import nova.backend.global.error.dto.ErrorResponse;
@@ -56,7 +56,6 @@ public interface OwnerCafeApi {
             @RequestPart MultipartFile businessRegistrationPdf
     );
 
-
     @Operation(
             summary = "카페 상세 정보 조회",
             description = "선택된 카페의 전체 정보를 JWT에서 추출된 selectedCafeId를 통해 조회합니다.",
@@ -81,7 +80,7 @@ public interface OwnerCafeApi {
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = StampBookDesignUpdateRequestDTO.class)
+                            schema = @Schema(implementation = StampBookDesignCreateRequestDTO.class)
                     )
             )
     )
@@ -98,7 +97,7 @@ public interface OwnerCafeApi {
     @PostMapping("/stampbook-design")
     ResponseEntity<SuccessResponse<?>> addStampBookDesign(
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
-            @org.springframework.web.bind.annotation.RequestBody StampBookDesignUpdateRequestDTO request
+            @org.springframework.web.bind.annotation.RequestBody StampBookDesignCreateRequestDTO request
     );
 
     @Operation(
@@ -153,6 +152,7 @@ public interface OwnerCafeApi {
     ResponseEntity<SuccessResponse<?>> getExposedStampBookDesign(
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
     );
+
     @Operation(
             summary = "스탬프북 디자인 단건 조회",
             description = "디자인 ID를 통해 특정 스탬프북 디자인 정보를 조회합니다.",
@@ -169,7 +169,4 @@ public interface OwnerCafeApi {
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long designId
     );
-
-
-
 }

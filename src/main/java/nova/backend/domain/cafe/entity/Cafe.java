@@ -38,9 +38,6 @@ public class Cafe {
     private CharacterType characterType;
 
     @Column(nullable = false)
-    private String rewardDescription;  // e.g. 아메리카노 한 잔
-
-    @Column(nullable = false)
     private String branchName;
 
     @Column(nullable = false)
@@ -80,7 +77,8 @@ public class Cafe {
     }
 
     public String getStampBookDesignJson() {
-        return getExposedDesign() != null ? getExposedDesign().getDesignJson() : null;
+        StampBookDesign exposed = getExposedDesign();
+        return exposed != null ? exposed.getDesignJson() : null;
     }
 
     public StampBookDesign getExposedDesign() {
@@ -88,5 +86,25 @@ public class Cafe {
                 .filter(StampBookDesign::isExposed)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public String getRewardDescription() {
+        StampBookDesign exposed = getExposedDesign();
+        return exposed != null ? exposed.getRewardDescription() : null;
+    }
+
+    public String getStampBookName() {
+        StampBookDesign exposed = getExposedDesign();
+        return exposed != null ? exposed.getStampBookName() : null;
+    }
+
+    public String getCafeIntroduction() {
+        StampBookDesign exposed = getExposedDesign();
+        return exposed != null ? exposed.getCafeIntroduction() : null;
+    }
+
+    public String getConceptIntroduction() {
+        StampBookDesign exposed = getExposedDesign();
+        return exposed != null ? exposed.getConceptIntroduction() : null;
     }
 }
