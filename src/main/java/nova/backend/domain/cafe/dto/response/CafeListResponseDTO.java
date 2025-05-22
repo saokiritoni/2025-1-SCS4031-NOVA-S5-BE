@@ -2,8 +2,6 @@ package nova.backend.domain.cafe.dto.response;
 
 import lombok.Builder;
 import nova.backend.domain.cafe.entity.Cafe;
-import nova.backend.domain.cafe.entity.CafeOpenHour;
-import nova.backend.domain.cafe.entity.CafeSpecialDay;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
