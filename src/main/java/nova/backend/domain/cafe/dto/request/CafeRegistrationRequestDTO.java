@@ -31,7 +31,6 @@ public record CafeRegistrationRequestDTO(
                 .characterType(characterType)
                 .rewardDescription(rewardDescription)
                 .registrationStatus(CafeRegistrationStatus.REQUESTED)
-                .stampBookDesignJson(stampBookDesignJson)
                 .owner(owner)
                 .build();
     }
