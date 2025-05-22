@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.CafeStaff;
+import nova.backend.domain.cafe.entity.StampBookDesign;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.cafe.repository.CafeStaffRepository;
+import nova.backend.domain.cafe.repository.StampBookDesignRepository;
 import nova.backend.domain.user.entity.Role;
 import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
@@ -15,6 +17,8 @@ import nova.backend.global.util.EmailService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static nova.backend.global.error.ErrorCode.ACCESS_DENIED;
 import static nova.backend.global.error.ErrorCode.ENTITY_NOT_FOUND;
@@ -27,6 +31,7 @@ public class OwnerCafeService {
     private final CafeRepository cafeRepository;
     private final UserRepository userRepository;
     private final CafeStaffRepository cafeStaffRepository;
+    private final StampBookDesignRepository stampBookDesignRepository;
     private final EmailService emailService;
 
     @Transactional
@@ -49,16 +54,70 @@ public class OwnerCafeService {
     }
 
     @Transactional
-    public void updateStampBookDesign(Long ownerId, Long cafeId, String designJson) {
+    public void addStampBookDesign(Long ownerId, Long cafeId, String designJson) {
+        Cafe cafe = getOwnedCafe(ownerId, cafeId);
+        StampBookDesign design = StampBookDesign.builder()
+                .cafe(cafe)
+                .designJson(designJson)
+                .exposed(false)
+                .build();
+        stampBookDesignRepository.save(design);
+    }
+
+    @Transactional
+    public void setExposedStampBookDesign(Long ownerId, Long cafeId, Long designId) {
+        Cafe cafe = getOwnedCafe(ownerId, cafeId);
+
+        // 모든 기존 디자인 노출 비활성화
+        List<StampBookDesign> designs = cafe.getStampBookDesigns();
+        for (StampBookDesign design : designs) {
+            design.unexpose();
+        }
+
+        // 노출할 디자인만 true 설정
+        StampBookDesign designToExpose = designs.stream()
+                .filter(d -> d.getDesignId().equals(designId))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException(ENTITY_NOT_FOUND));
+
+        designToExpose.expose();
+    }
+
+    @Transactional(readOnly = true)
+    public StampBookDesign getExposedStampBookDesign(Long cafeId) {
+        Cafe cafe = cafeRepository.findById(cafeId)
+                .orElseThrow(() -> new BusinessException(ENTITY_NOT_FOUND));
+
+        return cafe.getStampBookDesigns().stream()
+                .filter(StampBookDesign::isExposed)
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StampBookDesign> getAllStampBookDesigns(Long ownerId, Long cafeId) {
+        Cafe cafe = getOwnedCafe(ownerId, cafeId);
+        return cafe.getStampBookDesigns();
+    }
+
+    private Cafe getOwnedCafe(Long ownerId, Long cafeId) {
         Cafe cafe = cafeRepository.findById(cafeId)
                 .orElseThrow(() -> new BusinessException(ENTITY_NOT_FOUND));
 
         if (!cafe.getOwner().getUserId().equals(ownerId)) {
             throw new BusinessException(ACCESS_DENIED);
         }
-
-        cafe.setStampBookDesignJson(designJson);
+        return cafe;
     }
 
+    @Transactional(readOnly = true)
+    public StampBookDesign getStampBookDesignById(Long ownerId, Long cafeId, Long designId) {
+        Cafe cafe = getOwnedCafe(ownerId, cafeId);
+
+        return cafe.getStampBookDesigns().stream()
+                .filter(d -> d.getDesignId().equals(designId))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException(ENTITY_NOT_FOUND));
+    }
 
 }
