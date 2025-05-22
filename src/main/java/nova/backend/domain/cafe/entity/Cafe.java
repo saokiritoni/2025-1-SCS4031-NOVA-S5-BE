@@ -56,14 +56,6 @@ public class Cafe {
     @Column(nullable = false)
     private CafeRegistrationStatus registrationStatus;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String stampBookDesignJson; // 스탬프북 커스텀 정보
-
-    public void setStampBookDesignJson(String json) { this.stampBookDesignJson = json; }
-
-    public boolean isCustomized() { return this.stampBookDesignJson != null; }
-
     @OneToMany(mappedBy = "cafe")
     private List<StampBook> stampBooks;
 
@@ -80,5 +72,21 @@ public class Cafe {
     @OneToMany(mappedBy = "cafe")
     private List<CafeStaff> staffList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StampBookDesign> stampBookDesigns = new ArrayList<>();
 
+    public boolean isCustomized() {
+        return getExposedDesign() != null;
+    }
+
+    public String getStampBookDesignJson() {
+        return getExposedDesign() != null ? getExposedDesign().getDesignJson() : null;
+    }
+
+    public StampBookDesign getExposedDesign() {
+        return stampBookDesigns.stream()
+                .filter(StampBookDesign::isExposed)
+                .findFirst()
+                .orElse(null);
+    }
 }
