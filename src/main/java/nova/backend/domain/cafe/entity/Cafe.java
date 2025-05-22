@@ -56,6 +56,13 @@ public class Cafe {
     @Column(nullable = false)
     private CafeRegistrationStatus registrationStatus;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String stampBookDesignJson; // 스탬프북 커스텀 정보
+
+    public void setStampBookDesignJson(String json) { this.stampBookDesignJson = json; }
+
+    public boolean isCustomized() { return this.stampBookDesignJson != null; }
 
     @OneToMany(mappedBy = "cafe")
     private List<StampBook> stampBooks;
