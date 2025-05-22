@@ -1,4 +1,4 @@
-package nova.backend.domain.stampBook.dto.request;
+package nova.backend.domain.cafe.dto.request;
 
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.stampBook.entity.StampBook;

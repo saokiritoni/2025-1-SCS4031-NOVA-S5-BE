@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import nova.backend.domain.stampBook.dto.request.StampBookCreateRequestDTO;
+import nova.backend.domain.cafe.dto.request.StampBookCreateRequestDTO;
 import nova.backend.domain.stampBook.schema.StampBookListSuccessResponse;
 import nova.backend.domain.stampBook.schema.StampBookSuccessResponse;
 import nova.backend.global.auth.CustomUserDetails;

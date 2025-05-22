@@ -7,6 +7,9 @@ public record CafeDetailResponseDTO(
         Long cafeId,
         String cafeName,
         String branchName,
+        String stampBookName,
+        String cafeIntroduction,
+        String conceptIntroduction,
         String rewardDescription,
         int maxStampCount,
         CharacterType characterType,
@@ -18,6 +21,9 @@ public record CafeDetailResponseDTO(
                 cafe.getCafeId(),
                 cafe.getCafeName(),
                 cafe.getBranchName(),
+                cafe.getStampBookName(),
+                cafe.getCafeIntroduction(),
+                cafe.getConceptIntroduction(),
                 cafe.getRewardDescription(),
                 cafe.getMaxStampCount(),
                 cafe.getCharacterType(),
@@ -26,4 +32,3 @@ public record CafeDetailResponseDTO(
         );
     }
 }
-
