@@ -15,7 +15,8 @@ public record CafeRegistrationRequestDTO(
         Double longitude,
         Integer maxStampCount,
         CharacterType characterType,
-        String rewardDescription
+        String rewardDescription,
+        String stampBookDesignJson
 ) {
     public Cafe toEntity(User owner) {
         return Cafe.builder()
@@ -30,6 +31,7 @@ public record CafeRegistrationRequestDTO(
                 .characterType(characterType)
                 .rewardDescription(rewardDescription)
                 .registrationStatus(CafeRegistrationStatus.REQUESTED)
+                .stampBookDesignJson(stampBookDesignJson)
                 .owner(owner)
                 .build();
     }
