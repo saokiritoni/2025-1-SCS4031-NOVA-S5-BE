@@ -30,14 +30,15 @@ public class OwnerCafeController implements OwnerCafeApi {
         return SuccessResponse.ok(savedCafe.getCafeId());
     }
 
-    @PatchMapping("/{cafeId}/stampbook-design")
+    @PatchMapping("/stampbook-design")
     public ResponseEntity<SuccessResponse<?>> updateStampBookDesign(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long cafeId,
             @RequestBody StampBookDesignUpdateRequestDTO request
     ) {
-        ownerCafeService.updateStampBookDesign(userDetails.getUserId(), cafeId, request.designJson());
+        Long selectedCafeId = userDetails.getSelectedCafeId();
+        ownerCafeService.updateStampBookDesign(userDetails.getUserId(), selectedCafeId, request.designJson());
         return SuccessResponse.ok("스탬프북 커스텀이 저장되었습니다.");
     }
+
 
 }

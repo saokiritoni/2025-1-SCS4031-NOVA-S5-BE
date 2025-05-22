@@ -56,7 +56,7 @@ public interface OwnerCafeApi {
 
     @Operation(
             summary = "스탬프북 커스텀 디자인 저장",
-            description = "카페별 스탬프북 커스터마이징 디자인 JSON을 저장합니다.\n해당 카페에 대한 권한이 있어야 하며, JSON 형식의 디자인 데이터를 입력받습니다.",
+            description = "선택된 카페에 대해 스탬프북 디자인을 저장합니다.\ncafeId는 JWT에서 추출된 selectedCafeId를 사용합니다.",
             security = @SecurityRequirement(name = "token"),
             requestBody = @RequestBody(
                     required = true,
@@ -76,10 +76,9 @@ public interface OwnerCafeApi {
             @ApiResponse(responseCode = "404", description = "카페를 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PatchMapping("/{cafeId}/stampbook-design")
+    @PatchMapping("/stampbook-design")
     ResponseEntity<SuccessResponse<?>> updateStampBookDesign(
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long cafeId,
             @org.springframework.web.bind.annotation.RequestBody StampBookDesignUpdateRequestDTO request
     );
 }
