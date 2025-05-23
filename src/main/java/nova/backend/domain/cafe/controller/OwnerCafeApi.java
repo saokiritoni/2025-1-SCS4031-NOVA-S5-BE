@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-@Tag(name = "4. 사장(OWNER) API", description = "카페 등록/관리 API")
+@Tag(name = "4. 카페(OWNER) API", description = "카페 등록/관리 API")
 public interface OwnerCafeApi {
 
     @Operation(
