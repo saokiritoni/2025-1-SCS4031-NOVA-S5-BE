@@ -19,7 +19,7 @@ public class StampBookDesign {
     private Cafe cafe;
 
     @Lob
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = true)
     private String designJson;
 
     @Column(nullable = false)
