@@ -3,10 +3,9 @@ package nova.backend.domain.cafe.controller;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.request.StampBookDesignCreateRequestDTO;
-import nova.backend.domain.cafe.dto.response.CafeDesignDetailResponseDTO;
+import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 import nova.backend.domain.cafe.dto.response.StampBookDesignDetailDTO;
 import nova.backend.domain.cafe.entity.Cafe;
-import nova.backend.domain.cafe.dto.response.StampBookDesignDetailDTO;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.cafe.service.OwnerCafeService;
 import nova.backend.global.auth.CustomUserDetails;
@@ -82,7 +81,7 @@ public class OwnerCafeController implements OwnerCafeApi {
     ) {
         Cafe cafe = cafeRepository.findById(userDetails.getSelectedCafeId())
                 .orElseThrow(() -> new BusinessException(ENTITY_NOT_FOUND));
-        return SuccessResponse.ok(CafeDesignDetailResponseDTO.fromEntity(cafe));
+        return SuccessResponse.ok(CafeDesignOverviewDTO.fromEntity(cafe));
     }
 
     @GetMapping("/stampbook-design/{designId}")

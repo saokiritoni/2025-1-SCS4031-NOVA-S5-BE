@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.request.StampBookDesignCreateRequestDTO;
-import nova.backend.domain.cafe.dto.response.CafeDesignDetailResponseDTO;
+import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 import nova.backend.domain.cafe.dto.response.StampBookDesignDetailDTO;
 import nova.backend.domain.cafe.schema.CafeRegistrationMultipartSchema;
 import nova.backend.global.auth.CustomUserDetails;
@@ -63,7 +63,7 @@ public interface OwnerCafeApi {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = CafeDesignDetailResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = CafeDesignOverviewDTO.class))),
             @ApiResponse(responseCode = "404", description = "카페를 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })

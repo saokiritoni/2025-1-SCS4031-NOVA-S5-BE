@@ -6,14 +6,12 @@ import nova.backend.domain.cafe.entity.StampBookDesign;
 
 public record StampBookDesignDetailDTO(
         Long designId,
-        String designJson,
         boolean exposed,
         @JsonUnwrapped StampBookDesignBasicDTO designInfo
 ) {
     public static StampBookDesignDetailDTO fromEntity(StampBookDesign entity) {
         return new StampBookDesignDetailDTO(
                 entity.getDesignId(),
-                entity.getDesignJson(),
                 entity.isExposed(),
                 new StampBookDesignBasicDTO(
                         entity.getStampBookName(),

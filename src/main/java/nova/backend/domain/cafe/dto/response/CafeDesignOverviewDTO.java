@@ -5,19 +5,15 @@ import nova.backend.domain.cafe.dto.common.CafeBasicInfoDTO;
 import nova.backend.domain.cafe.dto.common.StampBookDesignBasicDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 
-public record CafeDesignDetailResponseDTO(
+public record CafeDesignOverviewDTO(
         @JsonUnwrapped
         CafeBasicInfoDTO basicInfo,
-
-        String branchName,
-
         @JsonUnwrapped
         StampBookDesignBasicDTO designInfo
 ) {
-    public static CafeDesignDetailResponseDTO fromEntity(Cafe cafe) {
-        return new CafeDesignDetailResponseDTO(
+    public static CafeDesignOverviewDTO fromEntity(Cafe cafe) {
+        return new CafeDesignOverviewDTO(
                 CafeBasicInfoDTO.from(cafe),
-                cafe.getBranchName(),
                 StampBookDesignBasicDTO.from(cafe)
         );
     }
