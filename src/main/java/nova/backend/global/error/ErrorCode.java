@@ -87,6 +87,11 @@ public enum ErrorCode {
     NOT_CUSTOMED(HttpStatus.BAD_REQUEST,"스탬프북이 커스텀되지 않았습니다."),
 
     /**
+     * Cafe Error
+     */
+    EXPOSED_STAMPBOOK_NOT_FOUND(HttpStatus.BAD_REQUEST," 카페에서 노출 설정된 스탬프북이 없습니다."),
+
+    /**
     Stamp Error
      */
     CAFE_NOT_SELECTED(HttpStatus.BAD_REQUEST, "카페가 선택되지 않았습니다.")

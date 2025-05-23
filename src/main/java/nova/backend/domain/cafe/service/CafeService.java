@@ -60,11 +60,17 @@ public class CafeService {
     @Transactional(readOnly = true)
     public CafeDesignOverviewDTO getCafeById(Long cafeId) {
         Cafe cafe = cafeRepository.findById(cafeId)
-                .orElseThrow(() -> new EntityNotFoundException("카페를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         StampBookDesign exposedDesign = cafe.getExposedDesign();
-        return CafeDesignOverviewDTO.fromEntity(cafe, exposedDesign);  // 명시적으로 전달
+
+        if (exposedDesign == null) {
+            throw new BusinessException(ErrorCode.EXPOSED_STAMPBOOK_NOT_FOUND);
+        }
+
+        return CafeDesignOverviewDTO.fromEntity(cafe, exposedDesign);
     }
+
 
 
 }
