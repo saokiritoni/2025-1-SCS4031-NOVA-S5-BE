@@ -1,9 +1,12 @@
 package nova.backend.domain.cafe.service;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 import nova.backend.domain.cafe.dto.response.CafeSummaryWithConceptDTO;
 import nova.backend.domain.cafe.entity.CafeRegistrationStatus;
 import nova.backend.domain.cafe.repository.CafeRepository;
+import nova.backend.global.error.ErrorCode;
+import nova.backend.global.error.exception.BusinessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,5 +50,16 @@ public class CafeService {
                 .map(dto -> CafeSummaryWithConceptDTO.from(dto.cafe()))
                 .toList();
     }
+
+    /**
+    * 단일 카페 조회
+     */
+    @Transactional(readOnly = true)
+    public CafeDesignOverviewDTO getCafeById(Long cafeId) {
+        return cafeRepository.findById(cafeId)
+                .map(CafeDesignOverviewDTO::fromEntity)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+    }
+
 }
 
