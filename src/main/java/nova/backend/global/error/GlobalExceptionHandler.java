@@ -99,11 +99,15 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ErrorResponse> handleBusinessException(final BusinessException e) {
-        log.error(">>> handle: BusinessException ", e);
-        final ErrorCode errorCode = e.getErrorCode();
-        final ErrorResponse errorBaseResponse = ErrorResponse.of(errorCode);
-        return ResponseEntity.status(errorCode.getHttpStatus()).body(errorBaseResponse);
+        ErrorCode errorCode = e.getErrorCode();
+
+        // 로그 레벨 조정: 비즈니스 로직상의 예외는 error → warn
+        log.warn(">>> handle: BusinessException - {} ({})", errorCode.name(), e.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.of(errorCode);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(errorResponse);
     }
+
 
     /**
      * 위에서 정의한 Exception을 제외한 모든 예외를 handling합니다.
