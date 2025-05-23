@@ -1,14 +1,6 @@
 package nova.backend.domain.cafe.schema;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
-import nova.backend.global.common.SuccessResponse;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 
 @Schema(description = "카페 등록 multipart 요청 스키마")
 public class CafeRegistrationMultipartSchema {

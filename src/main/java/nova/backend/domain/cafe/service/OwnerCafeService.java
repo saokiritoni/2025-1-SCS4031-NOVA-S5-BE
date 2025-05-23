@@ -3,6 +3,7 @@ package nova.backend.domain.cafe.service;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.request.StampBookDesignCreateRequestDTO;
+import nova.backend.domain.cafe.dto.response.StampBookDesignDetailDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.CafeStaff;
 import nova.backend.domain.cafe.entity.StampBookDesign;
@@ -82,20 +83,23 @@ public class OwnerCafeService {
     }
 
     @Transactional(readOnly = true)
-    public StampBookDesign getExposedStampBookDesign(Long cafeId) {
+    public StampBookDesignDetailDTO getExposedStampBookDesign(Long cafeId) {
         Cafe cafe = cafeRepository.findById(cafeId)
                 .orElseThrow(() -> new BusinessException(ENTITY_NOT_FOUND));
 
         return cafe.getStampBookDesigns().stream()
                 .filter(StampBookDesign::isExposed)
                 .findFirst()
+                .map(StampBookDesignDetailDTO::fromEntity)
                 .orElse(null);
     }
 
     @Transactional(readOnly = true)
-    public List<StampBookDesign> getAllStampBookDesigns(Long ownerId, Long cafeId) {
+    public List<StampBookDesignDetailDTO> getAllStampBookDesigns(Long ownerId, Long cafeId) {
         Cafe cafe = getOwnedCafe(ownerId, cafeId);
-        return cafe.getStampBookDesigns();
+        return cafe.getStampBookDesigns().stream()
+                .map(StampBookDesignDetailDTO::fromEntity)
+                .toList();
     }
 
     private Cafe getOwnedCafe(Long ownerId, Long cafeId) {

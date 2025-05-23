@@ -11,8 +11,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.request.StampBookDesignCreateRequestDTO;
-import nova.backend.domain.cafe.dto.response.CafeDetailResponseDTO;
-import nova.backend.domain.cafe.dto.response.StampBookDesignResponseDTO;
+import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
+import nova.backend.domain.cafe.dto.response.StampBookDesignDetailDTO;
 import nova.backend.domain.cafe.schema.CafeRegistrationMultipartSchema;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
@@ -63,7 +63,7 @@ public interface OwnerCafeApi {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = CafeDetailResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = CafeDesignOverviewDTO.class))),
             @ApiResponse(responseCode = "404", description = "카페를 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -128,7 +128,7 @@ public interface OwnerCafeApi {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "목록 조회 성공",
-                    content = @Content(schema = @Schema(implementation = StampBookDesignResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = StampBookDesignDetailDTO.class))),
             @ApiResponse(responseCode = "401", description = "인증 실패",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -144,7 +144,7 @@ public interface OwnerCafeApi {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "노출된 디자인 조회 성공",
-                    content = @Content(schema = @Schema(implementation = StampBookDesignResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = StampBookDesignDetailDTO.class))),
             @ApiResponse(responseCode = "404", description = "카페 또는 노출 디자인을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -160,7 +160,7 @@ public interface OwnerCafeApi {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자인 조회 성공",
-                    content = @Content(schema = @Schema(implementation = StampBookDesignResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = StampBookDesignDetailDTO.class))),
             @ApiResponse(responseCode = "404", description = "디자인 또는 카페를 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })

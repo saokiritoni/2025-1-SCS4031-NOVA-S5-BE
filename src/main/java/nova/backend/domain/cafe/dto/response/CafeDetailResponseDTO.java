@@ -1,34 +1,30 @@
 package nova.backend.domain.cafe.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import nova.backend.domain.cafe.dto.common.CafeBasicInfoDTO;
+import nova.backend.domain.cafe.dto.common.CafeOpenHourDTO;
+import nova.backend.domain.cafe.dto.common.CafeSpecialDayDTO;
 import nova.backend.domain.cafe.entity.Cafe;
-import nova.backend.domain.cafe.entity.CharacterType;
+
+import java.util.List;
 
 public record CafeDetailResponseDTO(
-        Long cafeId,
-        String cafeName,
-        String branchName,
-        String stampBookName,
-        String cafeIntroduction,
-        String conceptIntroduction,
-        String rewardDescription,
-        int maxStampCount,
-        CharacterType characterType,
-        boolean isCustomized,
-        String stampBookDesignJson
+        @JsonUnwrapped CafeBasicInfoDTO basicInfo,
+        boolean isOpenNow,
+        List<CafeOpenHourDTO> openHours,
+        List<CafeSpecialDayDTO> specialDays,
+        int downloadCount,
+        StampBookDesignDetailDTO exposedDesign
 ) {
-    public static CafeDetailResponseDTO fromEntity(Cafe cafe) {
+    public static CafeDetailResponseDTO fromEntity(Cafe cafe, int downloadCount) {
+        var exposed = cafe.getExposedDesign();
         return new CafeDetailResponseDTO(
-                cafe.getCafeId(),
-                cafe.getCafeName(),
-                cafe.getBranchName(),
-                cafe.getStampBookName(),
-                cafe.getCafeIntroduction(),
-                cafe.getConceptIntroduction(),
-                cafe.getRewardDescription(),
-                cafe.getMaxStampCount(),
-                cafe.getCharacterType(),
-                cafe.isCustomized(),
-                cafe.getStampBookDesignJson()
+                CafeBasicInfoDTO.from(cafe),
+                nova.backend.domain.cafe.dto.common.CafeOperatingInfoDTO.checkIsOpenNow(cafe),
+                nova.backend.domain.cafe.dto.common.CafeOperatingInfoDTO.openHoursFrom(cafe),
+                nova.backend.domain.cafe.dto.common.CafeOperatingInfoDTO.specialDaysFrom(cafe),
+                downloadCount,
+                exposed != null ? StampBookDesignDetailDTO.fromEntity(exposed) : null
         );
     }
 }

@@ -1,10 +1,8 @@
 package nova.backend.domain.cafe.service;
 
 import lombok.RequiredArgsConstructor;
-import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
-import nova.backend.domain.cafe.dto.response.CafeWithDownloadCountDTO;
-import nova.backend.domain.cafe.dto.response.PopularCafeResponseDTO;
-import nova.backend.domain.cafe.entity.*;
+import nova.backend.domain.cafe.dto.response.CafeSummaryWithConceptDTO;
+import nova.backend.domain.cafe.entity.CafeRegistrationStatus;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -12,30 +10,42 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CafeService {
+    /**
+    CafeService에서는 모두 같은 DTO를 사용하되, 조건에 따라서만 다른 응답을 반환합니다.
+     */
+
     private final CafeRepository cafeRepository;
 
-    public List<CafeListResponseDTO> getAllCafes() {
+    /**
+     * 모든 카페 목록 조회 (기본 정보 + 컨셉 소개)
+     */
+    public List<CafeSummaryWithConceptDTO> getAllCafes() {
         return cafeRepository.findAll().stream()
-                .map(CafeListResponseDTO::fromEntity)
+                .map(CafeSummaryWithConceptDTO::from)
                 .toList();
     }
 
-    public List<CafeListResponseDTO> getApprovedCafes() {
+    /**
+     * 승인된 카페 목록 조회 (기본 정보 + 컨셉 소개)
+     */
+    public List<CafeSummaryWithConceptDTO> getApprovedCafes() {
         return cafeRepository.findByRegistrationStatus(CafeRegistrationStatus.APPROVED).stream()
-                .map(CafeListResponseDTO::fromEntity)
+                .map(CafeSummaryWithConceptDTO::from)
                 .toList();
     }
 
-    public List<PopularCafeResponseDTO> getTop10CafesByStampBookDownload() {
-        List<CafeWithDownloadCountDTO> results = cafeRepository.findTop10CafesByStampBookCount(PageRequest.of(0, 10));
-
-        return results.stream()
-                .map(PopularCafeResponseDTO::from)
+    /**
+     * 다운로드 수 기준 인기 카페 TOP 10 (기본 정보 + 컨셉 소개)
+     */
+    public List<CafeSummaryWithConceptDTO> getTop10CafesByStampBookDownload() {
+        return cafeRepository.findTop10CafesByStampBookCount(PageRequest.of(0, 10)).stream()
+                .map(dto -> CafeSummaryWithConceptDTO.from(dto.cafe()))
                 .toList();
     }
-
 }
+

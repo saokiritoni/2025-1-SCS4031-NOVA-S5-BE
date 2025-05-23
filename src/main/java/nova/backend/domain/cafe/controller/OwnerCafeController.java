@@ -3,13 +3,11 @@ package nova.backend.domain.cafe.controller;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.request.StampBookDesignCreateRequestDTO;
-import nova.backend.domain.cafe.dto.response.CafeDetailResponseDTO;
-import nova.backend.domain.cafe.dto.response.StampBookDesignResponseDTO;
+import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
+import nova.backend.domain.cafe.dto.response.StampBookDesignDetailDTO;
 import nova.backend.domain.cafe.entity.Cafe;
-import nova.backend.domain.cafe.entity.StampBookDesign;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.cafe.service.OwnerCafeService;
-import nova.backend.domain.cafe.dto.request.StampBookDesignUpdateRequestDTO;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import nova.backend.global.error.exception.BusinessException;
@@ -30,7 +28,6 @@ public class OwnerCafeController implements OwnerCafeApi {
     private final OwnerCafeService ownerCafeService;
     private final CafeRepository cafeRepository;
 
-    // 가게 등록
     @PostMapping("/register")
     public ResponseEntity<SuccessResponse<?>> registerCafe(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -42,18 +39,15 @@ public class OwnerCafeController implements OwnerCafeApi {
         return SuccessResponse.ok(savedCafe.getCafeId());
     }
 
-    // 스탬프북 디자인 추가
     @PostMapping("/stampbook-design")
     public ResponseEntity<SuccessResponse<?>> addStampBookDesign(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody StampBookDesignCreateRequestDTO request
     ) {
-        Long cafeId = userDetails.getSelectedCafeId();
-        ownerCafeService.addStampBookDesign(userDetails.getUserId(), cafeId, request);
+        ownerCafeService.addStampBookDesign(userDetails.getUserId(), userDetails.getSelectedCafeId(), request);
         return SuccessResponse.ok("디자인이 추가되었습니다.");
     }
 
-    // 스탬프북 디자인 노출 설정
     @PatchMapping("/stampbook-design/{designId}/expose")
     public ResponseEntity<SuccessResponse<?>> exposeStampBookDesign(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -63,27 +57,21 @@ public class OwnerCafeController implements OwnerCafeApi {
         return SuccessResponse.ok("해당 디자인이 노출 디자인으로 설정되었습니다.");
     }
 
-    // 스탬프북 디자인만 반환
     @GetMapping("/stampbook-designs")
     public ResponseEntity<SuccessResponse<?>> getAllStampBookDesigns(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        List<StampBookDesignResponseDTO> designs = ownerCafeService
-                .getAllStampBookDesigns(userDetails.getUserId(), userDetails.getSelectedCafeId())
-                .stream()
-                .map(StampBookDesignResponseDTO::fromEntity)
-                .toList();
-
+        List<StampBookDesignDetailDTO> designs = ownerCafeService
+                .getAllStampBookDesigns(userDetails.getUserId(), userDetails.getSelectedCafeId());
         return SuccessResponse.ok(designs);
     }
 
-
-    // 노출된 스탬프북 디자인만 반환
     @GetMapping("/stampbook-design")
     public ResponseEntity<SuccessResponse<?>> getExposedStampBookDesign(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        StampBookDesign exposed = ownerCafeService.getExposedStampBookDesign(userDetails.getSelectedCafeId());
+        StampBookDesignDetailDTO exposed = ownerCafeService
+                .getExposedStampBookDesign(userDetails.getSelectedCafeId());
         return SuccessResponse.ok(exposed);
     }
 
@@ -93,7 +81,7 @@ public class OwnerCafeController implements OwnerCafeApi {
     ) {
         Cafe cafe = cafeRepository.findById(userDetails.getSelectedCafeId())
                 .orElseThrow(() -> new BusinessException(ENTITY_NOT_FOUND));
-        return SuccessResponse.ok(CafeDetailResponseDTO.fromEntity(cafe));
+        return SuccessResponse.ok(CafeDesignOverviewDTO.fromEntity(cafe));
     }
 
     @GetMapping("/stampbook-design/{designId}")
@@ -101,9 +89,9 @@ public class OwnerCafeController implements OwnerCafeApi {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long designId
     ) {
-        StampBookDesign design = ownerCafeService.getStampBookDesignById(userDetails.getUserId(), userDetails.getSelectedCafeId(), designId);
-        return SuccessResponse.ok(StampBookDesignResponseDTO.fromEntity(design));
+        StampBookDesignDetailDTO design = StampBookDesignDetailDTO.fromEntity(ownerCafeService
+                .getStampBookDesignById(userDetails.getUserId(), userDetails.getSelectedCafeId(), designId));
+        return SuccessResponse.ok(design);
     }
-
 
 }
