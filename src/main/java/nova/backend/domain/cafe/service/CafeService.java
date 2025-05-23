@@ -1,6 +1,5 @@
 package nova.backend.domain.cafe.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 import nova.backend.domain.cafe.dto.response.CafeSummaryWithConceptDTO;
@@ -28,7 +27,7 @@ public class CafeService {
     private final CafeRepository cafeRepository;
 
     /**
-     * 모든 카페 목록 조회 (기본 정보 + 컨셉 소개)
+     * 모든 카페 목록 조회 (기본 정보 + 컨셉 소개) -> 관리자용
      */
     public List<CafeSummaryWithConceptDTO> getAllCafes() {
         return cafeRepository.findAll().stream()
@@ -40,7 +39,7 @@ public class CafeService {
      * 승인된 카페 목록 조회 (기본 정보 + 컨셉 소개)
      */
     public List<CafeSummaryWithConceptDTO> getApprovedCafes() {
-        return cafeRepository.findByRegistrationStatus(CafeRegistrationStatus.APPROVED).stream()
+        return cafeRepository.findByRegistrationStatusWithExposedDesign(CafeRegistrationStatus.APPROVED).stream()
                 .map(CafeSummaryWithConceptDTO::from)
                 .toList();
     }
@@ -60,12 +59,20 @@ public class CafeService {
     @Transactional(readOnly = true)
     public CafeDesignOverviewDTO getCafeById(Long cafeId) {
         Cafe cafe = cafeRepository.findById(cafeId)
-                .orElseThrow(() -> new EntityNotFoundException("카페를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        // 승인된 카페가 아니면 예외
+        if (!cafe.getRegistrationStatus().equals(CafeRegistrationStatus.APPROVED)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
         StampBookDesign exposedDesign = cafe.getExposedDesign();
-        return CafeDesignOverviewDTO.fromEntity(cafe, exposedDesign);  // 명시적으로 전달
-    }
+        if (exposedDesign == null) {
+            throw new BusinessException(ErrorCode.EXPOSED_STAMPBOOK_NOT_FOUND);
+        }
 
+        return CafeDesignOverviewDTO.fromEntity(cafe, exposedDesign);
+    }
 
 }
 
