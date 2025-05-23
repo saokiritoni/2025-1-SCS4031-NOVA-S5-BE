@@ -72,7 +72,7 @@ public class Cafe {
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StampBookDesign> stampBookDesigns = new ArrayList<>();
 
-    public boolean isCustomized() {
+    public boolean hasExposedDesign() {
         return getExposedDesign() != null;
     }
 

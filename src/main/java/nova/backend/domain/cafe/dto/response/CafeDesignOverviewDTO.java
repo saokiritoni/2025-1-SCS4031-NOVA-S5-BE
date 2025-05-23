@@ -14,7 +14,7 @@ public record CafeDesignOverviewDTO(
     public static CafeDesignOverviewDTO fromEntity(Cafe cafe) {
         return new CafeDesignOverviewDTO(
                 CafeBasicInfoDTO.from(cafe),
-                StampBookDesignBasicDTO.from(cafe)
+                StampBookDesignBasicDTO.from(cafe.getExposedDesign()) // ✅ 수정
         );
     }
 }
