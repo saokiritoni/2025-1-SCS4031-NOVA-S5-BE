@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/owner/challenges")
 @Tag(name = "6. 챌린지 API", description = "챌린지 생성 및 조회")
-public class OwnerChallengeController {
+public class OwnerChallengeController implements OwnerChallengeApi {
 
     private final OwnerChallengeService challengeService;
 
