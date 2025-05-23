@@ -68,10 +68,8 @@
 ![Notion](https://github.com/user-attachments/assets/55f5d93d-ce7c-4fb3-bd67-b441974e06cf)
 
 # ⚙️Structure
-<img width="673" alt="스크린샷 2025-05-13 오후 5 13 10" src="https://github.com/user-attachments/assets/f3e8fe16-a7ce-4db9-8af0-9211ca5b077e" />
 
-![src](https://github.com/user-attachments/assets/9669ae46-4950-4454-a48f-6b3a7e09dd71)
-
+- 추후 추가 예정
 
 
 # ⏩How to start
