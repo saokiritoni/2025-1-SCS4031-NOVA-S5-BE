@@ -1,11 +1,9 @@
 package nova.backend.domain.cafe.service;
 
 import lombok.RequiredArgsConstructor;
-import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
-import nova.backend.domain.cafe.dto.response.CafeSelectedResponseDTO;
-import nova.backend.domain.cafe.dto.response.MyCafeSimpleResponseDTO;
+import nova.backend.domain.cafe.dto.response.CafeMyListItemDTO;
+import nova.backend.domain.cafe.dto.response.CafeOwnerSelectedResponseDTO;
 import nova.backend.domain.cafe.entity.Cafe;
-import nova.backend.domain.cafe.entity.CafeStaff;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.cafe.repository.CafeStaffRepository;
 import nova.backend.global.error.ErrorCode;
@@ -35,20 +33,20 @@ public class CafeSelectionService {
         redisTemplate.opsForValue().set("selectedCafe:" + userId, cafeId.toString());
     }
 
-    public List<MyCafeSimpleResponseDTO> getMyCafes(Long userId, Long selectedCafeId) {
+    public List<CafeMyListItemDTO> getMyCafes(Long userId, Long selectedCafeId) {
         List<Cafe> cafes = cafeRepository.findAllByUserId(userId);
 
         return cafes.stream()
-                .map(cafe -> MyCafeSimpleResponseDTO.from(
+                .map(cafe -> CafeMyListItemDTO.from(
                         cafe,
                         cafe.getCafeId().equals(selectedCafeId)
                 ))
                 .toList();
     }
 
-    public CafeSelectedResponseDTO getSelectedCafe(Long selectedCafeId) {
+    public CafeOwnerSelectedResponseDTO getSelectedCafe(Long selectedCafeId) {
         Cafe cafe = cafeRepository.findById(selectedCafeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
-        return CafeSelectedResponseDTO.fromEntity(cafe);
+        return CafeOwnerSelectedResponseDTO.fromEntity(cafe);
     }
 }

@@ -1,76 +1,78 @@
 package nova.backend.domain.cafe.service;
 
 import lombok.RequiredArgsConstructor;
-import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
-import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
-import nova.backend.domain.cafe.dto.response.CafeWithDownloadCountDTO;
-import nova.backend.domain.cafe.dto.response.PopularCafeResponseDTO;
-import nova.backend.domain.cafe.entity.*;
+import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
+import nova.backend.domain.cafe.dto.response.CafeSummaryWithConceptDTO;
+import nova.backend.domain.cafe.entity.Cafe;
+import nova.backend.domain.cafe.entity.CafeRegistrationStatus;
+import nova.backend.domain.cafe.entity.StampBookDesign;
 import nova.backend.domain.cafe.repository.CafeRepository;
-import nova.backend.domain.cafe.repository.CafeStaffRepository;
-import nova.backend.domain.user.entity.Role;
-import nova.backend.domain.user.entity.User;
-import nova.backend.domain.user.repository.UserRepository;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
-import nova.backend.global.util.EmailService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CafeService {
+    /**
+    CafeService에서는 모두 같은 DTO를 사용하되, 조건에 따라서만 다른 응답을 반환합니다.
+     */
+
     private final CafeRepository cafeRepository;
-    private final UserRepository userRepository;
-    private final CafeStaffRepository cafeStaffRepository;
-    private final EmailService emailService;
 
-    public List<CafeListResponseDTO> getAllCafes() {
+    /**
+     * 모든 카페 목록 조회 (기본 정보 + 컨셉 소개) -> 관리자용
+     */
+    public List<CafeSummaryWithConceptDTO> getAllCafes() {
         return cafeRepository.findAll().stream()
-                .map(CafeListResponseDTO::fromEntity)
+                .map(CafeSummaryWithConceptDTO::from)
                 .toList();
     }
 
-    public List<CafeListResponseDTO> getApprovedCafes() {
-        return cafeRepository.findByRegistrationStatus(CafeRegistrationStatus.APPROVED).stream()
-                .map(CafeListResponseDTO::fromEntity)
+    /**
+     * 승인된 카페 목록 조회 (기본 정보 + 컨셉 소개)
+     */
+    public List<CafeSummaryWithConceptDTO> getApprovedCafes() {
+        return cafeRepository.findByRegistrationStatusWithExposedDesign(CafeRegistrationStatus.APPROVED).stream()
+                .map(CafeSummaryWithConceptDTO::from)
                 .toList();
     }
 
-    @Transactional
-    public Cafe registerCafe(Long ownerId, CafeRegistrationRequestDTO request, MultipartFile businessRegistrationPdf) {
-        User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
-        Cafe savedCafe = cafeRepository.save(request.toEntity(owner));
-
-        CafeStaff cafeStaff = CafeStaff.builder()
-                .cafe(savedCafe)
-                .user(owner)
-                .role(Role.OWNER)
-                .build();
-
-        cafeStaffRepository.save(cafeStaff);
-        emailService.sendCafeRegistrationEmail(savedCafe, businessRegistrationPdf);
-
-        return savedCafe;
+    /**
+     * 다운로드 수 기준 인기 카페 TOP 10 (기본 정보 + 컨셉 소개)
+     */
+    public List<CafeSummaryWithConceptDTO> getTop10CafesByStampBookDownload() {
+        return cafeRepository.findTop10CafesByStampBookCount(PageRequest.of(0, 10)).stream()
+                .map(dto -> CafeSummaryWithConceptDTO.from(dto.cafe()))
+                .toList();
     }
 
+    /**
+    * 단일 카페 조회
+     */
+    @Transactional(readOnly = true)
+    public CafeDesignOverviewDTO getCafeById(Long cafeId) {
+        Cafe cafe = cafeRepository.findById(cafeId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
-    public List<PopularCafeResponseDTO> getTop10CafesByStampBookDownload() {
-        List<CafeWithDownloadCountDTO> results = cafeRepository.findTop10CafesByStampBookCount(PageRequest.of(0, 10));
+        // 승인된 카페가 아니면 예외
+        if (!cafe.getRegistrationStatus().equals(CafeRegistrationStatus.APPROVED)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
-        return results.stream()
-                .map(PopularCafeResponseDTO::from)
-                .toList();
+        StampBookDesign exposedDesign = cafe.getExposedDesign();
+        if (exposedDesign == null) {
+            throw new BusinessException(ErrorCode.EXPOSED_STAMPBOOK_NOT_FOUND);
+        }
+
+        return CafeDesignOverviewDTO.fromEntity(cafe, exposedDesign);
     }
 
 }
+

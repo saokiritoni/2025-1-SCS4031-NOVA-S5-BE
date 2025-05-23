@@ -11,7 +11,7 @@ import nova.backend.domain.stamp.entity.Stamp;
 import nova.backend.domain.stamp.repository.StampRepository;
 import nova.backend.domain.stampBook.entity.StampBook;
 import nova.backend.domain.stampBook.repository.StampBookRepository;
-import nova.backend.domain.stampBook.service.StampBookService;
+import nova.backend.domain.stampBook.service.UserStampBookService;
 import nova.backend.domain.user.entity.Role;
 import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
@@ -21,7 +21,6 @@ import nova.backend.global.error.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -34,7 +33,7 @@ public class StampService {
     private final StampRepository stampRepository;
     private final UserRepository userRepository;
     private final CafeRepository cafeRepository;
-    private final StampBookService stampBookService;
+    private final UserStampBookService userStampBookService;
 
     public void accumulateStamp(CustomUserDetails userDetails, String targetQrCode, int count) {
         log.info("[스탬프 적립 시작] staff={}, qrCodeValue={}, selectedCafeId={}, count={}",
@@ -61,7 +60,7 @@ public class StampService {
         // 스탬프 적립
         int stampsToAdd = count;
         while (stampsToAdd > 0) {
-            StampBook currentBook = stampBookService.getOrCreateValidStampBook(targetUser, cafe);
+            StampBook currentBook = userStampBookService.getOrCreateValidStampBook(targetUser, cafe);
 
             int currentCount = stampRepository.countByStampBook_StampBookId(currentBook.getStampBookId());
             int max = cafe.getMaxStampCount();
@@ -85,8 +84,6 @@ public class StampService {
     }
 
 
-
-
     public List<StampHistoryResponseDTO> getStampHistory(Long userId) {
         List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(userId);
 
@@ -97,8 +94,7 @@ public class StampService {
                 })
                 .toList();
     }
-
-
+    
     @Transactional(readOnly = true)
     public StaffStampViewResponseDTO getStampHistoryForStaffView(String qrCodeValue, CustomUserDetails userDetails) {
         // 권한 체크

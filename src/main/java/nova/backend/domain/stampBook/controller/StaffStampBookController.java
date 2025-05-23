@@ -2,11 +2,9 @@ package nova.backend.domain.stampBook.controller;
 
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.stampBook.dto.request.UseRewardsRequestDTO;
-import nova.backend.domain.stampBook.service.StampBookService;
+import nova.backend.domain.stampBook.service.StaffStampBookService;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
-import nova.backend.global.error.ErrorCode;
-import nova.backend.global.error.exception.BusinessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/staff/stampbooks")
 public class StaffStampBookController implements StaffStampBookApi {
 
-    private final StampBookService stampBookService;
+    private final StaffStampBookService staffStampBookService;
 
     @PatchMapping("/rewards")
     public ResponseEntity<SuccessResponse<?>> useRewardsByQrCodeForCafe(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody UseRewardsRequestDTO request
     ) {
-        int updatedCount = stampBookService.useRewardsByQrCodeForCafe(
+        int updatedCount = staffStampBookService.useRewardsByQrCodeForCafe(
                 userDetails.getUserId(), userDetails.getSelectedCafeId(), request.qrCodeValue(), request.count()
         );
         return SuccessResponse.ok("사용 처리된 리워드 수: " + updatedCount);

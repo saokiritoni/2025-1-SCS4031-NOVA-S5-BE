@@ -20,8 +20,8 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         Info info = new Info()
-                .title("Nova Homepage API Document")
-                .description("Nova API 명세서입니다.")
+                .title("Ecok API Document")
+                .description("Ecok API 명세서입니다.")
                 .version("v1.0.0");
 
         SecurityScheme securityScheme = new SecurityScheme()
@@ -39,6 +39,8 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(info)
                 .components(components)
-                .addServersItem(server);
+                .addServersItem(server)
+                .addSecurityItem(new io.swagger.v3.oas.models.security.SecurityRequirement().addList("token"))
+                ;
     }
 }

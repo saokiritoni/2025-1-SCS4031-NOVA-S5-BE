@@ -38,9 +38,6 @@ public class Cafe {
     private CharacterType characterType;
 
     @Column(nullable = false)
-    private String rewardDescription;  // e.g. 아메리카노 한 잔
-
-    @Column(nullable = false)
     private String branchName;
 
     @Column(nullable = false)
@@ -55,7 +52,6 @@ public class Cafe {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CafeRegistrationStatus registrationStatus;
-
 
     @OneToMany(mappedBy = "cafe")
     private List<StampBook> stampBooks;
@@ -73,5 +69,42 @@ public class Cafe {
     @OneToMany(mappedBy = "cafe")
     private List<CafeStaff> staffList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StampBookDesign> stampBookDesigns = new ArrayList<>();
 
+    public boolean hasExposedDesign() {
+        return getExposedDesign() != null;
+    }
+
+    public String getStampBookDesignJson() {
+        StampBookDesign exposed = getExposedDesign();
+        return exposed != null ? exposed.getDesignJson() : null;
+    }
+
+    public StampBookDesign getExposedDesign() {
+        return stampBookDesigns.stream()
+                .filter(StampBookDesign::isExposed)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public String getRewardDescription() {
+        StampBookDesign exposed = getExposedDesign();
+        return exposed != null ? exposed.getRewardDescription() : null;
+    }
+
+    public String getStampBookName() {
+        StampBookDesign exposed = getExposedDesign();
+        return exposed != null ? exposed.getStampBookName() : null;
+    }
+
+    public String getCafeIntroduction() {
+        StampBookDesign exposed = getExposedDesign();
+        return exposed != null ? exposed.getCafeIntroduction() : null;
+    }
+
+    public String getConceptIntroduction() {
+        StampBookDesign exposed = getExposedDesign();
+        return exposed != null ? exposed.getConceptIntroduction() : null;
+    }
 }

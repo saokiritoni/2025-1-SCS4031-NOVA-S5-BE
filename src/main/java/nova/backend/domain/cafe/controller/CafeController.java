@@ -1,15 +1,11 @@
 package nova.backend.domain.cafe.controller;
 
 import lombok.RequiredArgsConstructor;
-import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
-import nova.backend.domain.cafe.dto.response.CafeListResponseDTO;
-import nova.backend.domain.cafe.dto.response.PopularCafeResponseDTO;
-import nova.backend.domain.cafe.entity.Cafe;
+import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
+import nova.backend.domain.cafe.dto.response.CafeSummaryWithConceptDTO;
 import nova.backend.domain.cafe.service.CafeService;
-import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +17,15 @@ public class CafeController implements CafeApi {
 
     private final CafeService cafeService;
 
+    /**
+     * 전체 카페 목록 또는 승인된 카페 목록 조회
+     */
     @GetMapping
     public ResponseEntity<SuccessResponse<?>> getCafeList(
             @RequestParam(required = false) Boolean approved
     ) {
-        List<CafeListResponseDTO> response;
-        if (approved != null && approved) {
+        List<CafeSummaryWithConceptDTO> response;
+        if (Boolean.TRUE.equals(approved)) {
             response = cafeService.getApprovedCafes();
         } else {
             response = cafeService.getAllCafes();
@@ -34,12 +33,22 @@ public class CafeController implements CafeApi {
         return SuccessResponse.ok(response);
     }
 
+    /**
+     * 다운로드 수 기준 인기 카페 TOP 10
+     */
     @GetMapping("/popular")
     public ResponseEntity<SuccessResponse<?>> getPopularCafes() {
-        List<PopularCafeResponseDTO> response = cafeService.getTop10CafesByStampBookDownload();
+        List<CafeSummaryWithConceptDTO> response = cafeService.getTop10CafesByStampBookDownload();
+        return SuccessResponse.ok(response);
+    }
+
+    /**
+     * 단일 카페 조회
+     */
+    @GetMapping("/{cafeId}")
+    public ResponseEntity<SuccessResponse<?>> getCafeById(@PathVariable Long cafeId) {
+        CafeDesignOverviewDTO response = cafeService.getCafeById(cafeId);
         return SuccessResponse.ok(response);
     }
 
 }
-
-

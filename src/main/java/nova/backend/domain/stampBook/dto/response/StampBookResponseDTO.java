@@ -1,6 +1,5 @@
 package nova.backend.domain.stampBook.dto.response;
 
-
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.CharacterType;
 import nova.backend.domain.stampBook.entity.StampBook;
@@ -19,7 +18,9 @@ public record StampBookResponseDTO(
         LocalDateTime createdAt,
         int currentStampCount,
         int maxStampCount,
-        int remainingStampCount
+        int remainingStampCount,
+        String stampBookDesign,
+        boolean isCustomized
 ) {
     public static StampBookResponseDTO fromEntity(StampBook stampBook, int currentStampCount) {
         Cafe cafe = stampBook.getCafe();
@@ -29,7 +30,7 @@ public record StampBookResponseDTO(
                 stampBook.getStampBookId(),
                 cafe.getCafeId(),
                 cafe.getCafeName(),
-                stampBook.getCafe().getCharacterType(),
+                cafe.getCharacterType(),
                 stampBook.isCompleted(),
                 stampBook.isRewardClaimed(),
                 stampBook.isInHome(),
@@ -37,7 +38,9 @@ public record StampBookResponseDTO(
                 stampBook.getCreatedAt(),
                 currentStampCount,
                 max,
-                remaining
+                remaining,
+                cafe.getStampBookDesignJson(),
+                cafe.getStampBookDesignJson() != null
         );
     }
 }
