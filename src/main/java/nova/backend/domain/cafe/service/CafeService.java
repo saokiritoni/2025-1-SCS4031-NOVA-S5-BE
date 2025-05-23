@@ -1,9 +1,12 @@
 package nova.backend.domain.cafe.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 import nova.backend.domain.cafe.dto.response.CafeSummaryWithConceptDTO;
+import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.CafeRegistrationStatus;
+import nova.backend.domain.cafe.entity.StampBookDesign;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
@@ -56,10 +59,13 @@ public class CafeService {
      */
     @Transactional(readOnly = true)
     public CafeDesignOverviewDTO getCafeById(Long cafeId) {
-        return cafeRepository.findById(cafeId)
-                .map(CafeDesignOverviewDTO::fromEntity)
-                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+        Cafe cafe = cafeRepository.findById(cafeId)
+                .orElseThrow(() -> new EntityNotFoundException("카페를 찾을 수 없습니다."));
+
+        StampBookDesign exposedDesign = cafe.getExposedDesign();
+        return CafeDesignOverviewDTO.fromEntity(cafe, exposedDesign);  // 명시적으로 전달
     }
+
 
 }
 
