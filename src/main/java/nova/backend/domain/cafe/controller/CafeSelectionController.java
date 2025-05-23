@@ -1,8 +1,8 @@
 package nova.backend.domain.cafe.controller;
 
 import lombok.RequiredArgsConstructor;
-import nova.backend.domain.cafe.dto.response.CafeSelectedResponseDTO;
-import nova.backend.domain.cafe.dto.response.MyCafeSimpleResponseDTO;
+import nova.backend.domain.cafe.dto.response.CafeMyListItemDTO;
+import nova.backend.domain.cafe.dto.response.CafeOwnerSelectedResponseDTO;
 import nova.backend.domain.cafe.service.CafeSelectionService;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/staff/cafes")
-public class CafeSelectionController implements CafeSelectionApi {
+public class CafeSelectionController implements CafeSelectionApi{
     private final CafeSelectionService cafeSelectionService;
 
     @PutMapping("/{cafeId}/selected")
@@ -31,7 +31,7 @@ public class CafeSelectionController implements CafeSelectionApi {
     public ResponseEntity<SuccessResponse<?>> getMyCafes(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        List<MyCafeSimpleResponseDTO> response = cafeSelectionService.getMyCafes(
+        List<CafeMyListItemDTO> response = cafeSelectionService.getMyCafes(
                 userDetails.getUserId(),
                 userDetails.getSelectedCafeId()
         );
@@ -42,7 +42,7 @@ public class CafeSelectionController implements CafeSelectionApi {
     public ResponseEntity<SuccessResponse<?>> getSelectedCafe(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        CafeSelectedResponseDTO response = cafeSelectionService.getSelectedCafe(userDetails.getSelectedCafeId());
+        CafeOwnerSelectedResponseDTO response = cafeSelectionService.getSelectedCafe(userDetails.getSelectedCafeId());
         return SuccessResponse.ok(response);
     }
 }
