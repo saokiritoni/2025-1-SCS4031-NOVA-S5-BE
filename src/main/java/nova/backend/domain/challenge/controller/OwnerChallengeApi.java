@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Tag(name = "4. 챌린지(OWNER) API", description = "사장용 챌린지 생성 및 조회")
 @RequestMapping("/api/owner/challenges")
