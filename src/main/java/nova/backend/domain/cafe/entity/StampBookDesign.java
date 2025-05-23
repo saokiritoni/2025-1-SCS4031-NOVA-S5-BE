@@ -25,16 +25,16 @@ public class StampBookDesign {
     @Column(nullable = false)
     private boolean exposed; // 현재 노출 중인지 여부
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String stampBookName;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String cafeIntroduction;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String conceptIntroduction;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String rewardDescription;
 
     public void expose() { this.exposed = true; }

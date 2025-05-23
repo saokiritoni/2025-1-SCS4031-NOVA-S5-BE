@@ -81,7 +81,7 @@ public class OwnerCafeController implements OwnerCafeApi {
     ) {
         Cafe cafe = cafeRepository.findById(userDetails.getSelectedCafeId())
                 .orElseThrow(() -> new BusinessException(ENTITY_NOT_FOUND));
-        return SuccessResponse.ok(CafeDesignOverviewDTO.fromEntity(cafe));
+        return SuccessResponse.ok(CafeDesignOverviewDTO.fromEntity(cafe, cafe.getExposedDesign()));
     }
 
     @GetMapping("/stampbook-design/{designId}")

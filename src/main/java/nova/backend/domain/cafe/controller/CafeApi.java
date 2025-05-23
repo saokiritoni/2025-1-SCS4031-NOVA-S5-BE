@@ -7,11 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 import nova.backend.domain.cafe.schema.CafeListSuccessResponse;
 import nova.backend.global.common.SuccessResponse;
 import nova.backend.global.error.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "2. 유저(USER) 카페", description = "카페 목록 관련 API")
@@ -43,4 +45,32 @@ public interface CafeApi {
     ResponseEntity<SuccessResponse<?>> getCafeList(
             @RequestParam(required = false) Boolean approved
     );
+
+    @Operation(
+            summary = "단일 카페 조회",
+            description = "카페 ID로 단일 카페의 상세 정보를 조회합니다.\n\n" +
+                    "✅ 카페의 기본 정보 및 대표 스탬프북 디자인 정보가 함께 제공됩니다.\n" +
+                    "✅ 대표 디자인은 `노출(exposed)`로 설정된 디자인입니다.\n\n" +
+                    "💡 `designJson`이 `null`이면 기본 디자인을 사용 중임을 의미합니다.",
+            parameters = {
+                    @Parameter(name = "cafeId", description = "조회할 카페 ID", example = "1", required = true)
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "카페 조회 성공",
+                    content = @Content(schema = @Schema(implementation = CafeDesignOverviewDTO.class))),
+            @ApiResponse(responseCode = "404", description = "해당 ID의 카페를 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 에러",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/{cafeId}")
+    ResponseEntity<SuccessResponse<?>> getCafeById(
+            @Parameter(name = "cafeId", description = "조회할 카페 ID", example = "1")
+            @PathVariable Long cafeId
+    );
+
+
+
+
 }

@@ -1,6 +1,7 @@
 package nova.backend.domain.cafe.controller;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 import nova.backend.domain.cafe.dto.response.CafeSummaryWithConceptDTO;
 import nova.backend.domain.cafe.service.CafeService;
 import nova.backend.global.common.SuccessResponse;
@@ -40,4 +41,14 @@ public class CafeController implements CafeApi {
         List<CafeSummaryWithConceptDTO> response = cafeService.getTop10CafesByStampBookDownload();
         return SuccessResponse.ok(response);
     }
+
+    /**
+     * 단일 카페 조회
+     */
+    @GetMapping("/{cafeId}")
+    public ResponseEntity<SuccessResponse<?>> getCafeById(@PathVariable Long cafeId) {
+        CafeDesignOverviewDTO response = cafeService.getCafeById(cafeId);
+        return SuccessResponse.ok(response);
+    }
+
 }

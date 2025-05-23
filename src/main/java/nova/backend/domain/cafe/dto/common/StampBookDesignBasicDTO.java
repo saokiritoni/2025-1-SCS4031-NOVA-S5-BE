@@ -13,14 +13,20 @@ public record StampBookDesignBasicDTO(
         CharacterType characterType
 ) {
     public static StampBookDesignBasicDTO from(StampBookDesign design) {
+        if (design == null) {
+            return new StampBookDesignBasicDTO(null, null, null, null, null, null);
+        }
+
         return new StampBookDesignBasicDTO(
                 design.getStampBookName(),
                 design.getCafeIntroduction(),
                 design.getConceptIntroduction(),
                 design.getRewardDescription(),
                 design.getDesignJson(),
-                design.getCafe().getCharacterType()
+                design.getCafe() != null ? design.getCafe().getCharacterType() : null
         );
     }
+
+
 }
 
