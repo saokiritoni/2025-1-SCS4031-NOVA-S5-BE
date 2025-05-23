@@ -18,7 +18,6 @@ public record StampBookDesignDetailDTO(
                         entity.getCafeIntroduction(),
                         entity.getConceptIntroduction(),
                         entity.getRewardDescription(),
-                        true,
                         entity.getDesignJson(),
                         entity.getCafe().getCharacterType()
                 )
