@@ -8,7 +8,8 @@ public record StampBookDesignCreateRequestDTO(
         String cafeIntroduction,
         String conceptIntroduction,
         String rewardDescription,
-        String designJson
+        String designJson,
+        boolean exposed
 ) {
     public StampBookDesign toEntity(Cafe cafe) {
         return StampBookDesign.builder()
@@ -18,7 +19,7 @@ public record StampBookDesignCreateRequestDTO(
                 .conceptIntroduction(conceptIntroduction)
                 .rewardDescription(rewardDescription)
                 .designJson(designJson)
-                .exposed(false)
+                .exposed(exposed)
                 .build();
     }
 }
