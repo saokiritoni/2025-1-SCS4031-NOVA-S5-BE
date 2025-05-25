@@ -58,9 +58,17 @@ public class OwnerCafeService {
     @Transactional
     public void addStampBookDesign(Long ownerId, Long cafeId, StampBookDesignCreateRequestDTO request) {
         Cafe cafe = getOwnedCafe(ownerId, cafeId);
+
+        // 요청에서 exposed가 true이면 기존 노출 디자인 해제
+        if (request.exposed()) {
+            cafe.getStampBookDesigns().forEach(StampBookDesign::unexpose);
+        }
+
+        // 새로운 디자인 생성 및 노출 여부 설정
         StampBookDesign design = request.toEntity(cafe);
         stampBookDesignRepository.save(design);
     }
+
 
 
     @Transactional

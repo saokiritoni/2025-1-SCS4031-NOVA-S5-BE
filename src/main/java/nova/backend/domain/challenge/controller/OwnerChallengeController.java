@@ -1,6 +1,5 @@
 package nova.backend.domain.challenge.controller;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.challenge.dto.request.ChallengeCreateRequestDTO;
 import nova.backend.domain.challenge.dto.response.*;
@@ -33,7 +32,7 @@ public class OwnerChallengeController implements OwnerChallengeApi {
     public ResponseEntity<SuccessResponse<?>> getChallengeDetail(
             @PathVariable Long challengeId
     ) {
-        ChallengeDetailResponseDTO response = challengeService.getChallengeDetail(challengeId);
+        OwnerChallengeDetailResponseDTO response = challengeService.getChallengeDetail(challengeId);
         return SuccessResponse.ok(response);
     }
 
@@ -57,7 +56,7 @@ public class OwnerChallengeController implements OwnerChallengeApi {
     public ResponseEntity<SuccessResponse<?>> getCompletedChallenges(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        List<CompletedChallengeListResponseDTO> response = challengeService.getCompletedChallenges(userDetails.getSelectedCafeId());
+        List<OwnerCompletedChallengeListResponseDTO> response = challengeService.getCompletedChallenges(userDetails.getSelectedCafeId());
         return SuccessResponse.ok(response);
     }
 }

@@ -3,6 +3,7 @@ package nova.backend.domain.challenge.service;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.repository.CafeRepository;
+import nova.backend.domain.challenge.dto.common.ChallengeBaseDTO;
 import nova.backend.domain.challenge.dto.request.ChallengeCreateRequestDTO;
 import nova.backend.domain.challenge.dto.response.*;
 import nova.backend.domain.challenge.entity.Challenge;
@@ -36,12 +37,12 @@ public class OwnerChallengeService {
         challengeRepository.save(challenge);
     }
 
-    public ChallengeDetailResponseDTO getChallengeDetail(Long challengeId) {
+    public OwnerChallengeDetailResponseDTO getChallengeDetail(Long challengeId) {
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         ChallengeBaseDTO base = ChallengeBaseDTO.fromEntity(challenge);
-        return new ChallengeDetailResponseDTO(
+        return new OwnerChallengeDetailResponseDTO(
                 base,
                 challenge.getParticipantCount(),
                 challenge.getCompletedCount(),
@@ -63,9 +64,9 @@ public class OwnerChallengeService {
                 .toList();
     }
 
-    public List<CompletedChallengeListResponseDTO> getCompletedChallenges(Long cafeId) {
+    public List<OwnerCompletedChallengeListResponseDTO> getCompletedChallenges(Long cafeId) {
         return challengeRepository.findByCafe_CafeIdAndEndDateBefore(cafeId, LocalDate.now()).stream()
-                .map(challenge -> new CompletedChallengeListResponseDTO(
+                .map(challenge -> new OwnerCompletedChallengeListResponseDTO(
                         ChallengeBaseDTO.fromEntity(challenge),
                         challenge.getParticipantCount()
                 ))

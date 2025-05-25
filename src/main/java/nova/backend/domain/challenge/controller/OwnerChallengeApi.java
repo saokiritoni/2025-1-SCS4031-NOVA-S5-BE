@@ -37,7 +37,7 @@ public interface OwnerChallengeApi {
     @Operation(summary = "챌린지 상세 조회", description = "사장이 챌린지 단일 조회를 합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = ChallengeDetailResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = OwnerChallengeDetailResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "챌린지를 찾을 수 없음")
     })
     @GetMapping("/{challengeId}")
@@ -68,7 +68,7 @@ public interface OwnerChallengeApi {
     @Operation(summary = "완료된 챌린지 조회", description = "사장이 완료된 챌린지를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = CompletedChallengeListResponseDTO.class)))
+                    content = @Content(schema = @Schema(implementation = OwnerCompletedChallengeListResponseDTO.class)))
     })
     @GetMapping("/completed")
     ResponseEntity<SuccessResponse<?>> getCompletedChallenges(
