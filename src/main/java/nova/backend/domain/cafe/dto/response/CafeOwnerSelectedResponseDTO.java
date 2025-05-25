@@ -15,7 +15,8 @@ public record CafeOwnerSelectedResponseDTO(
         boolean isOpenNow,
         CafeRegistrationStatus registrationStatus,
         List<CafeOpenHourDTO> openHours,
-        List<CafeSpecialDayDTO> specialDays
+        List<CafeSpecialDayDTO> specialDays,
+        String rewardDescription
 ) {
     public static CafeOwnerSelectedResponseDTO fromEntity(Cafe cafe) {
         return new CafeOwnerSelectedResponseDTO(
@@ -23,7 +24,8 @@ public record CafeOwnerSelectedResponseDTO(
                 CafeOperatingInfoDTO.checkIsOpenNow(cafe),
                 cafe.getRegistrationStatus(),
                 CafeOperatingInfoDTO.openHoursFrom(cafe),
-                CafeOperatingInfoDTO.specialDaysFrom(cafe)
+                CafeOperatingInfoDTO.specialDaysFrom(cafe),
+                cafe.getRewardDescription()
         );
     }
 }
