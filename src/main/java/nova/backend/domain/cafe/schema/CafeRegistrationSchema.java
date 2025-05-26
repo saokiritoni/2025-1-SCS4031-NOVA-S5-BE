@@ -27,12 +27,13 @@ public class CafeRegistrationSchema {
     @Schema(description = "경도", example = "127.0363")
     public Double longitude;
 
+    @Schema(description = "카페 도로명 주소", example = "서울특별시 강남구 테헤란로 123")
+    public String roadAddress;
+
     @Schema(description = "최대 스탬프 수", example = "10")
     public Integer maxStampCount;
 
     @Schema(description = "캐릭터 타입", example = "BLACK")
     public CharacterType characterType;
 
-    @Schema(description = "리워드 설명", example = "아메리카노 무료")
-    public String rewardDescription;
 }

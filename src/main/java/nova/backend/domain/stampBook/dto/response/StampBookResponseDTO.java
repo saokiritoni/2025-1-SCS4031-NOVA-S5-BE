@@ -20,7 +20,8 @@ public record StampBookResponseDTO(
         int maxStampCount,
         int remainingStampCount,
         String stampBookDesign,
-        boolean isCustomized
+        boolean isCustomized,
+        String rewardDescription
 ) {
     public static StampBookResponseDTO fromEntity(StampBook stampBook, int currentStampCount) {
         Cafe cafe = stampBook.getCafe();
@@ -40,7 +41,8 @@ public record StampBookResponseDTO(
                 max,
                 remaining,
                 cafe.getStampBookDesignJson(),
-                cafe.getStampBookDesignJson() != null
+                cafe.getStampBookDesignJson() != null,
+                cafe.getRewardDescription()
         );
     }
 }

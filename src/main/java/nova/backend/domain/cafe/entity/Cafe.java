@@ -2,6 +2,7 @@ package nova.backend.domain.cafe.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import nova.backend.domain.challenge.entity.Challenge;
 import nova.backend.domain.stampBook.entity.StampBook;
 import nova.backend.domain.user.entity.User;
 
@@ -28,6 +29,8 @@ public class Cafe {
     @Column(nullable = false)
     private Double longitude;
 
+    private String roadAddress;
+
     private String cafePhone;
 
     @Column(nullable = false)
@@ -52,25 +55,6 @@ public class Cafe {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CafeRegistrationStatus registrationStatus;
-
-    @OneToMany(mappedBy = "cafe")
-    private List<StampBook> stampBooks;
-
-    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CafeOpenHour> openHours = new ArrayList<>();
-
-    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CafeSpecialDay> specialDays = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    private User owner;
-
-    @OneToMany(mappedBy = "cafe")
-    private List<CafeStaff> staffList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StampBookDesign> stampBookDesigns = new ArrayList<>();
 
     public boolean hasExposedDesign() {
         return getExposedDesign() != null;
@@ -107,4 +91,26 @@ public class Cafe {
         StampBookDesign exposed = getExposedDesign();
         return exposed != null ? exposed.getConceptIntroduction() : null;
     }
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StampBook> stampBooks;
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CafeOpenHour> openHours = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CafeSpecialDay> specialDays = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CafeStaff> staffList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StampBookDesign> stampBookDesigns = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Challenge> challenges = new ArrayList<>();
 }

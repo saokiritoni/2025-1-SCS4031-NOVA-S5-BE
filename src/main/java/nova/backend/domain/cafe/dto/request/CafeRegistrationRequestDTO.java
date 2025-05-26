@@ -13,8 +13,10 @@ public record CafeRegistrationRequestDTO(
         String businessNumber,
         Double latitude,
         Double longitude,
+        String roadAddress,
         Integer maxStampCount,
-        CharacterType characterType
+        CharacterType characterType,
+        String rewardDescription
 ) {
     public Cafe toEntity(User owner) {
         return Cafe.builder()
@@ -25,6 +27,7 @@ public record CafeRegistrationRequestDTO(
                 .businessNumber(businessNumber)
                 .latitude(latitude)
                 .longitude(longitude)
+                .roadAddress(roadAddress)
                 .maxStampCount(maxStampCount)
                 .characterType(characterType)
                 .registrationStatus(CafeRegistrationStatus.REQUESTED)

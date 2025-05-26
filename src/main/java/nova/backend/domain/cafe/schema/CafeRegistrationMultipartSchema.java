@@ -26,14 +26,15 @@ public class CafeRegistrationMultipartSchema {
     @Schema(description = "경도", example = "127.078")
     public Double longitude;
 
+    @Schema(description = "카페 도로명 주소", example = "서울특별시 중구 필동로 1길 30")
+    public String roadAddress;
+
+
     @Schema(description = "최대 스탬프 수", example = "10")
     public Integer maxStampCount;
 
-    @Schema(description = "캐릭터 타입 (예: BEAR, CAT, RABBIT)", example = "RABBIT")
+    @Schema(description = "캐릭터 타입 (예: ORANGE, BLACK ...)", example = "RABBIT")
     public String characterType;
-
-    @Schema(description = "리워드 설명", example = "스탬프 10개 적립 시 아메리카노 무료")
-    public String rewardDescription;
 
     @Schema(description = "스탬프북 디자인 JSON, 없으면 기본 스탬프북으로 저장", example = "{\"bgColor\":\"#fff\", \"stampShape\":\"circle\"}")
     public String stampBookDesignJson;

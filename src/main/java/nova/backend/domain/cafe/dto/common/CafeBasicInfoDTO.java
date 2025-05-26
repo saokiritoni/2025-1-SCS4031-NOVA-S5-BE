@@ -11,6 +11,7 @@ public record CafeBasicInfoDTO(
         Integer maxStampCount,
         Double latitude,
         Double longitude,
+        String roadAddress,
         String cafePhone,
         CharacterType characterType
 
@@ -24,6 +25,7 @@ public record CafeBasicInfoDTO(
                 cafe.getMaxStampCount(),
                 cafe.getLatitude(),
                 cafe.getLongitude(),
+                cafe.getRoadAddress(),
                 cafe.getCafePhone(),
                 cafe.getCharacterType()
         );
