@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
@@ -42,4 +43,8 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     List<Challenge> findByCafe_CafeIdAndEndDateBefore(Long cafeId, LocalDate today);
 
     boolean existsByCafe_CafeId(Long cafeId);
+
+    Optional<Challenge> findFirstByCafe_CafeIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+            Long cafeId, LocalDate startDate, LocalDate endDate);
+
 }

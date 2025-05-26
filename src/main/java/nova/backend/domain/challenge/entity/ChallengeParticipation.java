@@ -5,6 +5,8 @@ import lombok.*;
 import nova.backend.domain.user.entity.User;
 import nova.backend.global.common.BaseTimeEntity;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,13 +32,18 @@ public class ChallengeParticipation extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ChallengeStatus challengeStatus;
+    private nova.backend.domain.challenge.entity.ParticipationStatus challengeStatus;
 
     @Column(nullable = false)
     private int completedCount = 0;
 
-    public enum ParticipationStatus {
-        IN_PROGRESS, STOPPED, REWARDED
+    public void incrementCompletedCount(int successThreshold) {
+        this.completedCount++;
+        this.setUpdatedAt(LocalDateTime.now());
+        if (this.completedCount >= successThreshold) {
+            this.challengeStatus = ParticipationStatus.COMPLETED;
+        }
     }
+
 }
 
