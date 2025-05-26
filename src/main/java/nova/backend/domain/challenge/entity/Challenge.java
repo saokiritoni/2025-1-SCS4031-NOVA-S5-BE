@@ -48,13 +48,13 @@ public class Challenge extends BaseTimeEntity {
 
     public int getCompletedCount() {
         return (int) participations.stream()
-                .filter(p -> p.getChallengeStatus() == ChallengeStatus.COMPLETED)
+                .filter(p -> p.getChallengeStatus() == ParticipationStatus.COMPLETED)
                 .count();
     }
 
     public int getCanceledCount() {
         return (int) participations.stream()
-                .filter(p -> p.getChallengeStatus() == ChallengeStatus.CANCELED)
+                .filter(p -> p.getChallengeStatus() == ParticipationStatus.CANCELED)
                 .count();
     }
 
