@@ -92,9 +92,17 @@ public enum ErrorCode {
     EXPOSED_STAMPBOOK_NOT_FOUND(HttpStatus.BAD_REQUEST," 카페에서 노출 설정된 스탬프북이 없습니다."),
 
     /**
-    Stamp Error
+     * Stamp Error
      */
-    CAFE_NOT_SELECTED(HttpStatus.BAD_REQUEST, "카페가 선택되지 않았습니다.")
+    CAFE_NOT_SELECTED(HttpStatus.BAD_REQUEST, "카페가 선택되지 않았습니다."),
+
+    /**
+     * Challenge Error
+     */
+    CHALLENGE_NOT_FOUND(HttpStatus.NOT_FOUND, "챌린지가 존재하지 않습니다."),
+    ALREADY_ACCUMULATED_TODAY(HttpStatus.BAD_REQUEST,"오늘은 이미 적립이 완료되었습니다."),
+    CHALLENGE_ALREADY_COMPLETED_OR_CANCELED(HttpStatus.BAD_REQUEST, "카페에서 진행중인 챌린지가 아닙니다.")
+
 
     ;
     private final HttpStatus httpStatus;

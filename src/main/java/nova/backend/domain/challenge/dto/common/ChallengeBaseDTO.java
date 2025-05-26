@@ -1,4 +1,4 @@
-package nova.backend.domain.challenge.dto.response;
+package nova.backend.domain.challenge.dto.common;
 
 import nova.backend.domain.challenge.entity.Challenge;
 import nova.backend.domain.challenge.entity.ChallengeType;
