@@ -29,6 +29,9 @@ public class Cafe {
     @Column(nullable = false)
     private Double longitude;
 
+    @Column(nullable = false)
+    private String roadAddress;
+
     private String cafePhone;
 
     @Column(nullable = false)
