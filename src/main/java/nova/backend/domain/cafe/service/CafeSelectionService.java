@@ -6,6 +6,7 @@ import nova.backend.domain.cafe.dto.response.CafeOwnerSelectedResponseDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.cafe.repository.CafeStaffRepository;
+import nova.backend.domain.cafe.repository.StampBookDesignRepository;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,6 +21,8 @@ public class CafeSelectionService {
     private final RedisTemplate<String, String> redisTemplate;
     private final CafeRepository cafeRepository;
     private final CafeStaffRepository cafeStaffRepository;
+    private final StampBookDesignRepository stampBookDesignRepository;
+
 
     public void selectCafe(Long userId, Long cafeId) {
         Cafe cafe = cafeRepository.findById(cafeId)
@@ -44,9 +47,14 @@ public class CafeSelectionService {
                 .toList();
     }
 
+
     public CafeOwnerSelectedResponseDTO getSelectedCafe(Long selectedCafeId) {
         Cafe cafe = cafeRepository.findById(selectedCafeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
-        return CafeOwnerSelectedResponseDTO.fromEntity(cafe);
+
+        boolean hasStampBookDesign = stampBookDesignRepository.existsByCafe_CafeId(selectedCafeId);
+
+        return CafeOwnerSelectedResponseDTO.fromEntity(cafe, hasStampBookDesign);
     }
+
 }

@@ -15,15 +15,20 @@ public record CafeOwnerSelectedResponseDTO(
         boolean isOpenNow,
         CafeRegistrationStatus registrationStatus,
         List<CafeOpenHourDTO> openHours,
-        List<CafeSpecialDayDTO> specialDays
+        List<CafeSpecialDayDTO> specialDays,
+        boolean hasStampBookDesign
 ) {
-    public static CafeOwnerSelectedResponseDTO fromEntity(Cafe cafe) {
+    public static CafeOwnerSelectedResponseDTO fromEntity(
+            Cafe cafe,
+            boolean hasStampBookDesign
+    ) {
         return new CafeOwnerSelectedResponseDTO(
                 CafeBasicInfoDTO.from(cafe),
                 CafeOperatingInfoDTO.checkIsOpenNow(cafe),
                 cafe.getRegistrationStatus(),
                 CafeOperatingInfoDTO.openHoursFrom(cafe),
-                CafeOperatingInfoDTO.specialDaysFrom(cafe)
+                CafeOperatingInfoDTO.specialDaysFrom(cafe),
+                hasStampBookDesign
         );
     }
 }
