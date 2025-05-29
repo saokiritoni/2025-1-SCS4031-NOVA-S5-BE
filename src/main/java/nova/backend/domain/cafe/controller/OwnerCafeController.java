@@ -1,6 +1,7 @@
 package nova.backend.domain.cafe.controller;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.cafe.controller.api.OwnerCafeApi;
 import nova.backend.domain.cafe.dto.request.CafeRegistrationRequestDTO;
 import nova.backend.domain.cafe.dto.request.StampBookDesignCreateRequestDTO;
 import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;

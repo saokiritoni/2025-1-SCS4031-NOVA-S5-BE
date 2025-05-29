@@ -2,6 +2,7 @@ package nova.backend.domain.stampBook.controller;
 
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.cafe.dto.request.StampBookCreateRequestDTO;
+import nova.backend.domain.stampBook.controller.api.StampBookApi;
 import nova.backend.domain.stampBook.dto.response.StampBookResponseDTO;
 import nova.backend.domain.stampBook.service.UserStampBookService;
 import nova.backend.global.auth.CustomUserDetails;
@@ -15,7 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/stampbooks")
-public class StampBookController implements StampBookApi{
+public class StampBookController implements StampBookApi {
 
     private final UserStampBookService userStampBookService;
 

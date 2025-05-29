@@ -1,6 +1,7 @@
 package nova.backend.domain.cafe.controller;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.cafe.controller.api.CafeApi;
 import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 import nova.backend.domain.cafe.dto.response.CafeSummaryWithConceptDTO;
 import nova.backend.domain.cafe.service.CafeService;

@@ -1,6 +1,7 @@
 package nova.backend.domain.challenge.controller;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.challenge.controller.api.OwnerChallengeApi;
 import nova.backend.domain.challenge.dto.request.ChallengeCreateRequestDTO;
 import nova.backend.domain.challenge.dto.response.*;
 import nova.backend.domain.challenge.service.OwnerChallengeService;

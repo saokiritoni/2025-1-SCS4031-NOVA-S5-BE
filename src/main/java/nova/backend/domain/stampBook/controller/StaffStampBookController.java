@@ -1,6 +1,7 @@
 package nova.backend.domain.stampBook.controller;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.stampBook.controller.api.StaffStampBookApi;
 import nova.backend.domain.stampBook.dto.request.UseRewardsRequestDTO;
 import nova.backend.domain.stampBook.service.StaffStampBookService;
 import nova.backend.global.auth.CustomUserDetails;

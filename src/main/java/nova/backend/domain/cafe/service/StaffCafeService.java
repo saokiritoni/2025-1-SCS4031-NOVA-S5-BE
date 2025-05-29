@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CafeSelectionService {
+public class StaffCafeService {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final CafeRepository cafeRepository;

@@ -1,6 +1,7 @@
 package nova.backend.domain.challenge.controller;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.challenge.controller.api.StaffChallengeApi;
 import nova.backend.domain.challenge.dto.request.ChallengeAccumulateRequestDTO;
 import nova.backend.domain.challenge.service.StaffChallengeService;
 import nova.backend.global.auth.CustomUserDetails;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/challenges/staff")
-public class StaffChallengeController implements StaffChallengeApi{
+public class StaffChallengeController implements StaffChallengeApi {
 
     private final StaffChallengeService staffChallengeService;
 
