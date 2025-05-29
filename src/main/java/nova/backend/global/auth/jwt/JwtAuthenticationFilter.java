@@ -7,9 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nova.backend.domain.user.entity.Role;
 import nova.backend.domain.user.entity.User;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.auth.CustomUserDetailsService;
+import nova.backend.global.auth.SecurityWhitelist;
+import nova.backend.global.auth.UserAuthentication;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.UnauthorizedException;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,29 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
-
     private final JwtProvider jwtProvider;
+
     private final CustomUserDetailsService userDetailsService;
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
-
-    // 인증 생략 필요한 정확한 경로 지정
-    private static final List<String> exactSkipPaths = List.of(
-            "/",
-            "/swagger-ui",
-            "/v3/api-docs",
-            "/auth/callback",
-            "/api/auth/login"
-    );
-
-    // 인증 생략 필요한 패턴 경로 지정
-    private static final List<String> patternSkipPaths = List.of(
-            "/api/cafes/**",
-            "/api/auth/token/**"
-    );
-
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -71,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final Long userId = jwtProvider.getSubject(accessToken);
             log.info("[JwtAuthFilter] 토큰에서 추출한 userId: {}", userId);
 
-            // User 엔티티 직접 조회
+            // User 엔티티 조회
             User user = userDetailsService.loadUserEntityById(userId);
             log.info("[JwtAuthFilter] 로드된 사용자 email={}, role={}", user.getEmail(), user.getRole());
 
@@ -81,7 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Long selectedCafeId = cafeIdStr != null ? Long.valueOf(cafeIdStr) : null;
             log.info("[JwtAuthFilter] Redis에서 가져온 selectedCafeId: {}", selectedCafeId);
 
-            // CustomUserDetails에 selectedCafeId 포함
+            // selectedCafeId 설정
             CustomUserDetails userDetails = new CustomUserDetails(user, selectedCafeId);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -130,18 +116,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         log.info("[JwtAuthFilter] 현재 요청 URI = {}", path);
 
-        if (exactSkipPaths.contains(path)) {
+        if (SecurityWhitelist.EXACT_SKIP_PATHS.contains(path)) {
             return true;
         }
-        
-        for (String pattern : patternSkipPaths) {
+
+        for (String pattern : SecurityWhitelist.PATTERN_SKIP_PATHS) {
             if (pathMatcher.match(pattern, path)) {
                 return true;
             }
         }
-
         return false;
     }
-
 }
 
