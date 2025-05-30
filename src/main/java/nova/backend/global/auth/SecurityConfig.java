@@ -28,11 +28,6 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final RedisTemplate<String, String> redisTemplate;
 
-    private static final String[] whiteList = {
-            "/", "/swagger/**", "/swagger-ui/**", "/v3/api-docs/**",
-            "/api/auth/**", "/auth/callback/**", "/api/cafes/**"
-    };
-
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(
@@ -51,7 +46,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/owner/**").hasAnyAuthority("ROLE_OWNER")
                         .requestMatchers("/api/staff/**").hasAnyAuthority("ROLE_OWNER", "ROLE_STAFF")
-                        .requestMatchers(whiteList).permitAll()
+                        .requestMatchers(SecurityWhitelist.SPRING_WHITE_LIST).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilter(corsConfig.corsFilter())

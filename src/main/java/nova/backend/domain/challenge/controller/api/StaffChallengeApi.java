@@ -1,4 +1,4 @@
-package nova.backend.domain.challenge.controller;
+package nova.backend.domain.challenge.controller.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

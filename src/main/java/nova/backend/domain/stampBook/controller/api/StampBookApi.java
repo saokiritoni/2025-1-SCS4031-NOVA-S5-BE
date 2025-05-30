@@ -1,4 +1,4 @@
-package nova.backend.domain.stampBook.controller;
+package nova.backend.domain.stampBook.controller.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

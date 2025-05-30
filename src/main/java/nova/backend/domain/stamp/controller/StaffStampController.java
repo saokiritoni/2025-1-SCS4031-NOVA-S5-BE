@@ -1,6 +1,7 @@
 package nova.backend.domain.stamp.controller;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.stamp.controller.api.StaffStampApi;
 import nova.backend.domain.stamp.dto.request.StampAccumulateRequestDTO;
 import nova.backend.domain.stamp.dto.response.StaffStampViewResponseDTO;
 import nova.backend.domain.stamp.service.StampService;
