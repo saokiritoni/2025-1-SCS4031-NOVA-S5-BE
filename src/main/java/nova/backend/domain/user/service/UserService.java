@@ -9,14 +9,19 @@ import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
+import nova.backend.global.util.NicknameGenerator;
 import nova.backend.global.util.QrCodeGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
+    private final NicknameGenerator nicknameGenerator;
     private User getExistedUser(String socialId, SocialType socialType) {
         return userRepository.findBySocialTypeAndSocialId(socialType, socialId).orElse(null);
     }
@@ -28,13 +33,14 @@ public class UserService {
 
         if (existedUser == null) {
             String qrCode = QrCodeGenerator.generate();
+            String nickname = nicknameGenerator.generateNickname();
 
             User newUser = User.builder()
                     .socialId(socialId)
                     .socialType(userLoginRequest.socialType())
                     .profileImageUrl(imageUrl)
                     .role(userLoginRequest.role())
-                    .name(kakaoName)
+                    .name(nickname)
                     .qrCodeValue(qrCode)
                     .email(null)
                     .build();
@@ -49,7 +55,6 @@ public class UserService {
         return existedUser;
     }
 
-
     // 내 profile QR 조회
     public QrCodeResponseDTO getMyQrCode(Long userId) {
         User user = userRepository.findById(userId)
@@ -57,5 +62,6 @@ public class UserService {
 
         return QrCodeResponseDTO.from(user.getQrCodeValue());
     }
+
 
 }
