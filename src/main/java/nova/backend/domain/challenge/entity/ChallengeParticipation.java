@@ -2,6 +2,7 @@ package nova.backend.domain.challenge.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import nova.backend.domain.challenge.entity.status.ParticipationStatus;
 import nova.backend.domain.user.entity.User;
 import nova.backend.global.common.BaseTimeEntity;
 
@@ -32,7 +33,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ChallengeStatus challengeStatus; // 챌린지 목표 도달 여부
+    private Challenge.ChallengeStatus challengeStatus; // 챌린지 목표 도달 여부
 
     @Column(nullable = false)
     private int completedCount = 0;
@@ -42,7 +43,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
                 .challenge(challenge)
                 .user(user)
                 .participationStatus(ParticipationStatus.IN_PROGRESS)
-                .challengeStatus(ChallengeStatus.IN_PROGRESS)
+                .challengeStatus(Challenge.ChallengeStatus.IN_PROGRESS)
                 .completedCount(0)
                 .build();
     }
@@ -52,13 +53,13 @@ public class ChallengeParticipation extends BaseTimeEntity {
         this.setUpdatedAt(LocalDateTime.now());
 
         if (this.completedCount >= this.challenge.getSuccessCount()) {
-            this.challengeStatus = ChallengeStatus.COMPLETED;
+            this.challengeStatus = Challenge.ChallengeStatus.COMPLETED;
         } else {
-            this.challengeStatus = ChallengeStatus.IN_PROGRESS;
+            this.challengeStatus = Challenge.ChallengeStatus.IN_PROGRESS;
         }
     }
 
     public boolean isInProgress() {
-        return this.challengeStatus == ChallengeStatus.IN_PROGRESS;
+        return this.challengeStatus == Challenge.ChallengeStatus.IN_PROGRESS;
     }
 }

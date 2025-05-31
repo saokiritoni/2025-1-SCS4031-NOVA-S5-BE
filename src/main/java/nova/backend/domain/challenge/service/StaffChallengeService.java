@@ -1,10 +1,10 @@
 package nova.backend.domain.challenge.service;
 
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.challenge.dto.request.ChallengeAccumulateRequestDTO;
 import nova.backend.domain.challenge.dto.request.ChallengeCancelRequestDTO;
 import nova.backend.domain.challenge.entity.*;
+import nova.backend.domain.challenge.entity.status.ParticipationStatus;
 import nova.backend.domain.challenge.repository.ChallengeAccumulationRepository;
 import nova.backend.domain.challenge.repository.ChallengeParticipationRepository;
 import nova.backend.domain.challenge.repository.ChallengeRepository;
@@ -85,7 +85,7 @@ public class StaffChallengeService {
         List<ChallengeAccumulation> accumulations = accumulationRepository
                 .findByParticipation_ParticipationIdOrderByCreatedAtDesc(participation.getParticipationId());
 
-        int remaining = request.cancelCount();
+        int remaining = request.count();
 
         for (ChallengeAccumulation accumulation : accumulations) {
             if (remaining <= 0) break;
