@@ -60,7 +60,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        return QrCodeResponseDTO.from(user.getQrCodeValue());
+        return QrCodeResponseDTO.from(user.getQrCodeValue(), user.getName());
     }
 
 
