@@ -1,8 +1,11 @@
 package nova.backend.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.stamp.repository.StampRepository;
+import nova.backend.domain.stampBook.repository.StampBookRepository;
 import nova.backend.domain.user.dto.request.UserLoginRequestDTO;
 import nova.backend.domain.user.dto.response.QrCodeResponseDTO;
+import nova.backend.domain.user.dto.response.UserStatusResponseDTO;
 import nova.backend.domain.user.entity.Role;
 import nova.backend.domain.user.entity.SocialType;
 import nova.backend.domain.user.entity.User;
@@ -14,6 +17,7 @@ import nova.backend.global.util.QrCodeGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,6 +26,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final NicknameGenerator nicknameGenerator;
+    private final StampRepository stampRepository;
+    private final StampBookRepository stampBookRepository;
     private User getExistedUser(String socialId, SocialType socialType) {
         return userRepository.findBySocialTypeAndSocialId(socialType, socialId).orElse(null);
     }
@@ -56,12 +62,28 @@ public class UserService {
     }
 
     // 내 profile QR 조회
+    @Transactional(readOnly = true)
     public QrCodeResponseDTO getMyQrCode(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         return QrCodeResponseDTO.from(user.getQrCodeValue(), user.getName());
     }
+
+    // 메인 페이지 유저 상태 표시 (QR 진입 전)
+    @Transactional(readOnly = true)
+    public UserStatusResponseDTO getUserStatus(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        int todayStampCount = stampRepository.countByStampBook_User_UserIdAndCreatedAtBetween(
+                userId, LocalDate.now().atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay());
+
+        int unusedRewardCount = stampBookRepository.countByUser_UserIdAndRewardClaimedTrueAndUsedFalse(userId);
+
+        return UserStatusResponseDTO.of(user.getName(), todayStampCount, unusedRewardCount);
+    }
+
 
 
 }
