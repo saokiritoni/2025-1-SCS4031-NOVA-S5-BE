@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import nova.backend.domain.cafe.entity.CafeStaff;
 import nova.backend.domain.stampBook.entity.StampBook;
-import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.global.common.BaseTimeEntity;
 import org.hibernate.annotations.ColumnDefault;
 

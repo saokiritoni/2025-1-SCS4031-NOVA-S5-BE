@@ -6,9 +6,6 @@ import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.CharacterType;
 import nova.backend.domain.user.entity.User;
 import nova.backend.global.common.BaseTimeEntity;
-import nova.backend.global.error.exception.BusinessException;
-
-import static nova.backend.global.error.ErrorCode.NOT_CUSTOMED;
 
 @Entity
 @Getter

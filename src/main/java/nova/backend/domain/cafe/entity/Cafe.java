@@ -52,6 +52,9 @@ public class Cafe {
     @Column(nullable = false)
     private String businessNumber;
 
+    @Column
+    private String cafeUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CafeRegistrationStatus registrationStatus;

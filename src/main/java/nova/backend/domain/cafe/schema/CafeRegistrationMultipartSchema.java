@@ -39,6 +39,9 @@ public class CafeRegistrationMultipartSchema {
     @Schema(description = "스탬프북 디자인 JSON, 없으면 기본 스탬프북으로 저장", example = "{\"bgColor\":\"#fff\", \"stampShape\":\"circle\"}")
     public String stampBookDesignJson;
 
+    @Schema(description = "카페 대표 사진 URL", example = "https://example.com/images/cafe.jpg")
+    public String cafeUrl;
+
     @Schema(description = "사업자 등록증 PDF 파일")
     public String businessRegistrationPdf;
 }
