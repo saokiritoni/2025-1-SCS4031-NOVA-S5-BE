@@ -13,7 +13,8 @@ public record CafeBasicInfoDTO(
         Double longitude,
         String roadAddress,
         String cafePhone,
-        CharacterType characterType
+        CharacterType characterType,
+        String cafeUrl
 
 ) {
     public static CafeBasicInfoDTO from(Cafe cafe) {
@@ -27,7 +28,8 @@ public record CafeBasicInfoDTO(
                 cafe.getLongitude(),
                 cafe.getRoadAddress(),
                 cafe.getCafePhone(),
-                cafe.getCharacterType()
+                cafe.getCharacterType(),
+                cafe.getCafeUrl()
         );
     }
 }
