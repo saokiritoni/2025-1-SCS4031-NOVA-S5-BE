@@ -5,16 +5,16 @@ import nova.backend.domain.challenge.entity.Challenge;
 
 public record OwnerChallengeDetailResponseDTO(
         ChallengeBaseDTO base,
-        int participantCount,
-        int completedCount,
-        int canceledCount
+        int inProgressCount,
+        int canceledCount,
+        int rewardedCount
 ) {
     public static OwnerChallengeDetailResponseDTO fromEntity(Challenge challenge) {
         return new OwnerChallengeDetailResponseDTO(
                 ChallengeBaseDTO.fromEntity(challenge),
-                challenge.getParticipantCount(),
-                challenge.getCompletedCount(),
-                challenge.getCanceledCount()
+                challenge.getInProgressCount(),
+                challenge.getCanceledCount(),
+                challenge.getRewardedCount()
         );
     }
 }

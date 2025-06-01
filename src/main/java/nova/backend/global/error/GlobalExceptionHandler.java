@@ -108,7 +108,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatus()).body(errorResponse);
     }
 
-
     /**
      * 위에서 정의한 Exception을 제외한 모든 예외를 handling합니다.
      */
@@ -118,4 +117,18 @@ public class GlobalExceptionHandler {
         final ErrorResponse errorBaseResponse = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBaseResponse);
     }
+
+    /**
+     * RequestParam 누락 시 발생하는 error를 handling합니다.
+     */
+    @ExceptionHandler(org.springframework.web.bind.MissingServletRequestParameterException.class)
+    protected ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(
+            org.springframework.web.bind.MissingServletRequestParameterException e
+    ) {
+        log.warn(">>> handle: MissingServletRequestParameterException - {}", e.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.MISSING_REQUEST_PARAMETER);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
 }
