@@ -41,14 +41,9 @@ public class OwnerChallengeService {
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
-        ChallengeBaseDTO base = ChallengeBaseDTO.fromEntity(challenge);
-        return new OwnerChallengeDetailResponseDTO(
-                base,
-                challenge.getParticipantCount(),
-                challenge.getCompletedCount(),
-                challenge.getCanceledCount()
-        );
+        return OwnerChallengeDetailResponseDTO.fromEntity(challenge);
     }
+
 
     public List<ChallengeSummaryDTO> getUpcomingChallenges(Long cafeId) {
         LocalDate today = LocalDate.now();
