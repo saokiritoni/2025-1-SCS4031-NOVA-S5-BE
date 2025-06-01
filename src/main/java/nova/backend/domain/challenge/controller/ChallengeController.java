@@ -1,6 +1,7 @@
 package nova.backend.domain.challenge.controller;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.challenge.controller.api.ChallengeApi;
 import nova.backend.domain.challenge.dto.response.ChallengeSummaryDTO;
 import nova.backend.domain.challenge.dto.common.ChallengeBaseDTO;
 import nova.backend.domain.challenge.entity.status.ChallengeStatus;
@@ -16,7 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/challenges")
-public class ChallengeController {
+public class ChallengeController implements ChallengeApi {
 
     private final ChallengeService challengeService;
 
@@ -34,6 +35,7 @@ public class ChallengeController {
         List<ChallengeSummaryDTO> response = challengeService.getAvailableChallenges();
         return SuccessResponse.ok(response);
     }
+
 
     @GetMapping("/my")
     public ResponseEntity<SuccessResponse<?>> getMyChallenges(

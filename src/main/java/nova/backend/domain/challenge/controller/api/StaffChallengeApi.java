@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "4-2. 챌린지(STAFF) API", description = "직원/사장용 챌린지 적립 API")
+@Tag(name = "3. 챌린지(STAFF) API", description = "직원/사장용 챌린지 적립 API")
 @RequestMapping("/api/challenges/staff")
 @SecurityRequirement(name = "token")
 public interface StaffChallengeApi {
