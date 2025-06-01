@@ -14,7 +14,7 @@ import nova.backend.domain.common.dto.PresignedUrlResponseDTO;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "S3 API", description = "S3 파일 처리 관련 API")
+@Tag(name = "0. S3 API", description = "S3 파일 처리 관련 API")
 public interface S3Api {
 
     @Operation(
