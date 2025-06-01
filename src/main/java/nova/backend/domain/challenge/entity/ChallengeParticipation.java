@@ -2,9 +2,12 @@ package nova.backend.domain.challenge.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import nova.backend.domain.challenge.entity.status.ChallengeStatus;
 import nova.backend.domain.challenge.entity.status.ParticipationStatus;
 import nova.backend.domain.user.entity.User;
 import nova.backend.global.common.BaseTimeEntity;
+import nova.backend.global.error.ErrorCode;
+import nova.backend.global.error.exception.BusinessException;
 
 import java.time.LocalDateTime;
 
@@ -32,8 +35,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
     private ParticipationStatus participationStatus; // 사용자의 참여 의사
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Challenge.ChallengeStatus challengeStatus; // 챌린지 목표 도달 여부
+    private ChallengeStatus challengeStatus;
 
     @Column(nullable = false)
     private int completedCount = 0;
@@ -43,7 +45,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
                 .challenge(challenge)
                 .user(user)
                 .participationStatus(ParticipationStatus.IN_PROGRESS)
-                .challengeStatus(Challenge.ChallengeStatus.IN_PROGRESS)
+                .challengeStatus(ChallengeStatus.IN_PROGRESS)
                 .completedCount(0)
                 .build();
     }
@@ -53,13 +55,24 @@ public class ChallengeParticipation extends BaseTimeEntity {
         this.setUpdatedAt(LocalDateTime.now());
 
         if (this.completedCount >= this.challenge.getSuccessCount()) {
-            this.challengeStatus = Challenge.ChallengeStatus.COMPLETED;
+            this.challengeStatus = ChallengeStatus.COMPLETED;
         } else {
-            this.challengeStatus = Challenge.ChallengeStatus.IN_PROGRESS;
+            this.challengeStatus = ChallengeStatus.IN_PROGRESS;
         }
     }
 
     public boolean isInProgress() {
-        return this.challengeStatus == Challenge.ChallengeStatus.IN_PROGRESS;
+        return this.challengeStatus == ChallengeStatus.IN_PROGRESS;
+    }
+
+    public void cancelParticipation() {
+        this.participationStatus = ParticipationStatus.CANCELED;
+    }
+
+    public void rewardChallenge() {
+        if (this.challengeStatus != ChallengeStatus.COMPLETED) {
+            throw new BusinessException(ErrorCode.INVALID_CHALLENGE_STATUS);
+        }
+        this.challengeStatus = ChallengeStatus.REWARDED;
     }
 }
