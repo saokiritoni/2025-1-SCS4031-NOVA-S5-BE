@@ -16,6 +16,7 @@ public class CustomUserDetails implements UserDetails {
     private final Long userId;
     private final String email;
     private final Role role;
+    private final String name;
     private final User user;
     private final Long selectedCafeId;
 
@@ -24,6 +25,7 @@ public class CustomUserDetails implements UserDetails {
         this.userId = user.getUserId();
         this.email = user.getEmail();
         this.role = user.getRole();
+        this.name = user.getName();
         this.selectedCafeId = selectedCafeId;
     }
 
