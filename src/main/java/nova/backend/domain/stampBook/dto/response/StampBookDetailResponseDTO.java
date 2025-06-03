@@ -4,9 +4,10 @@ import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 
 public record StampBookDetailResponseDTO(
         CafeDesignOverviewDTO cafeDesignOverview,
-        StampBookResponseDTO stampBookInfo
+        StampBookResponseDTO stampBookInfo,
+        int rewardAvailableCount
 ) {
-    public static StampBookDetailResponseDTO of(CafeDesignOverviewDTO overview, StampBookResponseDTO stampBook) {
-        return new StampBookDetailResponseDTO(overview, stampBook);
+    public static StampBookDetailResponseDTO of(CafeDesignOverviewDTO overview, StampBookResponseDTO stampBook, int rewardAvailableCount) {
+        return new StampBookDetailResponseDTO(overview, stampBook, rewardAvailableCount);
     }
 }
