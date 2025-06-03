@@ -10,12 +10,17 @@ public record StampBookDesignBasicDTO(
         String conceptIntroduction,
         String rewardDescription,
         String stampBookDesignJson,
-        CharacterType characterType
+        CharacterType characterType,
+        String frontCafeName,
+        String backCafeName,
+        String backImageUrl
 ) {
     public static StampBookDesignBasicDTO from(StampBookDesign design) {
         if (design == null) {
-            return new StampBookDesignBasicDTO(null, null, null, null, null, null);
+            return new StampBookDesignBasicDTO(null, null, null, null, null, null, null, null, null);
         }
+
+        Cafe cafe = design.getCafe();
 
         return new StampBookDesignBasicDTO(
                 design.getStampBookName(),
@@ -23,10 +28,10 @@ public record StampBookDesignBasicDTO(
                 design.getConceptIntroduction(),
                 design.getRewardDescription(),
                 design.getDesignJson(),
-                design.getCafe() != null ? design.getCafe().getCharacterType() : null
+                cafe != null ? cafe.getCharacterType() : null,
+                design.getFrontCafeName(),
+                design.getBackCafeName(),
+                design.getBackImageUrl()
         );
     }
-
-
 }
-
