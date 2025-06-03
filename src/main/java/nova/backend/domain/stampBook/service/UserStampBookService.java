@@ -194,11 +194,17 @@ public class UserStampBookService {
 
         int currentStampCount = stampRepository.countByStampBook_StampBookId(stampBookId);
 
+        int rewardAvailableCount = stampBookRepository
+                .countByUser_UserIdAndCafe_CafeIdAndIsCompletedTrueAndRewardClaimedFalse(userId, cafe.getCafeId());
+
         return StampBookDetailResponseDTO.of(
                 CafeDesignOverviewDTO.fromEntity(cafe, design),
-                StampBookResponseDTO.fromEntity(stampBook, currentStampCount)
+                StampBookResponseDTO.fromEntity(stampBook, currentStampCount),
+                rewardAvailableCount
         );
     }
+
+
 
 
 }
