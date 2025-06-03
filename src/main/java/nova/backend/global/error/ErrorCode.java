@@ -87,6 +87,7 @@ public enum ErrorCode {
     NOT_ENOUGH_REWARDS(HttpStatus.BAD_REQUEST, "사용 가능한 리워드가 부족합니다."),
     ALREADY_USED_STAMPBOOK(HttpStatus.BAD_REQUEST, "이미 사용된 스탬프북은 마이페이지에 추가할 수 없습니다."),
     NOT_CUSTOMED(HttpStatus.BAD_REQUEST,"스탬프북이 커스텀되지 않았습니다."),
+    DESIGN_NOT_FOUND(HttpStatus.NOT_FOUND, "카페에서 스탬프북 디자인을 노출하지 않았습니다."),
 
     /**
      * Cafe Error
