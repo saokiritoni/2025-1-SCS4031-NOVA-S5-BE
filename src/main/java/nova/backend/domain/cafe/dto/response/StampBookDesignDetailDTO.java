@@ -19,7 +19,10 @@ public record StampBookDesignDetailDTO(
                         entity.getConceptIntroduction(),
                         entity.getRewardDescription(),
                         entity.getDesignJson(),
-                        entity.getCafe().getCharacterType()
+                        entity.getCafe().getCharacterType(),
+                        entity.getFrontCafeName(),
+                        entity.getBackCafeName(),
+                        entity.getBackImageUrl()
                 )
         );
     }
