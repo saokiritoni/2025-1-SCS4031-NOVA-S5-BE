@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import nova.backend.domain.cafe.dto.request.StampBookCreateRequestDTO;
+import nova.backend.domain.stampBook.schema.StampBookDetailSuccessResponse;
 import nova.backend.domain.stampBook.schema.StampBookListSuccessResponse;
 import nova.backend.domain.stampBook.schema.StampBookSuccessResponse;
 import nova.backend.global.auth.CustomUserDetails;
@@ -136,4 +137,28 @@ public interface StampBookApi {
     ResponseEntity<SuccessResponse<?>> getMyHomeStampBooks(
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
     );
+    @Operation(
+            summary = "스탬프북 단일 상세 조회",
+            description = "지정된 스탬프북 ID를 기반으로 상세 정보를 조회합니다.\n" +
+                    "- 카페 기본 정보 및 노출 중인 디자인 정보 포함\n" +
+                    "- 현재 스탬프 개수, 최대 개수, 남은 개수 포함\n" +
+                    "- 자신의 스탬프북이 아닐 경우 403 오류 발생",
+            security = @SecurityRequirement(name = "token")
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "스탬프북 단일 조회 성공",
+                    content = @Content(schema = @Schema(implementation = StampBookDetailSuccessResponse.class))),
+            @ApiResponse(responseCode = "404", description = "스탬프북 또는 디자인 정보 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "접근 권한 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/{stampBookId}")
+    ResponseEntity<SuccessResponse<?>> getStampBookDetail(
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long stampBookId
+    );
+
 }

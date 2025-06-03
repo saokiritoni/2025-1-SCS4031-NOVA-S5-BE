@@ -1,9 +1,12 @@
 package nova.backend.domain.stampBook.service;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 import nova.backend.domain.cafe.entity.Cafe;
+import nova.backend.domain.cafe.entity.StampBookDesign;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.stamp.repository.StampRepository;
+import nova.backend.domain.stampBook.dto.response.StampBookDetailResponseDTO;
 import nova.backend.domain.stampBook.dto.response.StampBookResponseDTO;
 import nova.backend.domain.stampBook.entity.StampBook;
 import nova.backend.domain.stampBook.repository.StampBookRepository;
@@ -172,4 +175,30 @@ public class UserStampBookService {
 
         stampBook.toggleInHome(true);
     }
+
+    @Transactional(readOnly = true)
+    public StampBookDetailResponseDTO getStampBookDetail(Long userId, Long stampBookId) {
+        StampBook stampBook = stampBookRepository.findById(stampBookId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        if (!stampBook.getUser().getUserId().equals(userId)) {
+            throw new BusinessException(ErrorCode.ACCESS_DENIED);
+        }
+
+        Cafe cafe = stampBook.getCafe();
+        StampBookDesign design = cafe.getExposedDesign();
+
+        if (design == null) {
+            throw new BusinessException(ErrorCode.DESIGN_NOT_FOUND);
+        }
+
+        int currentStampCount = stampRepository.countByStampBook_StampBookId(stampBookId);
+
+        return StampBookDetailResponseDTO.of(
+                CafeDesignOverviewDTO.fromEntity(cafe, design),
+                StampBookResponseDTO.fromEntity(stampBook, currentStampCount)
+        );
+    }
+
+
 }
