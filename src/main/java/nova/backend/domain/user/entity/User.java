@@ -59,6 +59,8 @@ public class User extends BaseTimeEntity {
         this.qrCodeValue = qrCodeValue;
     }
 
+    public void updateRole(Role role) { this.role = role; }
+
     @OneToMany(mappedBy = "user")
     private List<StampBook> stampBooks;
 

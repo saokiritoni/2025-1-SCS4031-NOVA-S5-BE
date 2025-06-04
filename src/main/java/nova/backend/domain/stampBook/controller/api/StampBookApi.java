@@ -160,5 +160,10 @@ public interface StampBookApi {
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long stampBookId
     );
+    @Operation(summary = "스탬프북 삭제", description = "내 스탬프북 중 하나를 삭제합니다.")
+    @DeleteMapping("/{stampBookId}")
+    ResponseEntity<SuccessResponse<?>> deleteStampBook(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                       @PathVariable Long stampBookId);
+
 
 }
