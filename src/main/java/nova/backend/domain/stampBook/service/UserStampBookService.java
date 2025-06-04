@@ -204,6 +204,23 @@ public class UserStampBookService {
         );
     }
 
+    @Transactional
+    public void deleteStampBook(Long userId, Long stampBookId) {
+        StampBook stampBook = stampBookRepository.findById(stampBookId)
+                .orElseThrow(() -> new BusinessException(ENTITY_NOT_FOUND));
+
+        if (!stampBook.getUser().getUserId().equals(userId)) {
+            throw new BusinessException(ACCESS_DENIED);
+        }
+
+        if (stampBook.isUsed()) {
+            throw new BusinessException(ErrorCode.ALREADY_USED_STAMPBOOK);
+        }
+
+        stampBookRepository.delete(stampBook);
+    }
+
+
 
 
 
