@@ -17,6 +17,9 @@ public class CafeRegistrationMultipartSchema {
     @Schema(description = "사장 연락처", example = "01012345678")
     public String ownerPhone;
 
+    @Schema(description = "카페 연락처", example = "01012345678")
+    public String cafePhone;
+
     @Schema(description = "사업자 등록 번호", example = "123-45-67890")
     public String businessNumber;
 

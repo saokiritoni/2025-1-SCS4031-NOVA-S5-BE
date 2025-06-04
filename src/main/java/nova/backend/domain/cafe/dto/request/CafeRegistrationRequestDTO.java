@@ -10,6 +10,7 @@ public record CafeRegistrationRequestDTO(
         String branchName,
         String ownerName,
         String ownerPhone,
+        String cafePhone,
         String businessNumber,
         Double latitude,
         Double longitude,
@@ -25,6 +26,7 @@ public record CafeRegistrationRequestDTO(
                 .branchName(branchName)
                 .ownerName(ownerName)
                 .ownerPhone(ownerPhone)
+                .cafePhone(cafePhone)
                 .businessNumber(businessNumber)
                 .latitude(latitude)
                 .longitude(longitude)
