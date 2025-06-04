@@ -92,5 +92,16 @@ public class StampBookController implements StampBookApi {
         return SuccessResponse.ok(response);
     }
 
+    // 스탬프북 삭제
+    @DeleteMapping("/{stampBookId}")
+    public ResponseEntity<SuccessResponse<?>> deleteStampBook(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long stampBookId
+    ) {
+        userStampBookService.deleteStampBook(userDetails.getUserId(), stampBookId);
+        return SuccessResponse.ok("스탬프북이 삭제되었습니다.");
+    }
+
+
 
 }
