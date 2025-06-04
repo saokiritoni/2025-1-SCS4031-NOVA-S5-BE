@@ -33,7 +33,7 @@ public class UserStampBookService {
     private final CafeRepository cafeRepository;
 
     public List<StampBookResponseDTO> getStampBooksForUser(Long userId) {
-        List<StampBook> stampBooks = stampBookRepository.findByUser_UserIdAndUsedFalse(userId);
+        List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(userId);
         return stampBooks.stream()
                 .map(stampBook -> {
                     int current = stampRepository.countByStampBook_StampBookId(stampBook.getStampBookId());
