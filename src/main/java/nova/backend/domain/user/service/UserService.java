@@ -89,13 +89,14 @@ public class UserService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         int todayStampCount = stampRepository.countByStampBook_User_UserIdAndCreatedAtBetween(
-                userId, LocalDate.now().atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay());
+                userId,
+                LocalDate.now().atStartOfDay(),
+                LocalDate.now().plusDays(1).atStartOfDay()
+        );
 
         int unusedRewardCount = stampBookRepository.countByUser_UserIdAndRewardClaimedTrueAndUsedFalse(userId);
 
-        return UserStatusResponseDTO.of(user.getName(), todayStampCount, unusedRewardCount);
+        return UserStatusResponseDTO.from(user, todayStampCount, unusedRewardCount);
     }
-
-
 
 }
