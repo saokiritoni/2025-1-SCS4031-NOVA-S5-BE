@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static nova.backend.global.error.ErrorCode.ACCESS_DENIED;
 import static nova.backend.global.error.ErrorCode.ENTITY_NOT_FOUND;
@@ -33,14 +35,29 @@ public class UserStampBookService {
     private final CafeRepository cafeRepository;
 
     public List<StampBookResponseDTO> getStampBooksForUser(Long userId) {
-        List<StampBook> stampBooks = stampBookRepository.findByUser_UserId(userId);
-        return stampBooks.stream()
-                .map(stampBook -> {
-                    int current = stampRepository.countByStampBook_StampBookId(stampBook.getStampBookId());
-                    return StampBookResponseDTO.fromEntity(stampBook, current);
+        List<StampBook> all = stampBookRepository.findByUser_UserId(userId);
+
+        // 카페 ID 기준으로 그룹핑
+        Map<Long, List<StampBook>> groupedByCafe = all.stream()
+                .collect(Collectors.groupingBy(sb -> sb.getCafe().getCafeId()));
+
+        // 각 카페마다 조건에 따라 스탬프북 선택
+        List<StampBook> filtered = groupedByCafe.values().stream()
+                .map(list -> list.stream()
+                        .filter(sb -> !sb.isCompleted()) // 미완료된 게 있으면 우선 반환
+                        .findFirst()
+                        .orElse(list.get(0)) // 없다면 그냥 첫 번째 반환
+                )
+                .toList();
+
+        return filtered.stream()
+                .map(sb -> {
+                    int current = stampRepository.countByStampBook_StampBookId(sb.getStampBookId());
+                    return StampBookResponseDTO.fromEntity(sb, current);
                 })
                 .toList();
     }
+
 
     @Transactional
     public StampBookResponseDTO createStampBook(Long userId, Long cafeId) {
