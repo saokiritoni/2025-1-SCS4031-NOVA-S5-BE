@@ -1,6 +1,7 @@
 package nova.backend.domain.stampBook.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nova.backend.domain.cafe.dto.response.CafeDesignOverviewDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.StampBookDesign;
@@ -14,8 +15,11 @@ import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +28,7 @@ import java.util.stream.Collectors;
 import static nova.backend.global.error.ErrorCode.ACCESS_DENIED;
 import static nova.backend.global.error.ErrorCode.ENTITY_NOT_FOUND;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -90,21 +95,57 @@ public class UserStampBookService {
         return StampBookResponseDTO.fromEntity(newStampBook, 0);
     }
 
+    /**
+     * Retrieves the current incomplete stamp book for a user and cafe with a database lock, or creates a new one if none exists.
+     *
+     * If a concurrent creation conflict or database lock failure occurs, throws a business exception indicating concurrent stamp book creation.
+     *
+     * @return the existing or newly created incomplete stamp book for the user and cafe
+     */
     @Transactional
     public StampBook getOrCreateValidStampBook(User user, Cafe cafe) {
-        return stampBookRepository
-                .findFirstByUser_UserIdAndCafe_CafeIdAndIsCompletedFalse(user.getUserId(), cafe.getCafeId())
-                .orElseGet(() -> stampBookRepository.save(
-                        StampBook.builder()
-                                .user(user)
-                                .cafe(cafe)
-                                .isCompleted(false)
-                                .rewardClaimed(false)
-                                .inHome(false)
-                                .build()
-                ));
+        try {
+            return stampBookRepository.findCurrentStampBookForUpdate(user.getUserId(), cafe.getCafeId())
+                    .orElseGet(() -> {
+                        stampBookRepository.flush(); // DB 상태 동기화
+                        boolean exists = stampBookRepository.findCurrentStampBookForUpdate(user.getUserId(), cafe.getCafeId()).isPresent();
+                        if (exists) {
+                            return stampBookRepository.findCurrentStampBookForUpdate(user.getUserId(), cafe.getCafeId()).get();
+                        }
+
+                        return stampBookRepository.save(
+                                StampBook.builder()
+                                        .user(user)
+                                        .cafe(cafe)
+                                        .isCompleted(false)
+                                        .rewardClaimed(false)
+                                        .inHome(false)
+                                        .build()
+                        );
+                    });
+        } catch (CannotAcquireLockException e) {
+            log.warn("Deadlock 또는 락 획득 실패: userId={}, cafeId={}", user.getUserId(), cafe.getCafeId(), e);
+            throw new BusinessException(ErrorCode.CONCURRENT_STAMP_CREATION);
+        } catch (DataAccessException e) {
+            log.warn("기타 데이터 액세스 오류: userId={}, cafeId={}", user.getUserId(), cafe.getCafeId(), e);
+            throw new BusinessException(ErrorCode.CONCURRENT_STAMP_CREATION);
+        }
     }
 
+
+    /**
+     * Converts a completed stamp book into a reward for the user.
+     *
+     * Validates ownership, completion status, and reward claim status of the stamp book.
+     * Marks the stamp book as reward-claimed and returns the associated cafe's reward description,
+     * or a default message if no reward is set.
+     *
+     * @param userId the ID of the user requesting the reward conversion
+     * @param stampBookId the ID of the stamp book to convert
+     * @return the reward description for the cafe, or a default message if not set
+     *
+     * @throws BusinessException if the stamp book does not exist, is not owned by the user, is incomplete, or the reward has already been claimed
+     */
     @Transactional
     public String convertStampBookToReward(Long userId, Long stampBookId) {
         StampBook stampBook = stampBookRepository.findById(stampBookId)
