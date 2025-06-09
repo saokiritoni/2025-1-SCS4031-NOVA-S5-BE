@@ -1,9 +1,9 @@
 package nova.backend.domain.stampBook.service;
 
 import lombok.RequiredArgsConstructor;
+import nova.backend.domain.cafe.dto.request.StampBookCreateRequestDTO;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.repository.CafeRepository;
-import nova.backend.domain.cafe.dto.request.StampBookCreateRequestDTO;
 import nova.backend.domain.stampBook.dto.response.StampBookResponseDTO;
 import nova.backend.domain.stampBook.entity.StampBook;
 import nova.backend.domain.stampBook.repository.StampBookRepository;
