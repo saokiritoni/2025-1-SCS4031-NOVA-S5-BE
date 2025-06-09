@@ -97,6 +97,7 @@ public enum ErrorCode {
      * Stamp Error
      */
     CAFE_NOT_SELECTED(HttpStatus.BAD_REQUEST, "카페가 선택되지 않았습니다."),
+    CONCURRENT_STAMP_CREATION(HttpStatus.CONFLICT, "스탬프북 생성 시 동시성 충돌이 발생했습니다."),
 
     /**
      * Challenge Error
