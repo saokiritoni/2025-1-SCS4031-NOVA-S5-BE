@@ -1,7 +1,7 @@
 package nova.backend.domain.challenge.repository;
 
-import nova.backend.domain.challenge.entity.Challenge;
 import nova.backend.domain.cafe.entity.Cafe;
+import nova.backend.domain.challenge.entity.Challenge;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

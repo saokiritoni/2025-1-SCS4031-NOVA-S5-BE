@@ -1,14 +1,14 @@
 package nova.backend.domain.challenge.service;
 
 import lombok.RequiredArgsConstructor;
-import nova.backend.domain.challenge.dto.response.ChallengeSummaryDTO;
 import nova.backend.domain.challenge.dto.common.ChallengeBaseDTO;
-import nova.backend.domain.challenge.entity.*;
+import nova.backend.domain.challenge.dto.response.ChallengeSummaryDTO;
+import nova.backend.domain.challenge.entity.Challenge;
+import nova.backend.domain.challenge.entity.ChallengeParticipation;
 import nova.backend.domain.challenge.entity.status.ChallengeStatus;
 import nova.backend.domain.challenge.entity.status.ParticipationStatus;
 import nova.backend.domain.challenge.repository.ChallengeParticipationRepository;
 import nova.backend.domain.challenge.repository.ChallengeRepository;
-import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
