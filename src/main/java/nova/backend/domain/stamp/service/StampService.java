@@ -95,6 +95,16 @@ public class StampService {
                 .toList();
     }
     
+    /****
+     * Retrieves a staff-facing view of a user's stamp history and recent stamps for the selected cafe.
+     *
+     * Checks staff or owner permissions and selected cafe context, then fetches the target user by QR code.
+     * Returns a DTO containing the user's stamp history, recent stamps for the cafe, and the count of unredeemed rewards.
+     *
+     * @param qrCodeValue the QR code identifying the target user
+     * @return a response DTO with user, cafe, reward count, stamp history, and recent stamps for staff view
+     * @throws BusinessException if the user lacks permission, no cafe is selected, or the user/cafe is not found
+     */
     @Transactional(readOnly = true)
     public StaffStampViewResponseDTO getStampHistoryForStaffView(String qrCodeValue, CustomUserDetails userDetails) {
         // 권한 체크

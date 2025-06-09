@@ -95,6 +95,13 @@ public class UserStampBookService {
         return StampBookResponseDTO.fromEntity(newStampBook, 0);
     }
 
+    /**
+     * Retrieves the current incomplete stamp book for a user and cafe with a database lock, or creates a new one if none exists.
+     *
+     * If a concurrent creation conflict or database lock failure occurs, throws a business exception indicating concurrent stamp book creation.
+     *
+     * @return the existing or newly created incomplete stamp book for the user and cafe
+     */
     @Transactional
     public StampBook getOrCreateValidStampBook(User user, Cafe cafe) {
         try {
@@ -126,6 +133,19 @@ public class UserStampBookService {
     }
 
 
+    /**
+     * Converts a completed stamp book into a reward for the user.
+     *
+     * Validates ownership, completion status, and reward claim status of the stamp book.
+     * Marks the stamp book as reward-claimed and returns the associated cafe's reward description,
+     * or a default message if no reward is set.
+     *
+     * @param userId the ID of the user requesting the reward conversion
+     * @param stampBookId the ID of the stamp book to convert
+     * @return the reward description for the cafe, or a default message if not set
+     *
+     * @throws BusinessException if the stamp book does not exist, is not owned by the user, is incomplete, or the reward has already been claimed
+     */
     @Transactional
     public String convertStampBookToReward(Long userId, Long stampBookId) {
         StampBook stampBook = stampBookRepository.findById(stampBookId)
