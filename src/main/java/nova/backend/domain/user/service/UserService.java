@@ -58,6 +58,18 @@ public class UserService {
             existedUser.updateQrCode(QrCodeGenerator.generate());
         }
 
+        /**
+         * 권한 승급
+         * USER로 회원가입 후, OWNER 서비스 사용 위해 로그인하면 OWNER로 권한 승급
+         */
+        if (existedUser.getRole() == Role.USER && userLoginRequest.role() == Role.OWNER) {
+            existedUser.updateRole(Role.OWNER);
+        }
+
+        if (existedUser.getQrCodeValue() == null) {
+            existedUser.updateQrCode(QrCodeGenerator.generate());
+        }
+
         return existedUser;
     }
 
@@ -77,13 +89,14 @@ public class UserService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         int todayStampCount = stampRepository.countByStampBook_User_UserIdAndCreatedAtBetween(
-                userId, LocalDate.now().atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay());
+                userId,
+                LocalDate.now().atStartOfDay(),
+                LocalDate.now().plusDays(1).atStartOfDay()
+        );
 
         int unusedRewardCount = stampBookRepository.countByUser_UserIdAndRewardClaimedTrueAndUsedFalse(userId);
 
-        return UserStatusResponseDTO.of(user.getName(), todayStampCount, unusedRewardCount);
+        return UserStatusResponseDTO.from(user, todayStampCount, unusedRewardCount);
     }
-
-
 
 }

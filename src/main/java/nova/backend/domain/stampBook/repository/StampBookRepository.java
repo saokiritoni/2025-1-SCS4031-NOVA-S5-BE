@@ -29,5 +29,6 @@ public interface StampBookRepository extends JpaRepository<StampBook, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT sb FROM StampBook sb WHERE sb.user.userId = :userId AND sb.cafe.cafeId = :cafeId AND sb.isCompleted = false")
     Optional<StampBook> findCurrentStampBookForUpdate(Long userId, Long cafeId);
+    int countByUser_UserIdAndCafe_CafeIdAndIsCompletedTrueAndRewardClaimedFalse(Long userId, Long cafeId);
 
 }

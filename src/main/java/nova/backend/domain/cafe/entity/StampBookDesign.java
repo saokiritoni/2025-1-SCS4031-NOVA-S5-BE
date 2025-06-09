@@ -37,6 +37,12 @@ public class StampBookDesign {
     @Column(nullable = true)
     private String rewardDescription;
 
+    private String frontCafeName;
+
+    private String backCafeName;
+
+    private String backImageUrl;
+
     public void expose() { this.exposed = true; }
     public void unexpose() { this.exposed = false; }
     public boolean isExposed() { return this.exposed; }
