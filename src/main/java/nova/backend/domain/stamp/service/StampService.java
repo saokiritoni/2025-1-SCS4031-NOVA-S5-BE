@@ -134,5 +134,4 @@ public class StampService {
         return StaffStampViewResponseDTO.from(targetUser, staffCafe, rewardCount, history, recentStampDtos);
     }
 
-
 }

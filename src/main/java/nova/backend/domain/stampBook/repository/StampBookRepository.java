@@ -1,11 +1,16 @@
 package nova.backend.domain.stampBook.repository;
 
+import jakarta.persistence.LockModeType;
 import nova.backend.domain.stampBook.entity.StampBook;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface StampBookRepository extends JpaRepository<StampBook, Long> {
 
     List<StampBook> findByUser_UserId(Long userId);
@@ -21,5 +26,8 @@ public interface StampBookRepository extends JpaRepository<StampBook, Long> {
     List<StampBook> findByUser_UserIdAndUsedFalse(Long userId);
     int countByUser_UserIdAndCafe_CafeIdAndRewardClaimedTrueAndUsedFalse(Long userId, Long cafeId);
     int countByUser_UserIdAndRewardClaimedTrueAndUsedFalse(Long userId);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT sb FROM StampBook sb WHERE sb.user.userId = :userId AND sb.cafe.cafeId = :cafeId AND sb.isCompleted = false")
+    Optional<StampBook> findCurrentStampBookForUpdate(Long userId, Long cafeId);
 
 }

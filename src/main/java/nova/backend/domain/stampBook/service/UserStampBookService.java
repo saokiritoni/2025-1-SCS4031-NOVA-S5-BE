@@ -1,6 +1,7 @@
 package nova.backend.domain.stampBook.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.repository.CafeRepository;
 import nova.backend.domain.stamp.repository.StampRepository;
@@ -11,14 +12,18 @@ import nova.backend.domain.user.entity.User;
 import nova.backend.domain.user.repository.UserRepository;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
 import static nova.backend.global.error.ErrorCode.ACCESS_DENIED;
 import static nova.backend.global.error.ErrorCode.ENTITY_NOT_FOUND;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -72,18 +77,34 @@ public class UserStampBookService {
 
     @Transactional
     public StampBook getOrCreateValidStampBook(User user, Cafe cafe) {
-        return stampBookRepository
-                .findFirstByUser_UserIdAndCafe_CafeIdAndIsCompletedFalse(user.getUserId(), cafe.getCafeId())
-                .orElseGet(() -> stampBookRepository.save(
-                        StampBook.builder()
-                                .user(user)
-                                .cafe(cafe)
-                                .isCompleted(false)
-                                .rewardClaimed(false)
-                                .inHome(false)
-                                .build()
-                ));
+        try {
+            return stampBookRepository.findCurrentStampBookForUpdate(user.getUserId(), cafe.getCafeId())
+                    .orElseGet(() -> {
+                        stampBookRepository.flush(); // DB 상태 동기화
+                        boolean exists = stampBookRepository.findCurrentStampBookForUpdate(user.getUserId(), cafe.getCafeId()).isPresent();
+                        if (exists) {
+                            return stampBookRepository.findCurrentStampBookForUpdate(user.getUserId(), cafe.getCafeId()).get();
+                        }
+
+                        return stampBookRepository.save(
+                                StampBook.builder()
+                                        .user(user)
+                                        .cafe(cafe)
+                                        .isCompleted(false)
+                                        .rewardClaimed(false)
+                                        .inHome(false)
+                                        .build()
+                        );
+                    });
+        } catch (CannotAcquireLockException e) {
+            log.warn("Deadlock 또는 락 획득 실패: userId={}, cafeId={}", user.getUserId(), cafe.getCafeId(), e);
+            throw new BusinessException(ErrorCode.CONCURRENT_STAMP_CREATION);
+        } catch (DataAccessException e) {
+            log.warn("기타 데이터 액세스 오류: userId={}, cafeId={}", user.getUserId(), cafe.getCafeId(), e);
+            throw new BusinessException(ErrorCode.CONCURRENT_STAMP_CREATION);
+        }
     }
+
 
     @Transactional
     public String convertStampBookToReward(Long userId, Long stampBookId) {
