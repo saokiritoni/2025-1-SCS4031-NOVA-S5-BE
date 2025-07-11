@@ -20,5 +20,8 @@ public interface StampBookRepository extends JpaRepository<StampBook, Long> {
     List<StampBook> findByUser_UserIdAndInHomeTrueAndUsedFalse(Long userId);
     List<StampBook> findByUser_UserIdAndUsedFalse(Long userId);
     int countByUser_UserIdAndCafe_CafeIdAndRewardClaimedTrueAndUsedFalse(Long userId, Long cafeId);
+    int countByUser_UserIdAndRewardClaimedTrueAndUsedFalse(Long userId);
+    int countByUser_UserIdAndCafe_CafeIdAndIsCompletedTrueAndRewardClaimedFalse(Long userId, Long cafeId);
+
 
 }

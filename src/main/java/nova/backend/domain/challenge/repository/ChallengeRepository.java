@@ -4,10 +4,13 @@ import nova.backend.domain.challenge.entity.Challenge;
 import nova.backend.domain.cafe.entity.Cafe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
+@Repository
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     List<Challenge> findByCafe(Cafe cafe);
@@ -42,4 +45,12 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     List<Challenge> findByCafe_CafeIdAndEndDateBefore(Long cafeId, LocalDate today);
 
     boolean existsByCafe_CafeId(Long cafeId);
+
+    Optional<Challenge> findFirstByCafe_CafeIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+            Long cafeId, LocalDate startDate, LocalDate endDate);
+
+    @Query("SELECT c FROM Challenge c WHERE c.startDate <= CURRENT_DATE AND c.endDate >= CURRENT_DATE")
+    List<Challenge> findAllAvailable();
+
+
 }

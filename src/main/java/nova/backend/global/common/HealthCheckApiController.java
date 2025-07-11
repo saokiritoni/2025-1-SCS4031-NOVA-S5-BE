@@ -1,7 +1,6 @@
 package nova.backend.global.common;
 
 import lombok.RequiredArgsConstructor;
-import nova.backend.global.auth.jwt.JwtProvider;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

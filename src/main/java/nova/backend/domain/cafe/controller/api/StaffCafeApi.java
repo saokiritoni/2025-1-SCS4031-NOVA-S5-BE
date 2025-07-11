@@ -1,4 +1,4 @@
-package nova.backend.domain.cafe.controller;
+package nova.backend.domain.cafe.controller.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,11 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @Tag(name = "3. 카페(OWNER/STAFF) 카페 선택 API", description = "로그인 후 현재 선택할 카페를 설정하는 API")
-public interface CafeSelectionApi {
+public interface StaffCafeApi {
 
     @Operation(
             summary = "카페 선택 (스태프/사장)",

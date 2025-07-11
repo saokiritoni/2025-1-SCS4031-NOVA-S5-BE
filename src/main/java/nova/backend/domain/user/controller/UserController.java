@@ -2,6 +2,7 @@ package nova.backend.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import nova.backend.domain.user.dto.response.QrCodeResponseDTO;
+import nova.backend.domain.user.dto.response.UserStatusResponseDTO;
 import nova.backend.domain.user.service.UserService;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
@@ -24,4 +25,13 @@ public class UserController implements UserApi {
         QrCodeResponseDTO qrCode = userService.getMyQrCode(userId);
         return SuccessResponse.ok(qrCode);
     }
+
+    @GetMapping("/status")
+    public ResponseEntity<SuccessResponse<?>> getUserStatus(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        UserStatusResponseDTO response = userService.getUserStatus(userDetails.getUserId());
+        return SuccessResponse.ok(response);
+    }
+
 }

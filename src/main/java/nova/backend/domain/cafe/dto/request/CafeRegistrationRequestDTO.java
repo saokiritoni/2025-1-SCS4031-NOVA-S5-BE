@@ -10,11 +10,15 @@ public record CafeRegistrationRequestDTO(
         String branchName,
         String ownerName,
         String ownerPhone,
+        String cafePhone,
         String businessNumber,
         Double latitude,
         Double longitude,
+        String roadAddress,
         Integer maxStampCount,
-        CharacterType characterType
+        CharacterType characterType,
+        String rewardDescription,
+        String cafeUrl
 ) {
     public Cafe toEntity(User owner) {
         return Cafe.builder()
@@ -22,11 +26,14 @@ public record CafeRegistrationRequestDTO(
                 .branchName(branchName)
                 .ownerName(ownerName)
                 .ownerPhone(ownerPhone)
+                .cafePhone(cafePhone)
                 .businessNumber(businessNumber)
                 .latitude(latitude)
                 .longitude(longitude)
+                .roadAddress(roadAddress)
                 .maxStampCount(maxStampCount)
                 .characterType(characterType)
+                .cafeUrl(cafeUrl)
                 .registrationStatus(CafeRegistrationStatus.REQUESTED)
                 .owner(owner)
                 .build();

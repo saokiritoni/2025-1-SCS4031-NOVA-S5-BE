@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import nova.backend.domain.cafe.entity.Cafe;
 import nova.backend.domain.cafe.entity.CharacterType;
+import nova.backend.domain.stamp.entity.Stamp;
 import nova.backend.domain.user.entity.User;
 import nova.backend.global.common.BaseTimeEntity;
-import nova.backend.global.error.exception.BusinessException;
 
-import static nova.backend.global.error.ErrorCode.NOT_CUSTOMED;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -71,5 +72,9 @@ public class StampBook extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cafe_id", nullable = false)
     private Cafe cafe;
+
+    @OneToMany(mappedBy = "stampBook", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Stamp> stamps = new ArrayList<>();
+
 
 }

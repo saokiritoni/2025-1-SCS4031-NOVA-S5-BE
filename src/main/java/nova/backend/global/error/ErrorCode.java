@@ -12,7 +12,9 @@ public enum ErrorCode {
      * 400 Bad Request
      */
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
-    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "ENUM 입력값이 올바르지 않습니다."),
+    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다."),
+    MISSING_REQUEST_PARAMETER(HttpStatus.BAD_REQUEST, "필수 요청 파라미터가 누락되었습니다."),
+
 
     /**
      * 401 Unauthorized
@@ -85,6 +87,7 @@ public enum ErrorCode {
     NOT_ENOUGH_REWARDS(HttpStatus.BAD_REQUEST, "사용 가능한 리워드가 부족합니다."),
     ALREADY_USED_STAMPBOOK(HttpStatus.BAD_REQUEST, "이미 사용된 스탬프북은 마이페이지에 추가할 수 없습니다."),
     NOT_CUSTOMED(HttpStatus.BAD_REQUEST,"스탬프북이 커스텀되지 않았습니다."),
+    DESIGN_NOT_FOUND(HttpStatus.NOT_FOUND, "카페에서 스탬프북 디자인을 노출하지 않았습니다."),
 
     /**
      * Cafe Error
@@ -92,9 +95,20 @@ public enum ErrorCode {
     EXPOSED_STAMPBOOK_NOT_FOUND(HttpStatus.BAD_REQUEST," 카페에서 노출 설정된 스탬프북이 없습니다."),
 
     /**
-    Stamp Error
+     * Stamp Error
      */
-    CAFE_NOT_SELECTED(HttpStatus.BAD_REQUEST, "카페가 선택되지 않았습니다.")
+    CAFE_NOT_SELECTED(HttpStatus.BAD_REQUEST, "카페가 선택되지 않았습니다."),
+
+    /**
+     * Challenge Error
+     */
+    CHALLENGE_NOT_FOUND(HttpStatus.NOT_FOUND, "챌린지가 존재하지 않습니다."),
+    ALREADY_ACCUMULATED_TODAY(HttpStatus.BAD_REQUEST,"오늘은 이미 적립이 완료되었습니다."),
+    CHALLENGE_ALREADY_COMPLETED_OR_CANCELED(HttpStatus.BAD_REQUEST, "카페에서 진행중인 챌린지가 아닙니다."),
+    CHALLENGE_OVER_REQUEST(HttpStatus.BAD_REQUEST, "전체 적립 개수보다 더 많이 취소할 수 없습니다."),
+    CHALLENGE_PARTICIPATION_NOT_FOUND(HttpStatus.NOT_FOUND, "챌린지에 참여하지 않는 고객입니다."),
+    INVALID_CHALLENGE_STATUS(HttpStatus.BAD_REQUEST, "챌린지가 참여 가능한 상태가 아닙니다."),
+
 
     ;
     private final HttpStatus httpStatus;
