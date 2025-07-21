@@ -7,14 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import nova.backend.domain.user.dto.response.QrCodeResponseDTO;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Tag(name = "1. 유저", description = "일반 회원 관련 API")
+@Tag(name = "1. 유저(USER)", description = "일반 회원 관련 API")
 public interface UserApi {
 
     @Operation(

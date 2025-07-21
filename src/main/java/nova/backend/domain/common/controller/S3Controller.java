@@ -1,14 +1,16 @@
 package nova.backend.domain.common.controller;
 
 import lombok.RequiredArgsConstructor;
-
 import nova.backend.domain.common.dto.PresignedUrlRequestDTO;
 import nova.backend.domain.common.dto.PresignedUrlResponseDTO;
 import nova.backend.domain.common.service.S3Service;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/s3")

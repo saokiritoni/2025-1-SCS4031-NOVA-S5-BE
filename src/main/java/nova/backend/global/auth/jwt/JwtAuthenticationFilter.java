@@ -7,12 +7,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nova.backend.domain.user.entity.Role;
 import nova.backend.domain.user.entity.User;
 import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.auth.CustomUserDetailsService;
 import nova.backend.global.auth.SecurityWhitelist;
-import nova.backend.global.auth.UserAuthentication;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.UnauthorizedException;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,7 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
