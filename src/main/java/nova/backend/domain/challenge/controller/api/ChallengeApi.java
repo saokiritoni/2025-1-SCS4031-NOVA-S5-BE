@@ -13,9 +13,12 @@ import nova.backend.global.auth.CustomUserDetails;
 import nova.backend.global.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "2. 챌린지", description = "챌린지 관련 API")
+@Tag(name = "1. 챌린지(USER)", description = "유저 챌린지 관련 API")
 public interface ChallengeApi {
 
     @PatchMapping("/{challengeId}/withdraw")

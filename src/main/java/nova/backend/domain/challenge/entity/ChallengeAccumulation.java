@@ -2,9 +2,6 @@ package nova.backend.domain.challenge.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import nova.backend.domain.challenge.entity.status.ChallengeStatus;
-import nova.backend.domain.challenge.entity.status.ParticipationStatus;
-import nova.backend.domain.challenge.repository.ChallengeAccumulationRepository;
 import nova.backend.global.common.BaseTimeEntity;
 import nova.backend.global.error.ErrorCode;
 import nova.backend.global.error.exception.BusinessException;

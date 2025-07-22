@@ -2,22 +2,22 @@ package nova.backend.domain.user.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import nova.backend.global.auth.jwt.JwtProvider;
-import nova.backend.global.error.exception.*;
 import nova.backend.domain.user.dto.request.UserTokenRequestDTO;
 import nova.backend.domain.user.dto.response.UserTokenResponseDTO;
 import nova.backend.domain.user.entity.Role;
 import nova.backend.domain.user.repository.UserRepository;
+import nova.backend.global.auth.jwt.JwtProvider;
+import nova.backend.global.error.exception.EntityNotFoundException;
+import nova.backend.global.error.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.TimeUnit;
+
 import static nova.backend.global.error.ErrorCode.JSON_PARSING_FAILED;
 import static nova.backend.global.error.ErrorCode.USER_NOT_FOUND;
-
-
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional(readOnly = true)
